@@ -91,7 +91,7 @@ export interface CVB {
   ---------------------------------- */
 
 export interface DefineConfigOptions {
-  lite?: boolean;
+  mode?: 'normal' | 'lite';
   hooks?: {
     /**
      * Returns the completed string of concatenated classes/classNames.
@@ -112,17 +112,6 @@ export interface DefineConfig {
   ============================================ */
 
 /**
- * Type guard.
- * Determines whether an object has a property with the specified name.
- * */
-function isKeyOf<R extends Record<PropertyKey, unknown>, V = keyof R>(record: R, key: unknown): key is V {
-  return (
-    (typeof key === 'string' || typeof key === 'number' || typeof key === 'symbol') &&
-    Object.prototype.hasOwnProperty.call(record, key)
-  );
-}
-
-/**
  * Merges two given objects, Props take precedence over Defaults
  * */
 function mergeDefaultsAndProps<
@@ -133,7 +122,6 @@ function mergeDefaultsAndProps<
   const result: Record<PropertyKey, unknown> = { ...defaults };
 
   for (const key in props) {
-    if (!isKeyOf(props, key)) continue;
     const value = props[key];
     if (typeof value !== 'undefined') {
       result[key] = value;
@@ -154,13 +142,14 @@ function getVariantClassNames<
   const variantClassNames: ClassArray = [];
 
   for (const variant in variants) {
-    if (!isKeyOf(variants, variant)) continue;
-    const variantProp = props[variant];
-    const defaultVariantProp = defaults[variant];
+    const variantProp = props[variant] || defaults[variant];
+    const variantKey = falsyToString(variantProp) as string;
 
-    const variantKey = falsyToString(variantProp) || falsyToString(defaultVariantProp);
+    const className = variants[variant][variantKey];
 
-    if (isKeyOf(variants[variant], variantKey)) variantClassNames.push(variants[variant][variantKey]);
+    if (className) {
+      variantClassNames.push(className);
+    }
   }
 
   return variantClassNames;
@@ -179,7 +168,7 @@ function getCompoundVariantClassNames<V extends CVBVariantShape>(
     let selectorMatches = true;
 
     for (const cvKey in compoundConfig) {
-      if (!isKeyOf(compoundConfig, cvKey) || cvKey === 'class' || cvKey === 'className') continue;
+      if (cvKey === 'class' || cvKey === 'className') continue;
 
       const cvSelector = compoundConfig[cvKey];
       const selector = defaultsAndProps[cvKey];
@@ -192,7 +181,9 @@ function getCompoundVariantClassNames<V extends CVBVariantShape>(
       }
     }
 
-    if (selectorMatches) compoundClassNames.push(compoundConfig.class ?? compoundConfig.className);
+    if (selectorMatches) {
+      compoundClassNames.push(compoundConfig.class ?? compoundConfig.className);
+    }
   }
 
   return compoundClassNames;
@@ -205,7 +196,7 @@ const falsyToString = <T>(value: T) => (typeof value === 'boolean' ? `${value}` 
 
 export const defineConfig: DefineConfig = (options) => {
   const cx: CX = (...inputs) => {
-    const cn = options?.lite ? lclsx : clsx;
+    const cn = options?.mode === 'lite' ? lclsx : clsx;
     if (typeof options?.hooks?.onComplete === 'function') {
       return options.hooks.onComplete(cn(inputs));
     }
