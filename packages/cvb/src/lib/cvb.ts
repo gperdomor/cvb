@@ -105,6 +105,7 @@ export interface DefineConfig {
     compose: Compose;
     cx: CX;
     cvb: CVB;
+    svb: CVB;
   };
 }
 
@@ -142,7 +143,7 @@ function getVariantClassNames<
   const variantClassNames: ClassArray = [];
 
   for (const variant in variants) {
-    const variantProp = props[variant] || defaults[variant];
+    const variantProp = props[variant] ?? defaults[variant];
     const variantKey = falsyToString(variantProp) as string;
 
     const className = variants[variant][variantKey];
@@ -222,6 +223,16 @@ export const defineConfig: DefineConfig = (options) => {
     };
   };
 
+  // Slots with array
+  const svb: CVB = (config) => {
+    const slots = Object.entries(getSlotRecipes(config)).map(([slot, slotCva]) => [slot, cvb(slotCva)]);
+
+    return (props) => {
+      const result = slots.map(([slot, cvaFn]) => [slot, (cvaFn as any)(props)]);
+      return Object.fromEntries(result);
+    };
+  };
+
   const compose: Compose =
     (...components) =>
     (props) => {
@@ -236,8 +247,38 @@ export const defineConfig: DefineConfig = (options) => {
   return {
     compose,
     cvb,
+    svb,
     cx,
   };
 };
 
-export const { compose, cvb, cx } = defineConfig();
+export const { compose, cvb, svb, cx } = defineConfig();
+
+const getSlotRecipes = (recipe: any = {}) => {
+  const init = (slot: string) => {
+    return {
+      // className: [recipe.className, slot].filter(Boolean).join('__'),
+      base: recipe.base?.[slot] ?? {},
+      variants: {},
+      defaultVariants: recipe.defaultVariants ?? {},
+      compoundVariants: recipe.compoundVariants ? getSlotCompoundVariant(recipe.compoundVariants, slot) : [],
+    };
+  };
+  const slots: string[] = recipe.slots ?? [];
+  const recipeParts = slots.map((slot) => [slot, init(slot)]);
+  for (const [variantsKey, variantsSpec] of Object.entries(recipe.variants ?? {})) {
+    for (const [variantKey, variantSpec] of Object.entries(variantsSpec)) {
+      recipeParts.forEach(([slot, slotRecipe]) => {
+        slotRecipe.variants[variantsKey] ??= {};
+        slotRecipe.variants[variantsKey][variantKey] = variantSpec[slot] ?? {};
+      });
+    }
+  }
+  return Object.fromEntries(recipeParts);
+};
+
+const getSlotCompoundVariant = (compoundVariants: any, slotName: any) => {
+  return compoundVariants
+    .filter((compoundVariant) => compoundVariant.class[slotName])
+    .map((compoundVariant) => ({ ...compoundVariant, class: compoundVariant.class[slotName] }));
+};

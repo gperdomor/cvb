@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-binary-expression */
 import type * as CVB from './cvb.js';
-import { compose, cvb, cx, defineConfig } from './cvb.js';
+import { compose, cvb, cx, defineConfig, svb } from './cvb.js';
 
 describe('cx', () => {
   describe.each<CVB.CXOptions>([
@@ -1391,6 +1391,66 @@ describe('cvb', () => {
           expect(buttonWithBaseWithDefaultsWithClassNameArray(options)).toBe(expected);
         });
       });
+    });
+  });
+});
+
+describe('svb', () => {
+  it('handle slots', () => {
+    const checkbox = svb({
+      slots: ['root', 'control', 'label'],
+      base: {
+        root: 'flex align-center gap-2',
+        control: 'border-1 rounded-sm',
+        label: 'ms-2',
+      },
+      // slots: {
+      //   root: 'flex align-center gap-2',
+      //   control: 'border-1 rounded-sm',
+      //   label: 'ms-2',
+      // },
+      variants: {
+        size: {
+          sm: {
+            control: 'w-8 h-8',
+            label: 'font-sm',
+          },
+          md: {
+            control: 'w-10 h-10',
+            label: 'font-md',
+          },
+        },
+        isChecked: {
+          true: {
+            control: '',
+            label: '',
+          },
+        },
+      },
+      compoundVariants: [
+        {
+          size: 'sm',
+          isChecked: true,
+          class: {
+            control: 'bg-green-500',
+          },
+        },
+      ],
+      defaultVariants: {
+        size: 'sm',
+      },
+    } as any);
+
+    expect(checkbox({ size: 'md', isChecked: true })).toEqual({
+      control: 'border-1 rounded-sm w-10 h-10',
+      label: 'ms-2 font-md',
+      root: 'flex align-center gap-2',
+    });
+
+    expect(checkbox({ size: 'sm', isChecked: true })).toEqual({
+      control: 'border-1 rounded-sm w-8 h-8 bg-green-500',
+      label: 'ms-2 font-sm',
+      root: 'flex align-center gap-2',
     });
   });
 });
