@@ -20,12 +20,12 @@ type OneOrMore<T> = T | Array<T>;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 type OmitUndefined<T> = T extends undefined ? never : T;
-export type VariantProps<Component extends (...args: any) => any> = Omit<
-  OmitUndefined<Parameters<Component>[0]>,
-  'class' | 'className'
->;
 
-export type SlotVariantProps<Component extends (...args: any) => any> = Omit<
+/**
+ * Extract the variant as optional props from a `cvb` or `svb` function.
+ * Intended to be used with a JSX component.
+ */
+export type VariantProps<Component extends (...args: any) => any> = Omit<
   OmitUndefined<Parameters<Component>[0]>,
   'class' | 'className'
 >;
@@ -84,8 +84,6 @@ export type RecipeSelection<T extends RecipeVariantRecord> = {
 
 export type RecipeVariantFn<T extends RecipeVariantRecord> = (props?: RecipeSelection<T> & ClassProp) => string;
 
-export type RecipeRuntimeFn<T extends RecipeVariantRecord> = RecipeVariantFn<T>;
-
 export type RecipeCompoundSelection<T> = {
   [K in keyof T]?: OneOrMore<StringToBoolean<keyof T[K]>> | undefined;
 };
@@ -111,7 +109,7 @@ export interface RecipeDefinition<T extends RecipeVariantRecord = RecipeVariantR
   defaultVariants?: RecipeSelection<T>;
 }
 
-export type RecipeCreatorFn = <T extends RecipeVariantRecord>(config: RecipeDefinition<T>) => RecipeRuntimeFn<T>;
+export type RecipeCreatorFn = <T extends RecipeVariantRecord>(config: RecipeDefinition<T>) => RecipeVariantFn<T>;
 
 /* -----------------------------------------
  * Recipe / Slot
@@ -124,8 +122,6 @@ export type SlotRecipeVariantRecord<S extends string> = Record<any, Record<any, 
 export type SlotRecipeVariantFn<S extends string, T extends RecipeVariantRecord> = (
   props?: RecipeSelection<T> & ClassProp
 ) => SlotRecord<S, string>;
-
-export type SlotRecipeRuntimeFn<S extends string, T extends SlotRecipeVariantRecord<S>> = SlotRecipeVariantFn<S, T>;
 
 export type SlotClassProp<S extends string> =
   | {
@@ -143,10 +139,6 @@ export interface SlotRecipeDefinition<
   S extends string = string,
   T extends SlotRecipeVariantRecord<S> = SlotRecipeVariantRecord<S>
 > {
-  // /**
-  //  * An optional class name that can be used to target slots in the DOM.
-  //  */
-  // className?: string;
   /**
    * The parts/slots of the recipe.
    */
@@ -171,7 +163,7 @@ export interface SlotRecipeDefinition<
 
 export type SlotRecipeCreatorFn = <S extends string, T extends SlotRecipeVariantRecord<S>>(
   config: SlotRecipeDefinition<S, T>
-) => SlotRecipeRuntimeFn<S, T>;
+) => SlotRecipeVariantFn<S, T>;
 
 /* -----------------------------------------
  * defineConfig

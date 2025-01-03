@@ -1,13 +1,16 @@
 import type {
   ClassArray,
   ClassDictionary,
+  ClassProp,
   ClassValue,
-  CVBClassProp,
   Pretty,
   RecipeCompoundSelection,
   RecipeCompoundVariant,
   RecipeSelection,
   RecipeVariantRecord,
+  SlotRecipeCompoundVariant,
+  SlotRecipeVariantRecord,
+  SlotRecord,
 } from './types.js';
 
 export const isEmpty = (obj: Record<PropertyKey, any>): boolean => Object.keys(obj).length === 0;
@@ -21,9 +24,9 @@ export const falsyToString = <T>(value: T) => (typeof value === 'boolean' ? `${v
  * @returns
  */
 export const mergeDefaultsAndProps = <
-  T extends RecipeVariantRecord,
-  P extends RecipeSelection<T> & CVBClassProp,
-  D extends RecipeSelection<T>
+  V extends RecipeVariantRecord,
+  P extends RecipeSelection<V> & ClassProp,
+  D extends RecipeSelection<V>
 >(
   props: P = {} as P,
   defaults: D
@@ -37,7 +40,7 @@ export const mergeDefaultsAndProps = <
     }
   }
 
-  return result as Record<keyof T, NonNullable<ClassValue>>;
+  return result as Record<keyof V, NonNullable<ClassValue>>;
 };
 
 /**
@@ -49,7 +52,7 @@ export const mergeDefaultsAndProps = <
  */
 export const getVariantClassNames = <
   V extends RecipeVariantRecord,
-  P extends RecipeSelection<V> & CVBClassProp,
+  P extends RecipeSelection<V> & ClassProp,
   D extends RecipeSelection<V>
 >(
   props: P = {} as P,
@@ -109,14 +112,32 @@ export const getCompoundVariantClassNames = <V extends RecipeVariantRecord>(
   return compoundClassNames;
 };
 
-export const getVariantClassNamesBySlot = (props: any = {}, slot: string, variants: any, defaults: any = {}) => {
+/**
+ * Returns a list of class variants based on the given Props and Defaults for the required Slot
+ * @param props
+ * @param slot
+ * @param variants
+ * @param defaults
+ * @returns
+ */
+export const getVariantClassNamesBySlot = <
+  S extends string,
+  V extends SlotRecipeVariantRecord<S>,
+  P extends RecipeSelection<V> & ClassProp,
+  D extends RecipeSelection<V>
+>(
+  props: P = {} as P,
+  slot: S,
+  variants: V,
+  defaults: D = {} as D
+) => {
   const variantClassNames: ClassValue[] = [];
 
   for (const variant in variants) {
     const variantProp = props[variant] ?? defaults[variant];
     const variantKey = falsyToString(variantProp);
 
-    const className = variants[variant][variantKey]?.[slot];
+    const className = (variants[variant][variantKey] as SlotRecord<S, ClassValue>)?.[slot];
 
     if (className) {
       variantClassNames.push(className);
@@ -125,8 +146,22 @@ export const getVariantClassNamesBySlot = (props: any = {}, slot: string, varian
   return variantClassNames;
 };
 
-export function getCompoundVariantClassNamesBySlot(slot: string, compoundVariants: any, defaultsAndProps: any) {
-  const compoundClassNames: ClassValue[] = [];
+/**
+ * Returns selected compound className variants based on Props and Defaults for the required Slot
+ * @param slot
+ * @param compoundVariants
+ * @param defaultsAndProps
+ * @returns
+ */
+export const getCompoundVariantClassNamesBySlot = <
+  S extends string,
+  V extends SlotRecipeVariantRecord<S> = SlotRecipeVariantRecord<S>
+>(
+  slot: S,
+  compoundVariants: Pretty<SlotRecipeCompoundVariant<S, RecipeCompoundSelection<V>>>[],
+  defaultsAndProps: ClassDictionary
+) => {
+  const compoundClassNames: ClassArray = [];
 
   for (const compoundConfig of compoundVariants) {
     let selectorMatches = true;
@@ -144,6 +179,7 @@ export function getCompoundVariantClassNamesBySlot(slot: string, compoundVariant
         break;
       }
     }
+
     const className = compoundConfig.class?.[slot] ?? compoundConfig.className?.[slot];
 
     if (selectorMatches && className) {
@@ -152,4 +188,4 @@ export function getCompoundVariantClassNamesBySlot(slot: string, compoundVariant
   }
 
   return compoundClassNames;
-}
+};

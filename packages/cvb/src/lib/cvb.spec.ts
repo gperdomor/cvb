@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-binary-expression */
 import { compose, cvb, cx, defineConfig, svb } from './cvb.js';
-import { CXOptions, RecipeDefinition, SlotRecipeDefinition, SlotVariantProps, VariantProps } from './types.js';
+import { CXOptions, RecipeDefinition, SlotRecipeDefinition, VariantProps } from './types.js';
 
 describe('cx', () => {
   describe.each<CXOptions>([
@@ -67,7 +67,7 @@ describe('compose', () => {
       | undefined
     >();
 
-    expect(card()).toBe('shadow-sm');
+    expect(card({})).toBe('shadow-sm');
     expect(card({ class: 'adhoc-class' })).toBe('shadow-sm adhoc-class');
     expect(card({ className: 'adhoc-class' })).toBe('shadow-sm adhoc-class');
     expect(card({ shadow: 'md' })).toBe('shadow-md');
@@ -1219,10 +1219,10 @@ describe('svb', () => {
       });
 
       type CheckboxWithoutDefaultsWithoutBaseProps =
-        | SlotVariantProps<typeof checkboxWithoutBaseWithoutDefaultsString>
-        | SlotVariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameString>
-        | SlotVariantProps<typeof checkboxWithoutBaseWithoutDefaultsArray>
-        | SlotVariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameArray>;
+        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsString>
+        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameString>
+        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsArray>
+        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameArray>;
 
       it.each<[number, CheckboxWithoutDefaultsWithoutBaseProps, Record<string, string>]>([
         [
@@ -1461,10 +1461,10 @@ describe('svb', () => {
       });
 
       type CheckboxWithoutBaseWithDefaultsProps =
-        | SlotVariantProps<typeof checkboxWithoutBaseWithDefaultsString>
-        | SlotVariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameString>
-        | SlotVariantProps<typeof checkboxWithoutBaseWithDefaultsArray>
-        | SlotVariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameArray>;
+        | VariantProps<typeof checkboxWithoutBaseWithDefaultsString>
+        | VariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameString>
+        | VariantProps<typeof checkboxWithoutBaseWithDefaultsArray>
+        | VariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameArray>;
 
       it.each<[number, CheckboxWithoutBaseWithDefaultsProps, Record<string, string>]>([
         [

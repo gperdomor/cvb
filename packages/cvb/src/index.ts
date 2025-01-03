@@ -7,7 +7,10 @@ export type {
   DefineConfig,
   DefineConfigOptions,
   RecipeCreatorFn,
+  RecipeDefinition,
   RecipeVariantRecord,
   SlotRecipeCreatorFn,
+  SlotRecipeDefinition,
   SlotRecipeVariantRecord,
+  VariantProps,
 } from './lib/types.js';
