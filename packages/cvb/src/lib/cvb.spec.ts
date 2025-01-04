@@ -1,35 +1,106 @@
+/* eslint-disable no-constant-condition */
 /* eslint-disable no-constant-binary-expression */
 import { compose, cvb, cx, defineConfig, svb } from './cvb.js';
-import { CXOptions, RecipeDefinition, SlotRecipeDefinition, VariantProps } from './types.js';
+import { RecipeDefinition, SlotRecipeDefinition, VariantProps } from './types.js';
+
+const toCompoundVariantsWithClassName = <
+  T extends RecipeDefinition['compoundVariants'] | SlotRecipeDefinition['compoundVariants']
+>(
+  compoundVariants: T
+): T => {
+  return (compoundVariants?.map(({ class: className, ...rest }) => ({ ...rest, className })) ?? []) as T;
+};
 
 describe('cx', () => {
-  describe.each<CXOptions>([
-    [null, ''],
-    [undefined, ''],
-    [false && 'foo', ''],
-    [true && 'foo', 'foo'],
-    [['foo', undefined, 'bar', undefined, 'baz'], 'foo bar baz'],
-    [
-      [
-        'foo',
-        [
-          undefined,
-          ['bar'],
-          [undefined, ['baz', 'qux', 'quux', 'quuz', [[[[[[[[['corge', 'grault']]]]], 'garply']]]]]],
-        ],
-      ],
-      'foo bar baz qux quux quuz corge grault garply',
-      [['foo', [1 && 'bar', { baz: false, bat: null }, ['hello', ['world']]], 'cya'], 'foo bar hello world cya'],
-    ],
-  ])('cx(%o)', (options, expected) => {
-    test(`returns ${expected}`, () => {
-      expect(cx(options)).toBe(expected);
-    });
+  it('undefined', () => {
+    expect(cx()).toBe('');
+    expect(cx(undefined)).toBe('');
+    expect(cx(undefined, 'foo')).toBe('foo');
+  });
+
+  it('null', () => {
+    expect(cx(null)).toBe('');
+    expect(cx(null, 'foo')).toBe('foo');
+  });
+
+  it('string', () => {
+    expect(cx('')).toBe('');
+    expect(cx('foo')).toBe('foo');
+    expect(cx('foo bar')).toBe('foo bar');
+    expect(cx('foo', 'bar')).toBe('foo bar');
+    expect(cx('foo bar', 'foo2 bar2')).toBe('foo bar foo2 bar2');
+    expect(cx('foo', '', 'bar')).toBe('foo bar');
+  });
+
+  it('boolean', () => {
+    expect(cx(true)).toBe('');
+    expect(cx(false)).toBe('');
+
+    expect(cx(true && 'foo')).toBe('foo');
+    expect(cx(false && 'foo')).toBe('');
+
+    expect(cx('foo', true && 'bar')).toBe('foo bar');
+    expect(cx('foo', false && 'bar')).toBe('foo');
+
+    expect(cx(true ? 'foo' : 'bar')).toBe('foo');
+    expect(cx(false ? 'foo' : 'bar')).toBe('bar');
+
+    expect(cx('foo', true ? 'bar1' : 'bar2')).toBe('foo bar1');
+    expect(cx('foo', false ? 'bar1' : 'bar2')).toBe('foo bar2');
+
+    expect(cx('foo', true ? 'bar1' : 'bar2', 'baz')).toBe('foo bar1 baz');
+    expect(cx('foo', false ? 'bar1' : 'bar2', 'baz')).toBe('foo bar2 baz');
+
+    expect(cx('0')).toBe('0');
+    expect(cx('7')).toBe('7');
+  });
+
+  it('number', () => {
+    // @ts-expect-error Testing outside of types
+    expect(cx(0)).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(7)).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(-7)).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(-0)).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(1_000_000)).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(1.5)).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(333e9)).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(Infinity)).toBe('');
+  });
+
+  it('object', () => {
+    // @ts-expect-error Testing outside of types
+    expect(cx({})).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx({ foo: 'bar' })).toBe('');
+  });
+
+  it('array', () => {
+    expect(cx(...['foo', 'bar'])).toBe('foo bar');
+    // @ts-expect-error Testing outside of types
+    expect(cx([])).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(['foo'])).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx([[['foo']]])).toBe('');
+  });
+
+  it('function', () => {
+    // @ts-expect-error Testing outside of types
+    expect(cx(() => '')).toBe('');
+    // @ts-expect-error Testing outside of types
+    expect(cx(() => 'foo')).toBe('');
   });
 });
 
 describe('compose', () => {
-  test('should merge into a single component', () => {
+  it('should merge into a single component', () => {
     const box = cvb({
       variants: {
         shadow: {
@@ -77,14 +148,6 @@ describe('compose', () => {
   });
 });
 
-const toCompoundVariantsWithClassName = <
-  T extends RecipeDefinition['compoundVariants'] | SlotRecipeDefinition['compoundVariants']
->(
-  compoundVariants: T
-): T => {
-  return (compoundVariants?.map(({ class: className, ...rest }) => ({ ...rest, className })) ?? []) as T;
-};
-
 describe('cvb', () => {
   const buttonConfig: Required<RecipeDefinition> = {
     base: 'button font-semibold border rounded',
@@ -94,11 +157,7 @@ describe('cvb', () => {
         primary: 'button--primary bg-blue-500 text-white border-transparent hover:bg-blue-600',
         secondary: 'button--secondary bg-white text-gray-800 border-gray-400 hover:bg-gray-100',
         warning: 'button--warning bg-yellow-500 border-transparent hover:bg-yellow-600',
-        danger: [
-          'button--danger',
-          [1 && 'bg-red-500', { baz: false, bat: null }, ['text-white', ['border-transparent']]],
-          'hover:bg-red-600',
-        ],
+        danger: 'button--danger bg-red-500 text-white border-transparent hover:bg-red-600',
       },
       disabled: {
         unset: null,
@@ -131,7 +190,7 @@ describe('cvb', () => {
       {
         intent: 'warning',
         disabled: true,
-        class: ['button--warning-disabled', [1 && 'text-black', { baz: false, bat: null }]],
+        class: 'button--warning-disabled text-black',
       },
     ],
     defaultVariants: {
@@ -141,56 +200,56 @@ describe('cvb', () => {
     },
   };
 
-  const buttonConfigWithArray: Required<RecipeDefinition> = {
-    base: [buttonConfig.base],
-    variants: {
-      intent: {
-        unset: null,
-        primary: ['button--primary', 'bg-blue-500', 'text-white', 'border-transparent', 'hover:bg-blue-600'],
-        secondary: ['button--secondary', 'bg-white', 'text-gray-800', 'border-gray-400', 'hover:bg-gray-100'],
-        warning: ['button--warning', 'bg-yellow-500', 'border-transparent', 'hover:bg-yellow-600'],
-        danger: [
-          'button--danger',
-          [1 && 'bg-red-500', { baz: false, bat: null }, ['text-white', ['border-transparent']]],
-          'hover:bg-red-600',
-        ],
-      },
-      disabled: {
-        unset: null,
-        true: ['button--disabled', 'opacity-050', 'cursor-not-allowed'],
-        false: ['button--enabled', 'cursor-pointer'],
-      },
-      size: {
-        unset: null,
-        small: ['button--small', 'text-sm', 'py-1', 'px-2'],
-        medium: ['button--medium', 'text-base', 'py-2', 'px-4'],
-        large: ['button--large', 'text-lg', 'py-2.5', 'px-4'],
-      },
-      m: {
-        unset: null,
-        0: 'm-0',
-        1: 'm-1',
-      },
-    },
-    compoundVariants: [
-      {
-        intent: 'primary',
-        size: 'medium',
-        class: ['button--primary-medium', 'uppercase'],
-      },
-      {
-        intent: 'warning',
-        disabled: false,
-        class: ['button--warning-enabled', 'text-gray-800'],
-      },
-      {
-        intent: 'warning',
-        disabled: true,
-        class: ['button--warning-disabled', [1 && 'text-black', { baz: false, bat: null }]],
-      },
-    ],
-    defaultVariants: buttonConfig.defaultVariants,
-  };
+  // const buttonConfigWithArray: Required<RecipeDefinition> = {
+  //   base: [buttonConfig.base],
+  //   variants: {
+  //     intent: {
+  //       unset: null,
+  //       primary: ['button--primary', 'bg-blue-500', 'text-white', 'border-transparent', 'hover:bg-blue-600'],
+  //       secondary: ['button--secondary', 'bg-white', 'text-gray-800', 'border-gray-400', 'hover:bg-gray-100'],
+  //       warning: ['button--warning', 'bg-yellow-500', 'border-transparent', 'hover:bg-yellow-600'],
+  //       danger: [
+  //         'button--danger',
+  //         [1 && 'bg-red-500', { baz: false, bat: null }, ['text-white', ['border-transparent']]],
+  //         'hover:bg-red-600',
+  //       ],
+  //     },
+  //     disabled: {
+  //       unset: null,
+  //       true: ['button--disabled', 'opacity-050', 'cursor-not-allowed'],
+  //       false: ['button--enabled', 'cursor-pointer'],
+  //     },
+  //     size: {
+  //       unset: null,
+  //       small: ['button--small', 'text-sm', 'py-1', 'px-2'],
+  //       medium: ['button--medium', 'text-base', 'py-2', 'px-4'],
+  //       large: ['button--large', 'text-lg', 'py-2.5', 'px-4'],
+  //     },
+  //     m: {
+  //       unset: null,
+  //       0: 'm-0',
+  //       1: 'm-1',
+  //     },
+  //   },
+  //   compoundVariants: [
+  //     {
+  //       intent: 'primary',
+  //       size: 'medium',
+  //       class: ['button--primary-medium', 'uppercase'],
+  //     },
+  //     {
+  //       intent: 'warning',
+  //       disabled: false,
+  //       class: ['button--warning-enabled', 'text-gray-800'],
+  //     },
+  //     {
+  //       intent: 'warning',
+  //       disabled: true,
+  //       class: ['button--warning-disabled', [1 && 'text-black', { baz: false, bat: null }]],
+  //     },
+  //   ],
+  //   defaultVariants: buttonConfig.defaultVariants,
+  // };
 
   describe('without base', () => {
     describe('without anything', () => {
@@ -262,20 +321,20 @@ describe('cvb', () => {
         variants: buttonConfig.variants,
         compoundVariants: toCompoundVariantsWithClassName(buttonConfig.compoundVariants),
       });
-      const buttonWithoutBaseWithoutDefaultsArray = cvb({
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: buttonConfigWithArray.compoundVariants,
-      });
-      const buttonWithoutBaseWithoutDefaultsWithClassNameArray = cvb({
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
-      });
+      // const buttonWithoutBaseWithoutDefaultsArray = cvb({
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: buttonConfigWithArray.compoundVariants,
+      // });
+      // const buttonWithoutBaseWithoutDefaultsWithClassNameArray = cvb({
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
+      // });
 
       type ButtonWithoutDefaultsWithoutBaseProps =
         | VariantProps<typeof buttonWithoutBaseWithoutDefaultsString>
-        | VariantProps<typeof buttonWithoutBaseWithoutDefaultsWithClassNameString>
-        | VariantProps<typeof buttonWithoutBaseWithoutDefaultsArray>
-        | VariantProps<typeof buttonWithoutBaseWithoutDefaultsWithClassNameArray>;
+        | VariantProps<typeof buttonWithoutBaseWithoutDefaultsWithClassNameString>;
+      // | VariantProps<typeof buttonWithoutBaseWithoutDefaultsArray>
+      // | VariantProps<typeof buttonWithoutBaseWithoutDefaultsWithClassNameArray>;
 
       it.each<[number, ButtonWithoutDefaultsWithoutBaseProps, string]>([
         [
@@ -356,8 +415,8 @@ describe('cvb', () => {
       ])('%d - button(%o) return %o', (_, options, expected) => {
         expect(buttonWithoutBaseWithoutDefaultsString(options)).toBe(expected);
         expect(buttonWithoutBaseWithoutDefaultsWithClassNameString(options)).toBe(expected);
-        expect(buttonWithoutBaseWithoutDefaultsArray(options)).toBe(expected);
-        expect(buttonWithoutBaseWithoutDefaultsWithClassNameArray(options)).toBe(expected);
+        // expect(buttonWithoutBaseWithoutDefaultsArray(options)).toBe(expected);
+        // expect(buttonWithoutBaseWithoutDefaultsWithClassNameArray(options)).toBe(expected);
       });
     });
 
@@ -394,44 +453,44 @@ describe('cvb', () => {
         ],
         defaultVariants: { ...buttonConfig.defaultVariants, m: 0 },
       });
-      const buttonWithoutBaseWithDefaultsArray = cvb({
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: [
-          ...buttonConfigWithArray.compoundVariants,
-          {
-            intent: ['warning', 'danger'],
-            class: 'button--warning-danger !border-red-500',
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            class: 'button--warning-danger-medium',
-          },
-        ],
-        defaultVariants: { ...buttonConfigWithArray.defaultVariants, m: 0 },
-      });
-      const buttonWithoutBaseWithDefaultsWithClassNameArray = cvb({
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: [
-          ...toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
-          {
-            intent: ['warning', 'danger'],
-            className: 'button--warning-danger !border-red-500',
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            className: 'button--warning-danger-medium',
-          },
-        ],
-        defaultVariants: { ...buttonConfigWithArray.defaultVariants, m: 0 },
-      });
+      // const buttonWithoutBaseWithDefaultsArray = cvb({
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: [
+      //     ...buttonConfigWithArray.compoundVariants,
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       class: 'button--warning-danger !border-red-500',
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       class: 'button--warning-danger-medium',
+      //     },
+      //   ],
+      //   defaultVariants: { ...buttonConfigWithArray.defaultVariants, m: 0 },
+      // });
+      // const buttonWithoutBaseWithDefaultsWithClassNameArray = cvb({
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: [
+      //     ...toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       className: 'button--warning-danger !border-red-500',
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       className: 'button--warning-danger-medium',
+      //     },
+      //   ],
+      //   defaultVariants: { ...buttonConfigWithArray.defaultVariants, m: 0 },
+      // });
 
       type ButtonWithoutBaseWithDefaultsProps =
         | VariantProps<typeof buttonWithoutBaseWithDefaultsString>
-        | VariantProps<typeof buttonWithoutBaseWithDefaultsWithClassNameString>
-        | VariantProps<typeof buttonWithoutBaseWithDefaultsArray>
-        | VariantProps<typeof buttonWithoutBaseWithDefaultsWithClassNameArray>;
+        | VariantProps<typeof buttonWithoutBaseWithDefaultsWithClassNameString>;
+      // | VariantProps<typeof buttonWithoutBaseWithDefaultsArray>
+      // | VariantProps<typeof buttonWithoutBaseWithDefaultsWithClassNameArray>;
 
       it.each<[number, ButtonWithoutBaseWithDefaultsProps, string]>([
         [
@@ -527,8 +586,8 @@ describe('cvb', () => {
       ])('%d - button(%o) return %o', (_, options, expected) => {
         expect(buttonWithoutBaseWithDefaultsString(options)).toBe(expected);
         expect(buttonWithoutBaseWithDefaultsWithClassNameString(options)).toBe(expected);
-        expect(buttonWithoutBaseWithDefaultsArray(options)).toBe(expected);
-        expect(buttonWithoutBaseWithDefaultsWithClassNameArray(options)).toBe(expected);
+        // expect(buttonWithoutBaseWithDefaultsArray(options)).toBe(expected);
+        // expect(buttonWithoutBaseWithDefaultsWithClassNameArray(options)).toBe(expected);
       });
     });
   });
@@ -568,44 +627,44 @@ describe('cvb', () => {
         ],
       });
 
-      const buttonWithBaseWithoutDefaultsArray = cvb({
-        base: buttonConfigWithArray.base,
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: [
-          ...buttonConfigWithArray.compoundVariants,
-          {
-            intent: ['warning', 'danger'],
-            class: 'button--warning-danger !border-red-500',
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            class: 'button--warning-danger-medium',
-          },
-        ],
-      });
-      const buttonWithBaseWithoutDefaultsWithClassNameArray = cvb({
-        base: buttonConfigWithArray.base,
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: [
-          ...toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
-          {
-            intent: ['warning', 'danger'],
-            class: 'button--warning-danger !border-red-500',
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            class: 'button--warning-danger-medium',
-          },
-        ],
-      });
+      // const buttonWithBaseWithoutDefaultsArray = cvb({
+      //   base: buttonConfigWithArray.base,
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: [
+      //     ...buttonConfigWithArray.compoundVariants,
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       class: 'button--warning-danger !border-red-500',
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       class: 'button--warning-danger-medium',
+      //     },
+      //   ],
+      // });
+      // const buttonWithBaseWithoutDefaultsWithClassNameArray = cvb({
+      //   base: buttonConfigWithArray.base,
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: [
+      //     ...toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       class: 'button--warning-danger !border-red-500',
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       class: 'button--warning-danger-medium',
+      //     },
+      //   ],
+      // });
 
       type ButtonWithBaseWithoutDefaultsProps =
         | VariantProps<typeof buttonWithBaseWithoutDefaultsString>
-        | VariantProps<typeof buttonWithBaseWithoutDefaultsWithClassNameString>
-        | VariantProps<typeof buttonWithBaseWithoutDefaultsArray>
-        | VariantProps<typeof buttonWithBaseWithoutDefaultsWithClassNameArray>;
+        | VariantProps<typeof buttonWithBaseWithoutDefaultsWithClassNameString>;
+      // | VariantProps<typeof buttonWithBaseWithoutDefaultsArray>
+      // | VariantProps<typeof buttonWithBaseWithoutDefaultsWithClassNameArray>;
 
       it.each<[number, ButtonWithBaseWithoutDefaultsProps, string]>([
         [1, undefined as unknown as ButtonWithBaseWithoutDefaultsProps, 'button font-semibold border rounded'],
@@ -680,8 +739,8 @@ describe('cvb', () => {
       ])('%d - button(%o) return %o', (_, options, expected) => {
         expect(buttonWithBaseWithoutDefaultsString(options)).toBe(expected);
         expect(buttonWithBaseWithoutDefaultsWithClassNameString(options)).toBe(expected);
-        expect(buttonWithBaseWithoutDefaultsArray(options)).toBe(expected);
-        expect(buttonWithBaseWithoutDefaultsWithClassNameArray(options)).toBe(expected);
+        // expect(buttonWithBaseWithoutDefaultsArray(options)).toBe(expected);
+        // expect(buttonWithBaseWithoutDefaultsWithClassNameArray(options)).toBe(expected);
       });
     });
 
@@ -725,50 +784,50 @@ describe('cvb', () => {
         },
       });
 
-      const buttonWithBaseWithDefaultsArray = cvb({
-        base: buttonConfigWithArray.base,
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: [
-          ...buttonConfigWithArray.compoundVariants,
-          {
-            intent: ['warning', 'danger'],
-            class: 'button--warning-danger !border-red-500',
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            class: 'button--warning-danger-medium',
-          },
-        ],
-        defaultVariants: {
-          ...buttonConfigWithArray.defaultVariants,
-        },
-      });
-      const buttonWithBaseWithDefaultsWithClassNameArray = cvb({
-        base: buttonConfigWithArray.base,
-        variants: buttonConfigWithArray.variants,
-        compoundVariants: [
-          ...toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
-          {
-            intent: ['warning', 'danger'],
-            class: 'button--warning-danger !border-red-500',
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            class: 'button--warning-danger-medium',
-          },
-        ],
-        defaultVariants: {
-          ...buttonConfigWithArray.defaultVariants,
-        },
-      });
+      // const buttonWithBaseWithDefaultsArray = cvb({
+      //   base: buttonConfigWithArray.base,
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: [
+      //     ...buttonConfigWithArray.compoundVariants,
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       class: 'button--warning-danger !border-red-500',
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       class: 'button--warning-danger-medium',
+      //     },
+      //   ],
+      //   defaultVariants: {
+      //     ...buttonConfigWithArray.defaultVariants,
+      //   },
+      // });
+      // const buttonWithBaseWithDefaultsWithClassNameArray = cvb({
+      //   base: buttonConfigWithArray.base,
+      //   variants: buttonConfigWithArray.variants,
+      //   compoundVariants: [
+      //     ...toCompoundVariantsWithClassName(buttonConfigWithArray.compoundVariants),
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       class: 'button--warning-danger !border-red-500',
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       class: 'button--warning-danger-medium',
+      //     },
+      //   ],
+      //   defaultVariants: {
+      //     ...buttonConfigWithArray.defaultVariants,
+      //   },
+      // });
 
       type ButtonWithBaseWithDefaultsProps =
         | VariantProps<typeof buttonWithBaseWithDefaultsString>
-        | VariantProps<typeof buttonWithBaseWithDefaultsWithClassNameString>
-        | VariantProps<typeof buttonWithBaseWithDefaultsArray>
-        | VariantProps<typeof buttonWithBaseWithDefaultsWithClassNameArray>;
+        | VariantProps<typeof buttonWithBaseWithDefaultsWithClassNameString>;
+      // | VariantProps<typeof buttonWithBaseWithDefaultsArray>
+      // | VariantProps<typeof buttonWithBaseWithDefaultsWithClassNameArray>;
 
       it.each<[number, ButtonWithBaseWithDefaultsProps, string]>([
         [
@@ -873,8 +932,8 @@ describe('cvb', () => {
       ])('%d - button(%o) return %o', (_, options, expected) => {
         expect(buttonWithBaseWithDefaultsString(options)).toBe(expected);
         expect(buttonWithBaseWithDefaultsWithClassNameString(options)).toBe(expected);
-        expect(buttonWithBaseWithDefaultsArray(options)).toBe(expected);
-        expect(buttonWithBaseWithDefaultsWithClassNameArray(options)).toBe(expected);
+        // expect(buttonWithBaseWithDefaultsArray(options)).toBe(expected);
+        // expect(buttonWithBaseWithDefaultsWithClassNameArray(options)).toBe(expected);
       });
     });
   });
@@ -912,7 +971,7 @@ describe('svb', () => {
         },
         danger: {
           root: 'cbx--danger-root bg-white',
-          control: ['cbx--danger-control', [1 && 'bg-red-500', { baz: false, bat: null }, [['border-transparent']]]],
+          control: 'cbx--danger-control bg-red-500 border-transparent',
           label: 'cbx--danger-label text-white',
         },
       },
@@ -974,7 +1033,7 @@ describe('svb', () => {
         disabled: false,
         class: {
           root: 'cbx--warning-enabled',
-          label: ['text-gray-800'],
+          label: 'text-gray-800',
         },
       },
       {
@@ -982,7 +1041,7 @@ describe('svb', () => {
         disabled: true,
         class: {
           root: 'cbx--warning-disabled',
-          label: [[1 && 'text-black', { baz: false, bat: null }]],
+          label: 'text-black',
         },
       },
     ],
@@ -993,109 +1052,109 @@ describe('svb', () => {
       size: 'medium',
     },
   };
-  const checkboxConfigWithArray: Required<SlotRecipeDefinition> = {
-    slots: checkboxConfig.slots,
-    base: checkboxConfig.base,
-    variants: {
-      intent: {
-        unset: {
-          root: null,
-          control: null,
-          label: null,
-        },
-        primary: {
-          root: ['cbx--primary-root bg-blue-500'],
-          control: ['cbx--primary-control border-transparent hover:bg-blue-600'],
-          label: ['cbx--primary-label text-white'],
-        },
-        secondary: {
-          root: ['cbx--secondary-root bg-white'],
-          control: ['cbx--secondary-control border-gray-400 hover:bg-gray-100'],
-          label: ['cbx--secondary-label text-gray-800'],
-        },
-        warning: {
-          root: ['cbx--warning-root bg-yellow-500'],
-          control: ['cbx--warning-control border-transparent hover:bg-yellow-600'],
-          label: ['cbx--warning-label text-white'],
-        },
-        danger: {
-          root: ['cbx--danger-root bg-white'],
-          control: ['cbx--danger-control', [1 && 'bg-red-500', { baz: false, bat: null }, [['border-transparent']]]],
-          label: ['cbx--danger-label text-white'],
-        },
-      },
-      disabled: {
-        unset: {
-          root: null,
-          control: null,
-          label: null,
-        },
-        true: {
-          root: ['cbx--disabled opacity-050 cursor-not-allowed'],
-        },
-        false: {
-          root: ['cbx--enabled cursor-pointer'],
-        },
-      },
-      size: {
-        small: {
-          root: ['cbx--small'],
-          control: ['w-2 h-2 py-1 px-2'],
-          label: ['text-sm'],
-        },
-        medium: {
-          root: ['cbx--medium'],
-          control: ['w-2.5 h-2.5 py-2 px-4'],
-          label: ['text-md'],
-        },
-        large: {
-          root: ['cbx--large'],
-          control: ['w-2.5 h-2.5 py-2.5 px-4'],
-          label: ['text-lg'],
-        },
-      },
-      m: {
-        unset: {
-          root: null,
-          control: null,
-          label: null,
-        },
-        0: {
-          root: 'm-0',
-        },
-        1: {
-          root: 'm-1',
-        },
-      },
-    },
-    compoundVariants: [
-      {
-        intent: 'primary',
-        size: 'medium',
-        class: {
-          root: ['cbx--primary-medium'],
-          label: ['uppercase'],
-        },
-      },
-      {
-        intent: 'warning',
-        disabled: false,
-        class: {
-          root: ['cbx--warning-enabled'],
-          label: ['text-gray-800'],
-        },
-      },
-      {
-        intent: 'warning',
-        disabled: true,
-        class: {
-          root: ['cbx--warning-disabled'],
-          label: [[1 && 'text-black', { baz: false, bat: null }]],
-        },
-      },
-    ],
-    defaultVariants: checkboxConfig.defaultVariants,
-  };
+  // const checkboxConfigWithArray: Required<SlotRecipeDefinition> = {
+  //   slots: checkboxConfig.slots,
+  //   base: checkboxConfig.base,
+  //   variants: {
+  //     intent: {
+  //       unset: {
+  //         root: null,
+  //         control: null,
+  //         label: null,
+  //       },
+  //       primary: {
+  //         root: ['cbx--primary-root bg-blue-500'],
+  //         control: ['cbx--primary-control border-transparent hover:bg-blue-600'],
+  //         label: ['cbx--primary-label text-white'],
+  //       },
+  //       secondary: {
+  //         root: ['cbx--secondary-root bg-white'],
+  //         control: ['cbx--secondary-control border-gray-400 hover:bg-gray-100'],
+  //         label: ['cbx--secondary-label text-gray-800'],
+  //       },
+  //       warning: {
+  //         root: ['cbx--warning-root bg-yellow-500'],
+  //         control: ['cbx--warning-control border-transparent hover:bg-yellow-600'],
+  //         label: ['cbx--warning-label text-white'],
+  //       },
+  //       danger: {
+  //         root: ['cbx--danger-root bg-white'],
+  //         control: ['cbx--danger-control', [1 && 'bg-red-500', { baz: false, bat: null }, [['border-transparent']]]],
+  //         label: ['cbx--danger-label text-white'],
+  //       },
+  //     },
+  //     disabled: {
+  //       unset: {
+  //         root: null,
+  //         control: null,
+  //         label: null,
+  //       },
+  //       true: {
+  //         root: ['cbx--disabled opacity-050 cursor-not-allowed'],
+  //       },
+  //       false: {
+  //         root: ['cbx--enabled cursor-pointer'],
+  //       },
+  //     },
+  //     size: {
+  //       small: {
+  //         root: ['cbx--small'],
+  //         control: ['w-2 h-2 py-1 px-2'],
+  //         label: ['text-sm'],
+  //       },
+  //       medium: {
+  //         root: ['cbx--medium'],
+  //         control: ['w-2.5 h-2.5 py-2 px-4'],
+  //         label: ['text-md'],
+  //       },
+  //       large: {
+  //         root: ['cbx--large'],
+  //         control: ['w-2.5 h-2.5 py-2.5 px-4'],
+  //         label: ['text-lg'],
+  //       },
+  //     },
+  //     m: {
+  //       unset: {
+  //         root: null,
+  //         control: null,
+  //         label: null,
+  //       },
+  //       0: {
+  //         root: 'm-0',
+  //       },
+  //       1: {
+  //         root: 'm-1',
+  //       },
+  //     },
+  //   },
+  //   compoundVariants: [
+  //     {
+  //       intent: 'primary',
+  //       size: 'medium',
+  //       class: {
+  //         root: ['cbx--primary-medium'],
+  //         label: ['uppercase'],
+  //       },
+  //     },
+  //     {
+  //       intent: 'warning',
+  //       disabled: false,
+  //       class: {
+  //         root: ['cbx--warning-enabled'],
+  //         label: ['text-gray-800'],
+  //       },
+  //     },
+  //     {
+  //       intent: 'warning',
+  //       disabled: true,
+  //       class: {
+  //         root: ['cbx--warning-disabled'],
+  //         label: [[1 && 'text-black', { baz: false, bat: null }]],
+  //       },
+  //     },
+  //   ],
+  //   defaultVariants: checkboxConfig.defaultVariants,
+  // };
 
   describe('without base', () => {
     describe('without anything', () => {
@@ -1206,23 +1265,23 @@ describe('svb', () => {
         compoundVariants: toCompoundVariantsWithClassName(checkboxConfig.compoundVariants),
       });
 
-      const checkboxWithoutBaseWithoutDefaultsArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: checkboxConfigWithArray.compoundVariants,
-      });
+      // const checkboxWithoutBaseWithoutDefaultsArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: checkboxConfigWithArray.compoundVariants,
+      // });
 
-      const checkboxWithoutBaseWithoutDefaultsWithClassNameArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: toCompoundVariantsWithClassName(checkboxConfigWithArray.compoundVariants),
-      });
+      // const checkboxWithoutBaseWithoutDefaultsWithClassNameArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: toCompoundVariantsWithClassName(checkboxConfigWithArray.compoundVariants),
+      // });
 
       type CheckboxWithoutDefaultsWithoutBaseProps =
         | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsString>
-        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameString>
-        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsArray>
-        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameArray>;
+        | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameString>;
+      // | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsArray>
+      // | VariantProps<typeof checkboxWithoutBaseWithoutDefaultsWithClassNameArray>;
 
       it.each<[number, CheckboxWithoutDefaultsWithoutBaseProps, Record<string, string>]>([
         [
@@ -1377,8 +1436,8 @@ describe('svb', () => {
       ])('%d - checkbox(%o) return %o', (_, options, expected) => {
         expect(checkboxWithoutBaseWithoutDefaultsString(options)).toEqual(expected);
         expect(checkboxWithoutBaseWithoutDefaultsWithClassNameString(options)).toEqual(expected);
-        expect(checkboxWithoutBaseWithoutDefaultsArray(options)).toEqual(expected);
-        expect(checkboxWithoutBaseWithoutDefaultsWithClassNameArray(options)).toEqual(expected);
+        // expect(checkboxWithoutBaseWithoutDefaultsArray(options)).toEqual(expected);
+        // expect(checkboxWithoutBaseWithoutDefaultsWithClassNameArray(options)).toEqual(expected);
       });
     });
 
@@ -1421,50 +1480,50 @@ describe('svb', () => {
         ]),
         defaultVariants: checkboxConfig.defaultVariants,
       });
-      const checkboxWithoutBaseWithDefaultsArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: [
-          ...checkboxConfigWithArray.compoundVariants,
-          {
-            intent: ['warning', 'danger'],
-            class: {
-              control: ['button--warning-danger !border-red-500'],
-            },
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            class: { control: ['button--warning-danger-medium'] },
-          },
-        ],
-        defaultVariants: checkboxConfigWithArray.defaultVariants,
-      });
-      const checkboxWithoutBaseWithDefaultsWithClassNameArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: toCompoundVariantsWithClassName([
-          ...checkboxConfigWithArray.compoundVariants,
-          {
-            intent: ['warning', 'danger'],
-            class: {
-              control: ['button--warning-danger !border-red-500'],
-            },
-          },
-          {
-            intent: ['warning', 'danger'],
-            size: 'medium',
-            class: { control: ['button--warning-danger-medium'] },
-          },
-        ]),
-        defaultVariants: checkboxConfigWithArray.defaultVariants,
-      });
+      // const checkboxWithoutBaseWithDefaultsArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: [
+      //     ...checkboxConfigWithArray.compoundVariants,
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       class: {
+      //         control: ['button--warning-danger !border-red-500'],
+      //       },
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       class: { control: ['button--warning-danger-medium'] },
+      //     },
+      //   ],
+      //   defaultVariants: checkboxConfigWithArray.defaultVariants,
+      // });
+      // const checkboxWithoutBaseWithDefaultsWithClassNameArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: toCompoundVariantsWithClassName([
+      //     ...checkboxConfigWithArray.compoundVariants,
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       class: {
+      //         control: ['button--warning-danger !border-red-500'],
+      //       },
+      //     },
+      //     {
+      //       intent: ['warning', 'danger'],
+      //       size: 'medium',
+      //       class: { control: ['button--warning-danger-medium'] },
+      //     },
+      //   ]),
+      //   defaultVariants: checkboxConfigWithArray.defaultVariants,
+      // });
 
       type CheckboxWithoutBaseWithDefaultsProps =
         | VariantProps<typeof checkboxWithoutBaseWithDefaultsString>
-        | VariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameString>
-        | VariantProps<typeof checkboxWithoutBaseWithDefaultsArray>
-        | VariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameArray>;
+        | VariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameString>;
+      // | VariantProps<typeof checkboxWithoutBaseWithDefaultsArray>
+      // | VariantProps<typeof checkboxWithoutBaseWithDefaultsWithClassNameArray>;
 
       it.each<[number, CheckboxWithoutBaseWithDefaultsProps, Record<string, string>]>([
         [
@@ -1622,8 +1681,8 @@ describe('svb', () => {
       ])('checkbox(%o) returns %o', (_, options, expected) => {
         expect(checkboxWithoutBaseWithDefaultsString(options)).toEqual(expected);
         expect(checkboxWithoutBaseWithDefaultsWithClassNameString(options)).toEqual(expected);
-        expect(checkboxWithoutBaseWithDefaultsArray(options)).toEqual(expected);
-        expect(checkboxWithoutBaseWithDefaultsWithClassNameArray(options)).toEqual(expected);
+        // expect(checkboxWithoutBaseWithDefaultsArray(options)).toEqual(expected);
+        // expect(checkboxWithoutBaseWithDefaultsWithClassNameArray(options)).toEqual(expected);
       });
     });
   });
@@ -1642,24 +1701,24 @@ describe('svb', () => {
         variants: checkboxConfig.variants,
         compoundVariants: toCompoundVariantsWithClassName(checkboxConfig.compoundVariants),
       });
-      const checkboxWithBaseWithoutDefaultsArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        base: checkboxConfigWithArray.base,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: checkboxConfigWithArray.compoundVariants,
-      });
-      const checkboxWithBaseWithoutDefaultsWithClassNameArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        base: checkboxConfigWithArray.base,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: toCompoundVariantsWithClassName(checkboxConfigWithArray.compoundVariants),
-      });
+      // const checkboxWithBaseWithoutDefaultsArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   base: checkboxConfigWithArray.base,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: checkboxConfigWithArray.compoundVariants,
+      // });
+      // const checkboxWithBaseWithoutDefaultsWithClassNameArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   base: checkboxConfigWithArray.base,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: toCompoundVariantsWithClassName(checkboxConfigWithArray.compoundVariants),
+      // });
 
       type CheckboxWithBaseWithoutDefaultsProps =
         | VariantProps<typeof checkboxWithBaseWithoutDefaultsString>
-        | VariantProps<typeof checkboxWithBaseWithoutDefaultsWithClassNameString>
-        | VariantProps<typeof checkboxWithBaseWithoutDefaultsArray>
-        | VariantProps<typeof checkboxWithBaseWithoutDefaultsWithClassNameArray>;
+        | VariantProps<typeof checkboxWithBaseWithoutDefaultsWithClassNameString>;
+      // | VariantProps<typeof checkboxWithBaseWithoutDefaultsArray>
+      // | VariantProps<typeof checkboxWithBaseWithoutDefaultsWithClassNameArray>;
 
       it.each<[number, CheckboxWithBaseWithoutDefaultsProps, Record<string, string>]>([
         [
@@ -1816,8 +1875,8 @@ describe('svb', () => {
       ])('%d - checkbox(%o) return %o', (_, options, expected) => {
         expect(checkboxWithBaseWithoutDefaultsString(options)).toEqual(expected);
         expect(checkboxWithBaseWithoutDefaultsWithClassNameString(options)).toEqual(expected);
-        expect(checkboxWithBaseWithoutDefaultsArray(options)).toEqual(expected);
-        expect(checkboxWithBaseWithoutDefaultsWithClassNameArray(options)).toEqual(expected);
+        // expect(checkboxWithBaseWithoutDefaultsArray(options)).toEqual(expected);
+        // expect(checkboxWithBaseWithoutDefaultsWithClassNameArray(options)).toEqual(expected);
       });
     });
     describe('with defaults', () => {
@@ -1835,26 +1894,26 @@ describe('svb', () => {
         compoundVariants: toCompoundVariantsWithClassName(checkboxConfig.compoundVariants),
         defaultVariants: checkboxConfig.defaultVariants,
       });
-      const checkboxWithBaseWithDefaultsArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        base: checkboxConfigWithArray.base,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: checkboxConfigWithArray.compoundVariants,
-        defaultVariants: checkboxConfigWithArray.defaultVariants,
-      });
-      const checkboxWithBaseWithDefaultsWithClassNameArray = svb({
-        slots: checkboxConfigWithArray.slots,
-        base: checkboxConfigWithArray.base,
-        variants: checkboxConfigWithArray.variants,
-        compoundVariants: toCompoundVariantsWithClassName(checkboxConfigWithArray.compoundVariants),
-        defaultVariants: checkboxConfigWithArray.defaultVariants,
-      });
+      // const checkboxWithBaseWithDefaultsArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   base: checkboxConfigWithArray.base,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: checkboxConfigWithArray.compoundVariants,
+      //   defaultVariants: checkboxConfigWithArray.defaultVariants,
+      // });
+      // const checkboxWithBaseWithDefaultsWithClassNameArray = svb({
+      //   slots: checkboxConfigWithArray.slots,
+      //   base: checkboxConfigWithArray.base,
+      //   variants: checkboxConfigWithArray.variants,
+      //   compoundVariants: toCompoundVariantsWithClassName(checkboxConfigWithArray.compoundVariants),
+      //   defaultVariants: checkboxConfigWithArray.defaultVariants,
+      // });
 
       type CheckboxWithBaseWithDefaultsProps =
         | VariantProps<typeof checkboxWithBaseWithDefaultsString>
-        | VariantProps<typeof checkboxWithBaseWithDefaultsWithClassNameString>
-        | VariantProps<typeof checkboxWithBaseWithDefaultsArray>
-        | VariantProps<typeof checkboxWithBaseWithDefaultsWithClassNameArray>;
+        | VariantProps<typeof checkboxWithBaseWithDefaultsWithClassNameString>;
+      // | VariantProps<typeof checkboxWithBaseWithDefaultsArray>
+      // | VariantProps<typeof checkboxWithBaseWithDefaultsWithClassNameArray>;
 
       it.each<[number, CheckboxWithBaseWithDefaultsProps, Record<string, string>]>([
         [
@@ -2013,8 +2072,8 @@ describe('svb', () => {
       ])('%d - checkbox(%o) return %o', (_, options, expected) => {
         expect(checkboxWithBaseWithDefaultsString(options)).toEqual(expected);
         expect(checkboxWithBaseWithDefaultsWithClassNameString(options)).toEqual(expected);
-        expect(checkboxWithBaseWithDefaultsArray(options)).toEqual(expected);
-        expect(checkboxWithBaseWithDefaultsWithClassNameArray(options)).toEqual(expected);
+        // expect(checkboxWithBaseWithDefaultsArray(options)).toEqual(expected);
+        // expect(checkboxWithBaseWithDefaultsWithClassNameArray(options)).toEqual(expected);
       });
     });
   });
@@ -2028,7 +2087,7 @@ describe('defineConfig', () => {
 
       const onCompleteHandler = (className: string) => [PREFIX, className, SUFFIX].join(' ');
 
-      test('should extend compose', () => {
+      it('should extend compose', () => {
         const { compose: composeExtended } = defineConfig({
           hooks: {
             onComplete: onCompleteHandler,
@@ -2074,7 +2133,7 @@ describe('defineConfig', () => {
         expect(cardShadowGapClassListSplit[cardShadowGapClassListSplit.length - 1]).toBe(SUFFIX);
       });
 
-      test('should extend cvb', () => {
+      it('should extend cvb', () => {
         const { cvb: cvbExtended } = defineConfig({
           hooks: {
             onComplete: onCompleteHandler,

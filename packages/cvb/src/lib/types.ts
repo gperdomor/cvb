@@ -6,9 +6,8 @@
  * clsx
  * -----------------------------------------*/
 
-export type ClassValue = ClassArray | ClassDictionary | string | number | null | boolean | undefined;
+export type ClassValue = string | boolean | null | undefined;
 export type ClassDictionary = Record<string, any>;
-export type ClassArray = ClassValue[];
 
 /* -----------------------------------------
  * Utils
@@ -74,7 +73,7 @@ export type ClassProp =
     };
 
 export type RecipeVariantRecord = Record<any, Record<any, ClassValue>>;
-export type RecipeSelection<T extends RecipeVariantRecord> = {
+export type RecipeSelection<T extends RecipeVariantRecord | SlotRecipeVariantRecord<string>> = {
   [K in keyof T]?: StringToBoolean<keyof T[K]> | undefined;
 };
 
@@ -119,7 +118,7 @@ export type SlotRecord<S extends string, T> = Partial<Record<S, T>>;
 
 export type SlotRecipeVariantRecord<S extends string> = Record<any, Record<any, SlotRecord<S, ClassValue>>>;
 
-export type SlotRecipeVariantFn<S extends string, T extends RecipeVariantRecord> = (
+export type SlotRecipeVariantFn<S extends string, T extends SlotRecipeVariantRecord<S>> = (
   props?: RecipeSelection<T> & ClassProp
 ) => SlotRecord<S, string>;
 
@@ -170,7 +169,6 @@ export type SlotRecipeCreatorFn = <S extends string, T extends SlotRecipeVariant
  * -----------------------------------------*/
 
 export interface DefineConfigOptions {
-  mode?: 'normal' | 'lite';
   hooks?: {
     /**
      * Returns the completed string of concatenated classes/classNames.

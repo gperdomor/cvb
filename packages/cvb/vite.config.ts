@@ -47,6 +47,7 @@ export default defineConfig({
     reporters: ['default'],
     coverage: {
       reportsDirectory: './test-output/vitest/coverage',
+      exclude: ['src/index.ts', 'bench/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
       provider: 'v8',
     },
   },

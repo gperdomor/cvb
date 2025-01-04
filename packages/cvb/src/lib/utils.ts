@@ -1,5 +1,4 @@
 import type {
-  ClassArray,
   ClassDictionary,
   ClassProp,
   ClassValue,
@@ -59,7 +58,7 @@ export const getVariantClassNames = <
   variants: V,
   defaults: D = {} as D
 ) => {
-  const variantClassNames: ClassArray = [];
+  let variantClassNames = '';
 
   for (const variant in variants) {
     const variantProp = props[variant] ?? defaults[variant];
@@ -68,7 +67,9 @@ export const getVariantClassNames = <
     const className = variants[variant][variantKey];
 
     if (className) {
-      variantClassNames.push(className);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      variantClassNames && (variantClassNames += ' ');
+      variantClassNames += className;
     }
   }
 
@@ -85,7 +86,7 @@ export const getCompoundVariantClassNames = <V extends RecipeVariantRecord>(
   compoundVariants: Pretty<RecipeCompoundVariant<RecipeCompoundSelection<V>>>[],
   defaultsAndProps: ClassDictionary
 ) => {
-  const compoundClassNames: ClassArray = [];
+  let compoundClassNames = '';
 
   for (const compoundConfig of compoundVariants) {
     let selectorMatches = true;
@@ -105,7 +106,9 @@ export const getCompoundVariantClassNames = <V extends RecipeVariantRecord>(
     }
 
     if (selectorMatches) {
-      compoundClassNames.push(compoundConfig.class ?? compoundConfig.className);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      compoundClassNames && (compoundClassNames += ' ');
+      compoundClassNames += compoundConfig.class ?? compoundConfig.className;
     }
   }
 
@@ -131,7 +134,7 @@ export const getVariantClassNamesBySlot = <
   variants: V,
   defaults: D = {} as D
 ) => {
-  const variantClassNames: ClassValue[] = [];
+  let variantClassNames = '';
 
   for (const variant in variants) {
     const variantProp = props[variant] ?? defaults[variant];
@@ -140,7 +143,9 @@ export const getVariantClassNamesBySlot = <
     const className = (variants[variant][variantKey] as SlotRecord<S, ClassValue>)?.[slot];
 
     if (className) {
-      variantClassNames.push(className);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      variantClassNames && (variantClassNames += ' ');
+      variantClassNames += className;
     }
   }
   return variantClassNames;
@@ -161,7 +166,7 @@ export const getCompoundVariantClassNamesBySlot = <
   compoundVariants: Pretty<SlotRecipeCompoundVariant<S, RecipeCompoundSelection<V>>>[],
   defaultsAndProps: ClassDictionary
 ) => {
-  const compoundClassNames: ClassArray = [];
+  let compoundClassNames = '';
 
   for (const compoundConfig of compoundVariants) {
     let selectorMatches = true;
@@ -183,7 +188,9 @@ export const getCompoundVariantClassNamesBySlot = <
     const className = compoundConfig.class?.[slot] ?? compoundConfig.className?.[slot];
 
     if (selectorMatches && className) {
-      compoundClassNames.push(className);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      compoundClassNames && (compoundClassNames += ' ');
+      compoundClassNames += className;
     }
   }
 

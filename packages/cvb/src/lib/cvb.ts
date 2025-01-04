@@ -1,5 +1,3 @@
-import { clsx } from 'clsx';
-import { clsx as lclsx } from 'clsx/lite';
 import type { Compose, CX, DefineConfig, RecipeCreatorFn, SlotRecipeCreatorFn, SlotRecord } from './types.js';
 import {
   getCompoundVariantClassNames,
@@ -10,14 +8,28 @@ import {
   mergeDefaultsAndProps,
 } from './utils.js';
 
+const cxInternal: CX = (...inputs) => {
+  let str = '',
+    i = 0,
+    arg: unknown;
+
+  for (; i < inputs.length; ) {
+    if ((arg = inputs[i++]) && typeof arg === 'string') {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      str && (str += ' ');
+      str += arg;
+    }
+  }
+  return str;
+};
+
 export const defineConfig: DefineConfig = (options) => {
   const cx: CX = (...inputs) => {
-    const cn = options?.mode === 'lite' ? lclsx : clsx;
     if (typeof options?.hooks?.onComplete === 'function') {
-      return options.hooks.onComplete(cn(inputs));
+      return options.hooks.onComplete(cxInternal(...inputs));
     }
 
-    return cn(inputs);
+    return cxInternal(...inputs);
   };
 
   const cvb: RecipeCreatorFn = (config) => {
@@ -61,10 +73,7 @@ export const defineConfig: DefineConfig = (options) => {
     (props) => {
       const { class: _class, className, ...propsWithoutClass } = props ?? {};
 
-      return cx(
-        components.map((component) => component(propsWithoutClass)),
-        _class ?? className
-      );
+      return cx(...components.map((component) => component(propsWithoutClass)), _class ?? className);
     };
 
   return {

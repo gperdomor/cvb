@@ -1,9 +1,7 @@
 {
   "name": "@gperdomor/cvb",
   "version": "0.0.1",
-  "dependencies": {
-    "clsx": "^2.1.1"
-  },
+  "dependencies": {},
   "type": "module",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",

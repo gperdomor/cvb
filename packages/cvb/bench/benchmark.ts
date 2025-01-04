@@ -1,10 +1,7 @@
 import { cva } from 'cva';
 import { Bench } from 'tinybench';
-import { defineConfig } from '../src/lib/cvb';
+import { cvb, svb } from '../src/';
 import { RecipeDefinition, SlotRecipeDefinition } from '../src/lib/types';
-
-const { cvb, svb } = defineConfig();
-const { cvb: lcvb, svb: lsvb } = defineConfig({ mode: 'lite' });
 
 const button: RecipeDefinition = {
   base: 'button font-semibold border rounded',
@@ -14,7 +11,7 @@ const button: RecipeDefinition = {
       primary: 'button--primary bg-blue-500 text-white border-transparent hover:bg-blue-600',
       secondary: 'button--secondary bg-white text-gray-800 border-gray-400 hover:bg-gray-100',
       warning: 'button--warning bg-yellow-500 border-transparent hover:bg-yellow-600',
-      danger: ['button--danger', 'hover:bg-red-600'],
+      danger: 'button--danger hover:bg-red-600',
     },
     disabled: {
       unset: null,
@@ -47,10 +44,7 @@ const button: RecipeDefinition = {
     {
       intent: 'warning',
       disabled: true,
-      class: [
-        'button--warning-disabled',
-        // [1 && 'text-black', { baz: false, bat: null }]
-      ],
+      class: 'button--warning-disabled text-black',
     },
     {
       intent: ['warning', 'danger'],
@@ -129,28 +123,8 @@ async function run() {
     buttonVariants({ size: 'large', intent: 'unset' });
   });
 
-  benchmark.add('@gperdomor/cvb - cvb (lite mode)', () => {
-    const buttonVariants = lcvb(button);
-    buttonVariants({});
-    buttonVariants({ intent: 'primary', disabled: true });
-    buttonVariants({ intent: 'primary', size: 'medium' });
-    buttonVariants({ intent: 'warning', size: 'medium', disabled: true });
-    buttonVariants({ size: 'small' });
-    buttonVariants({ size: 'large', intent: 'unset' });
-  });
-
   benchmark.add('@gperdomor/cvb - svb', () => {
     const alertVariants = svb(checkbox);
-    alertVariants({});
-    alertVariants({ variant: 'success', disabled: true });
-    alertVariants({ variant: 'success', size: 'md' });
-    alertVariants({ variant: 'warning', size: 'md', disabled: true });
-    alertVariants({ size: 'sm' });
-    alertVariants({ size: 'lg' });
-  });
-
-  benchmark.add('@gperdomor/cvb - svb (lite mode)', () => {
-    const alertVariants = lsvb(checkbox);
     alertVariants({});
     alertVariants({ variant: 'success', disabled: true });
     alertVariants({ variant: 'success', size: 'md' });
