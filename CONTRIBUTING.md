@@ -117,7 +117,7 @@ reproducible scenario gives us wealth of important information without going bac
 additional information, such as:
 
 - node version
-- `yarn.lock` or `package-lock.json` or `pnpm-lock.yaml`
+- `package-lock.json` or `pnpm-lock.yaml` or `yarn.lock`
 - and most importantly - a use-case that fails
 
 A minimal reproduction allows us to quickly confirm a bug (or point out a coding problem) as well as confirm that we are
