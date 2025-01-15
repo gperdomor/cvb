@@ -85,13 +85,9 @@ Please provide thoughtful comments and some sample API code. Proposals that don'
 a thoughtful explanation will be closed. You can check the existing proposals and our official roadmap here:
 https://panda-css.canny.io/ -->
 
-## Building the Project
-
-## Publishing to a local registry
-
 ### Running the Documentation Site Locally
 
-TODO
+<!-- TODO -->
 
 <!-- To run `website` locally, run the command:
 
