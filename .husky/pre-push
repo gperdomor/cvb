@@ -1,0 +1,2 @@
+npm run check-lock-files
+npm run check-format
