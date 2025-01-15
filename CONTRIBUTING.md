@@ -13,13 +13,10 @@ to [the GitHub Repository](https://github.com/gperdomor/cvb). Even better, you c
 
 Source code and documentation are included in the top-level folders listed below.
 
-<!-- - `docs` - Markdown and configuration files for documentation including tutorials, guides for each supported platform,
+- `docs` - Markdown and configuration files for documentation including tutorials, guides for each supported platform,
   and API docs.
-- `e2e` - E2E tests.
-- `packages` - Source code for Nx packages such as Angular, React, Web, NestJS, Next and others including generators and
-  executors (or builders).
+- `packages/cvb` - Source code for `cvb` package
 - `scripts` - Miscellaneous scripts for project tasks such as building documentation, testing, and code formatting.
-- `tmp` - Folder used by e2e tests. If you are a WebStorm user, make sure to mark this folder as excluded. -->
 
 ## Development Workstation Setup
 
