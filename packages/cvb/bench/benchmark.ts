@@ -113,7 +113,7 @@ async function run() {
     buttonVariants({ size: 'large', intent: 'unset' });
   });
 
-  benchmark.add('@gperdomor/cvb - cvb', () => {
+  benchmark.add('cvb', () => {
     const buttonVariants = cvb(button);
     buttonVariants({});
     buttonVariants({ intent: 'primary', disabled: true });
@@ -123,7 +123,7 @@ async function run() {
     buttonVariants({ size: 'large', intent: 'unset' });
   });
 
-  benchmark.add('@gperdomor/cvb - svb', () => {
+  benchmark.add('svb (Slots)', () => {
     const alertVariants = svb(checkbox);
     alertVariants({});
     alertVariants({ variant: 'success', disabled: true });

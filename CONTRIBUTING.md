@@ -55,7 +55,7 @@ To test if your changes will actually work once the changes are published, it ca
 - Run `npm run local-registry` in Terminal 1 (keep it running)
 - Run `npm adduser --registry http://localhost:4873` in Terminal 2 (real credentials are not required, you just need to be logged in. You can use test/test/test@test.io.)
 - Run `npm nx-release 2.0.0 --local` in Terminal 2 - you can choose any nonexistent version number here, but it's recommended to use the next major
-- Run `npm i @gperdomor/cvb@2.0.0` inside a node project where you want to try the new version. (this should be executed while Terminal 1 is running)
+- Run `npm i cvb@2.0.0` inside a node project where you want to try the new version. (this should be executed while Terminal 1 is running)
 
 If you have problems publishing, make sure you use Node 22 and NPM 10+.
 
