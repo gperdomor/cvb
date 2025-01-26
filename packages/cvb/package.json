@@ -1,13 +1,17 @@
 {
   "name": "@gperdomor/cvb",
   "version": "1.0.0-beta.1",
-  "private": false,
   "description": "Class Variance Builder 👷🏼",
   "author": "Gustavo Perdomo <gperdomor@gmail.com>",
+  "license": "MIT",
+  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/gperdomor/cvb.git",
     "directory": "packages/cvb"
+  },
+  "bugs": {
+    "url": "https://github.com/gperdomor/cvb/issues"
   },
   "keywords": [
     "Class Varince Builder",
@@ -30,29 +34,22 @@
   ],
   "type": "module",
   "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/gperdomor/cvb/issues"
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
     "dist",
     "!**/*.tsbuildinfo"
   ],
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18.0.0"
   },
-  "dependencies": {},
-  "publishConfig": {
-    "access": "public"
-  }
+  "dependencies": {}
 }
