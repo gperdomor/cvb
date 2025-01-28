@@ -69,5 +69,13 @@
     "test": {
       "dependsOn": ["^build"]
     }
+  },
+  "generators": {
+    "@nx/next": {
+      "application": {
+        "style": "tailwind",
+        "linter": "eslint"
+      }
+    }
   }
 }
