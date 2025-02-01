@@ -5,16 +5,15 @@ Thanks for showing interest to contribute to `cvb`. Before starting your contrib
 ## Think you found a bug?
 
 If you find a bug in the source code or a mistake in the documentation, you can help us by
-[submitting an issue](https://github.com/gperdomor/cvb/blob/master/CONTRIBUTING.md#submit-issue)
+[submitting an issue](https://github.com/gperdomor/cvb/blob/main/CONTRIBUTING.md#submit-issue)
 to [the GitHub Repository](https://github.com/gperdomor/cvb). Even better, you can
-[submit a Pull Request](https://github.com/gperdomor/cvb/blob/master/CONTRIBUTING.md#submit-pr) with a fix.
+[submit a Pull Request](https://github.com/gperdomor/cvb/blob/main/CONTRIBUTING.md#submit-pr) with a fix.
 
 ## Project Structure
 
 Source code and documentation are included in the top-level folders listed below.
 
-- `docs` - Markdown and configuration files for documentation including tutorials, guides for each supported platform,
-  and API docs.
+- `apps/website` - Source code for website and documentation.
 - `packages/cvb` - Source code for `cvb` package
 - `scripts` - Miscellaneous scripts for project tasks such as building documentation, testing, and code formatting.
 
@@ -71,7 +70,7 @@ To improve our development process, we've set up tooling and systems. CVB uses a
 ### Tooling
 
 - [NPM](https://www.npmjs.com/) to manage packages and dependencies
-- [Vitest](https://vite.dev/) to bundle code
+- [Vite](https://vite.dev/) to bundle code
 - [Vitest](https://vitest.dev/) for testing
 - [Nx](https://nx.dev) for workspace, changelog generation, and release management.
 
@@ -196,7 +195,7 @@ Closes #15
 
 #### Commitizen
 
-To simplify and automate the process of committing with this format, **cvb is a [Commitizen](https://github.com/commitizen/cz-cli) friendly repository**, just do `git add` and
+To simplify and automate the process of committing with this format, **cvb** is a [Commitizen](https://github.com/commitizen/cz-cli) friendly repository, just do `git add` and
 execute `npm run commit`.
 
 <!-- ## Want to help improve the docs?
