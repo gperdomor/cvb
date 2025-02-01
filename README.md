@@ -3,27 +3,31 @@
 </p>
 
 <p align="center">
+  Universal, fast and scalable styling solution for the modern web
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/cvb">
-    <img alt="NPM Version" src="https://img.shields.io/npm/v/cvb">
+    <img alt="NPM Version" src="https://img.shields.io/npm/v/cvb"/>
   </a>
   <a href="https://www.npmjs.com/package/cvb">
-    <img alt="NPM Type Definitions" src="https://img.shields.io/npm/types/cvb">
+    <img alt="NPM Type Definitions" src="https://img.shields.io/npm/types/cvb"/>
   </a>
   <a href="https://bundlephobia.com/package/cvb">
     <img alt="Minizipped Size" src="https://img.shields.io/bundlephobia/minzip/cvb" />
   </a>
   <a href="https://github.com/gperdomor/cvb/blob/main/LICENSE">
-    <img alt="GitHub License" src="https://img.shields.io/github/license/gperdomor/cvb">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/gperdomor/cvb"/>
   </a>
-  <a href="https://www.npmjs.com/package/class-variance-authority">
-    <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/cvb">
+  <a href="https://www.npmjs.com/package/cvb">
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/cvb"/>
   </a>
 </p>
 
 ## Features
 
 - ✨ First-class variant API
-- 🚀 Slots support
+- 🚀 Multi-part / Slots support
 - 🧬 Composition support
 - 💪 Type-safe styles and autocomplete
 - 🦄 Framework agnostic
@@ -118,7 +122,7 @@ function Example() {
 The development of **Class Variance Builder** was only possible due to the inspiration and ideas from these amazing projects
 
 - [CVA](https://cva.style/) - a great tool for generating variants for a single element.
-- [Tailwind Variants](tailwind-variants.org/) - The power of Tailwind combined with a first-class variant API
+- [Tailwind Variants](https://tailwind-variants.org/) - The power of Tailwind combined with a first-class variant API
 - [PandaCSS](https://panda-css.com/) - CSS-in-JS with build time generated styles
 
 Special thanks to [Renato Ribeiro](https://github.com/renatorib) who kindly transferred me the original `cvb` package to publish this new package.
@@ -132,7 +136,7 @@ Contributions are always welcome!
 
 Please follow our [contributing guidelines](https://github.com/gperdomor/cvb/blob/main/CONTRIBUTING.md).
 
-Please adhere to this project's [CODE_OF_CONDUCT](https://github.com/gperdomor/cvb/blob/main/CODE_OF_CONDUCT.md).
+Please adhere to this project's [CODE OF CONDUCT](https://github.com/gperdomor/cvb/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
