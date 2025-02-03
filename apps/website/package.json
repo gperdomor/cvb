@@ -5,7 +5,10 @@
   "nx": {
     "name": "website",
     "projectType": "application",
-    "sourceRoot": "apps/website"
+    "sourceRoot": "apps/website",
+    "tags": [
+      "type:app"
+    ]
   },
   "dependencies": {
     "next": "~15.1.4",
