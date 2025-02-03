@@ -26,13 +26,13 @@
     "tsBuildInfoFile": "out-tsc/website/tsconfig.tsbuildinfo"
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.js",
-    "src/**/*.jsx",
     "../../apps/website/.next/types/**/*.ts",
     "../../dist/apps/website/.next/types/**/*.ts",
     "next-env.d.ts",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next/types/**/*.ts"
   ],
   "exclude": [
