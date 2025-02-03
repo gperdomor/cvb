@@ -1,3 +1,13 @@
+## 1.0.0-beta.3 (2025-02-03)
+
+### 🚀 Features
+
+- **cvb:** added CommonJS support ([#13](https://github.com/gperdomor/cvb/pull/13))
+
+### ❤️ Thank You
+
+- Gustavo Perdomo
+
 ## 1.0.0-beta.2 (2025-02-03)
 
 ### 🚀 Features
