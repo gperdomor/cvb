@@ -1,3 +1,17 @@
+## 1.0.0-beta.4 (2025-02-12)
+
+### 🚀 Features
+
+- **cvb:** added default to package.json exports ([23bfa9e](https://github.com/gperdomor/cvb/commit/23bfa9e))
+
+### 🩹 Fixes
+
+- **cvb:** improve csj and esm support ([d767090](https://github.com/gperdomor/cvb/commit/d767090))
+
+### ❤️ Thank You
+
+- Gustavo Perdomo
+
 ## 1.0.0-beta.3 (2025-02-03)
 
 ### 🚀 Features
