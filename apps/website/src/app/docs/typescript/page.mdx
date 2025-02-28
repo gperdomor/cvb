@@ -1,0 +1,55 @@
+---
+title: TypeScript
+---
+
+## Extracting Variant Types
+
+`cvb` offers the `VariantProps` helper to extract variant types
+
+```ts filename="components/button.ts"
+import type { VariantProps } from 'cvb';
+import { cvb, cx } from 'cvb';
+
+/**
+ * Button
+ */
+export type ButtonProps = VariantProps<typeof button>;
+export const button = cvb(/* … */);
+```
+
+## Required Variants
+
+To keep the API small and unopinionated, `cvb` **doesn't** offer a built-in solution for setting required variants.
+
+Instead, we recommend using TypeScript's [Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html):
+
+```ts filename="components/button.ts"
+import { cvb, type VariantProps } from 'cvb';
+
+export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+export const buttonVariants = cvb({
+  base: '…',
+  variants: {
+    optional: { a: '…', b: '…' },
+    required: { a: '…', b: '…' },
+  },
+});
+
+/**
+ * Button
+ */
+export interface ButtonProps
+  extends Omit<ButtonVariantProps, 'required'>,
+    Required<Pick<ButtonVariantProps, 'required'>> {}
+
+export const button = (props: ButtonProps) => buttonVariants(props);
+
+// ❌ TypeScript Error:
+// Argument of type "{}": is not assignable to parameter of type "ButtonProps".
+//   Property "required" is missing in type "{}" but required in type
+//   "ButtonProps".
+button({});
+
+// ✅
+button({ required: 'a' });
+```
