@@ -21,9 +21,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "outDir": "out-tsc/website",
+    "outDir": "dist",
     "rootDir": "src",
-    "tsBuildInfoFile": "out-tsc/website/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "include": [
     "../../apps/website/.next/types/**/*.ts",

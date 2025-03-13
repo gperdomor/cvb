@@ -4,14 +4,12 @@
   "private": true,
   "nx": {
     "name": "website",
-    "projectType": "application",
-    "sourceRoot": "apps/website",
     "tags": [
       "type:app"
     ]
   },
   "dependencies": {
-    "next": "~15.1.4",
+    "next": "~15.2.2",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   }
