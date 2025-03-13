@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/cvb/src",
   "projectType": "library",
-  "tags": ["type:lib", "scope:cvb"],
+  "tags": ["type:lib"],
   "// targets": "to see all targets run: nx show project cvb --web",
   "targets": {}
 }
