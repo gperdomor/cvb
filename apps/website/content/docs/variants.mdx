@@ -6,7 +6,7 @@ description: Create multi-variant styles with a type-safe runtime API
 Variants are defined using the `cvb` function which was inspired by [Class Variance Authority](https://cva.style/). The
 `cvb` function which takes an object as its argument.
 
-### Creating the Variant recipe
+## Creating the Variant recipe
 
 A recipe consists of four properties:
 
@@ -17,42 +17,43 @@ A recipe consists of four properties:
 
 <Callout type="warn">Credit: This API was inspired by [Class Variance Authority](https://cva.style/).</Callout>
 
-To kick things off, let’s build a **"basic"** button recipe, using `cvb` to handle our CSS classes.
+To kick things off, let’s build a **"basic"** badge recipe, using `cvb` to handle our CSS classes.
 You can add variants by using the `variants` property. There's no limit to how many variants you can add.
 
-```ts title="components/button.ts"
+```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 
-export const button = cvb({
-  base: 'px-4 py-2 text-sm rounded-md font-medium',
+// [!code ++]
+export const badge = cvb({
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs', // [!code ++]
+  // [!code ++]
   variants: {
-    // [!code highlight]
+    // [!code ++]
     color: {
-      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500', // [!code highlight]
-      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400', // [!code highlight]
-      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900', // [!code highlight]
-    }, // [!code highlight]
-    // [!code highlight]
+      green: 'bg-green-50 text-green-700', // [!code ++]
+      indigo: 'bg-indigo-50 text-indigo-700', // [!code ++]
+      red: 'bg-red-50 text-red-700', // [!code ++]
+    }, // [!code ++]
+    // [!code ++]
     size: {
-      sm: 'px-2 py-1 text-xs', // [!code highlight]
-      md: 'px-4 py-2 text-sm', // [!code highlight]
-      lg: 'px-4 py-2 text-md', // [!code highlight]
-    }, // [!code highlight]
-  },
-});
+      sm: 'px-1.5 py-0.5', // [!code ++]
+      md: 'px-2 py-1', // [!code ++]
+    }, // [!code ++]
+  }, // [!code ++]
+}); // [!code ++]
 
-button({ color: 'primary', size: 'sm' });
+badge({ color: 'indigo', size: 'sm' });
 /**
  * Result:
- * rounded-md font-medium bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500 px-2
- * py-1 text-xs
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50
+ * text-indigo-700 px-1.5 py-0.5
  */
 
-button({ color: 'secondary', size: 'md' });
+badge({ color: 'red', size: 'md' });
 /**
  * Result:
- * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
- * px-4 py-2 text-sm
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-red-50 text-red-700
+ * px-2 py-1
  */
 ```
 
@@ -62,103 +63,125 @@ button({ color: 'secondary', size: 'md' });
 
 You can also add boolean variants to a component. This is useful when you want to add a state variant e.g. `disabled`.
 
-```ts title="components/button.ts"
+```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 
-export const button = cvb({
-  base: 'rounded-md font-medium',
+export const badge = cvb({
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
   variants: {
     color: {
-      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
-      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
-      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+      green: 'bg-green-50 text-green-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+      red: 'bg-red-50 text-red-700',
     },
     size: {
-      sm: 'px-2 py-1 text-xs',
-      md: 'px-4 py-2 text-sm',
-      lg: 'px-4 py-2 text-md',
+      sm: 'px-1.5 py-0.5',
+      md: 'px-2 py-1',
     },
-    // [!code highlight]
+    // [!code ++]
     disabled: {
-      true: 'opacity-50 bg-gray-500 pointer-events-none', // [!code highlight]
-    }, // [!code highlight]
+      true: 'opacity-50', // [!code ++]
+    }, // [!code ++]
+    // [!code ++]
+    flat: {
+      true: '', // [!code ++]
+      false: 'ring-1 ring-inset', // [!code ++]
+    }, // [!code ++]
   },
 });
 
-button({ color: 'secondary', disabled: true });
+badge({ color: 'indigo', size: 'sm', disabled: true });
 /**
  * Result:
- * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
- * opacity-50 bg-gray-500 pointer-events-none
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50
+ * text-indigo-700 px-1.5 py-0.5 opacity-50
+ */
+
+badge({ color: 'red', size: 'md', flat: false });
+/**
+ * Result:
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-red-50 text-red-700
+ * px-2 py-1 ring-1 ring-inset
  */
 ```
 
 ### Compound variants
 
 Compound variants are a way to combine multiple variants together to create more complex sets of styles. They are
-defined using the `compoundVariants` property , which takes an array of objects as its argument. Each object in the array
+defined using the `compoundVariants` property, which takes an array of objects as its argument. Each object in the array
 represents a set of conditions that must be met in order for the corresponding styles to be applied.
 
-For example, you might want to add a `color` variant that depends on the `disabled` variant.
+For example, you might want to apply a border color to the badge based on its `color` and the `flat` variant values,
+here's how to do it:
 
-```ts title="components/button.ts"
+```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 
-export const button = cvb({
-  base: 'rounded-md font-medium',
+export const badge = cvb({
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
   variants: {
     color: {
-      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
-      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
-      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+      green: 'bg-green-50 text-green-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+      red: 'bg-red-50 text-red-700',
     },
     size: {
-      sm: 'px-2 py-1 text-xs',
-      md: 'px-4 py-2 text-sm',
-      lg: 'px-4 py-2 text-md',
+      sm: 'px-1.5 py-0.5',
+      md: 'px-2 py-1',
     },
     disabled: {
-      true: 'opacity-50 bg-gray-500 pointer-events-none',
+      true: 'opacity-50',
+    },
+    flat: {
+      true: '',
+      false: 'ring-1 ring-inset',
     },
   },
-  // [!code highlight]
+  // [!code ++]
   compoundVariants: [
-    // apply when both danger color and disabled are selected // [!code highlight]
-    // [!code highlight]
+    // apply when both green color and no flat are selected // [!code ++]
+    // [!code ++]
     {
-      color: 'danger', // [!code highlight]
-      disabled: true, // [!code highlight]
-      class: 'bg-red-300 text-slate-700', // You can also use "className" // [!code highlight]
-    }, // [!code highlight]
-    // apply when both primary or secondary color, and disabled variants are applied // [!code highlight]
-    // [!code highlight]
+      color: 'green', // [!code ++]
+      flat: false, // [!code ++]
+      class: 'ring-green-600/20', // You can also use "className" // [!code ++]
+    }, // [!code ++]
+    // apply when both indigo color and no flat are selected // [!code ++]
+    // [!code ++]
     {
-      color: ['primary', 'secondary'], // [!code highlight]
-      disabled: true, // [!code highlight]
-      class: 'border-dashed border-black border-2', // You can also use "className" // [!code highlight]
-    }, // [!code highlight]
-  ], // [!code highlight]
+      color: 'indigo', // [!code ++]
+      flat: false, // [!code ++]
+      class: 'ring-indigo-700/10', // You can also use "className" // [!code ++]
+    }, // [!code ++]
+    // apply when both red color and no flat are selected // [!code ++]
+    // [!code ++]
+    {
+      color: 'red', // [!code ++]
+      flat: false, // [!code ++]
+      class: 'ring-red-600/10', // You can also use "className" // [!code ++]
+    }, // [!code ++]
+    // apply when both green or red color, and no flat are selected // [!code ++]
+    // [!code ++]
+    {
+      color: ['green', 'red'], // [!code ++]
+      flat: false, // [!code ++]
+      class: 'font-medium', // You can also use "className" // [!code ++]
+    }, // [!code ++]
+  ], // [!code ++]
 });
 
-button({ color: 'danger', disabled: true });
+badge({ color: 'indigo', size: 'md', flat: false });
 /**
  * Result:
- * rounded-md font-medium bg-red-800 text-white hover:bg-red-700 active:bg-red-900 opacity-50
- * bg-gray-500 pointer-events-none bg-red-300 text-slate-700
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2
+ * py-1 ring-1 ring-inset ring-indigo-700/10
  */
 
-button({ color: 'primary', disabled: true });
+badge({ color: 'green', size: 'md', flat: false });
 /**
  * Result:
- * rounded-md font-medium bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500
- * opacity-50 bg-gray-500 pointer-events-none border-dashed border-black border-2
- */
-
-button({ color: 'secondary', disabled: true });
-/**
- * Result:
- * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
- * opacity-50 bg-gray-500 pointer-events-none border-dashed border-black border-2
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1
+ * ring-1 ring-inset ring-green-600/20 font-medium
  */
 ```
 
@@ -173,55 +196,90 @@ your code with lots of conditional logic.
 The `defaultVariants` property is used to set the default variant values for the recipe. This is useful when you want to
 apply a variant by default. Here's an example of how to use `defaultVariants`:
 
-```ts title="components/button.ts"
+```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 
-export const button = cvb({
-  base: 'rounded-md font-medium',
+export const badge = cvb({
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
   variants: {
     color: {
-      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
-      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
-      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+      green: 'bg-green-50 text-green-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+      red: 'bg-red-50 text-red-700',
     },
     size: {
-      sm: 'px-2 py-1 text-xs',
-      md: 'px-4 py-2 text-sm',
-      lg: 'px-4 py-2 text-md',
+      sm: 'px-1.5 py-0.5',
+      md: 'px-2 py-1',
     },
     disabled: {
-      true: 'opacity-50 bg-gray-500 pointer-events-none',
+      true: 'opacity-50',
+    },
+    flat: {
+      true: '',
+      false: 'ring-1 ring-inset',
     },
   },
   compoundVariants: [
+    // apply when both green color and no flat are selected
     {
-      color: 'danger',
-      disabled: true,
-      class: 'bg-red-300 text-slate-700'
+      color: 'green',
+      flat: false,
+      class: 'ring-green-600/20',
     },
+    // apply when both indigo color and no flat are selected
     {
-      color: ['primary', 'secondary'],
-      disabled: true,
-      class: 'border-dashed border-black border-2'
-    }
-  ]
-  defaultVariants: { // [!code highlight]
-    color: 'primary', // [!code highlight]
-    size: 'md', // [!code highlight]
-  }, // [!code highlight]
+      color: 'indigo',
+      flat: false,
+      class: 'ring-indigo-700/10',
+    },
+    // apply when both red color and no flat are selected
+    {
+      color: 'red',
+      flat: false,
+      class: 'ring-red-600/10',
+    },
+    // apply when both green or red color, and no flat are selected
+    {
+      color: ['green', 'red'],
+      flat: false,
+      class: 'font-medium',
+    },
+  ],
+  // [!code ++]
+  defaultVariants: {
+    color: 'indigo', // [!code ++]
+    size: 'md', // [!code ++]
+    flat: 'false', // [!code ++]
+  }, // [!code ++]
 });
 
-button(); // [!code highlight]
+badge();
 /**
  * Result:
- * rounded-md font-medium bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500 px-4
- * py-2 text-sm
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2
+ * py-1 ring-1 ring-inset ring-indigo-700/10
  */
 
-button({ color: 'secondary' }); // [!code highlight]
+badge({ color: 'green', flat: true });
 /**
  * Result:
- * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
- * px-4 py-2 text-sm
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1
  */
 ```
+
+## Using the recipe
+
+The returned value from the `cvb` function is a function that can be used to apply the recipe to a component. Here's an
+example of how to use the `badge` recipe:
+
+```tsx title="components/badge.tsx"
+import { badge } from './badge.recipe'; // [!code highlight]
+
+const Button = () => {
+  const styles = badge({ color: 'green', size: 'md' }); // [!code highlight]
+
+  return <span className={styles}>Badge</span>;
+};
+```
+
+<Callout>If you're a Typescript user, [here](./typescript) are some additional tips get the most out of `CVB`.</Callout>

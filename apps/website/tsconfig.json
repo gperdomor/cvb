@@ -23,7 +23,6 @@
       "@/*": ["./src/*"]
     },
     "outDir": "dist",
-    "rootDir": "src",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "include": [
@@ -34,6 +33,7 @@
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
+    ".source/**/*.ts",
     "source.config.ts",
     ".next/types/**/*.ts"
   ],
@@ -48,5 +48,6 @@
     "eslint.config.js",
     "eslint.config.cjs",
     "eslint.config.mjs"
-  ]
+  ],
+  "references": []
 }

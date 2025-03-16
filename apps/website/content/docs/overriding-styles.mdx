@@ -1,3 +1,79 @@
 ---
 title: Overriding Styles
 ---
+
+There are some situasions where you need to override or add additional CSS classes to your components, that is why all CVB
+recipes provide an optional `class` or `className` property that comes in handy in these scenarios.
+
+## Overriding styles on a single component
+
+```ts title="components/badge.recipe.ts"
+import { cvb } from 'cvb';
+import type { VariantProps } from 'cvb';
+
+export const badge = cvb({
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs px-2 py-1',
+  variants: {
+    color: {
+      green: 'bg-green-50 text-green-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+    },
+  },
+});
+
+badge({
+  color: 'indigo',
+  size: 'sm',
+  class: 'uppercase', // className is also supported // [!code highlight]
+});
+/**
+ * Result:
+ * inline-flex items-center rounded-md gap-x-1.5 text-xs px-2 py-1 bg-indigo-50
+ * text-indigo-700 uppercase
+ */
+```
+
+## Overriding styles on a component with slots
+
+```ts title="components/badge.recipe.ts"
+import { svb } from 'cvb';
+
+export const badge = svb({
+  slots: ['root', 'dot'],
+  base: {
+    root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs px-2 py-1',
+    dot: 'size-1.5',
+  },
+  variants: {
+    color: {
+      green: {
+        root: 'bg-green-50 text-green-700',
+        dot: 'fill-green-500',
+      },
+      indigo: {
+        root: 'bg-indigo-50 text-indigo-700',
+        dot: 'fill-indigo-500',
+      },
+    },
+  },
+});
+
+badge({
+  color: 'green',
+  size: 'md',
+  flat: false,
+  // [!code highlight]
+  class: {
+    // className is also supported // [!code highlight]
+    root: 'uppercase', // [!code highlight]
+    dot: 'animate-ping', // [!code highlight]
+  }, // [!code highlight]
+});
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs px-2 py-1 bg-green-50 text-green-700 uppercase',
+ *   dot: 'size-1.5 fill-green-500 animate-ping',
+ * }
+ */
+```

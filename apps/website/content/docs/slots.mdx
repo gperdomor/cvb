@@ -5,7 +5,7 @@ description: Slots are handy when you need to apply style variations to multiple
 
 While using `cvb` might be enough for simple cases, `svb` are a better fit for more complex cases.
 
-### Creating the Slot recipe
+## Creating the Slot recipe
 
 A slot recipe consists of these properties:
 
@@ -21,41 +21,72 @@ A slot recipe consists of these properties:
   [Tailwind Variants](https://cva.style/).
 </Callout>
 
-To kick things off, let’s build a **"basic"** badge recipe, using `svb` to handle our CSS classes.
-You can add variants by using the `variants` property. There's no limit to how many variants you can add.
+Let’s transform our previous badge example into a slot recipe using `svb`.
 
-```ts title="components/badge.ts"
+```ts title="components/badge.recipe.ts"
 import { svb } from 'cvb';
 
+// [!code ++]
 export const badge = svb({
-  slots: ['root', 'dot'], // [!code highlight]
+  // [!code ++]
+  slots: ['root', 'dot'], // [!code ++]
+  // [!code ++]
   base: {
-    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
-    dot: 'size-1.5',
-  },
+    // [!code ++]
+    root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs', // [!code ++]
+    dot: '', // [!code ++]
+  }, // [!code ++]
+  // [!code ++]
   variants: {
-    // [!code highlight]
+    // [!code ++]
     color: {
-      // [!code highlight]
+      // [!code ++]
+      green: {
+        root: 'bg-green-50 text-green-700', // [!code ++]
+        dot: 'fill-green-500', // [!code ++]
+      }, // [!code ++]
+      // [!code ++]
       indigo: {
-        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10', // [!code highlight]
-        dot: 'fill-indigo-500', // [!code highlight]
-      }, // [!code highlight]
-      // [!code highlight]
+        root: 'bg-indigo-50 text-indigo-700', // [!code ++]
+        dot: 'fill-indigo-500', // [!code ++]
+      }, // [!code ++]
+      // [!code ++]
       red: {
-        root: 'bg-red-50 text-red-700 ring-red-600/10', // [!code highlight]
-        dot: 'fill-red-500', // [!code highlight]
-      }, // [!code highlight]
-    }, // [!code highlight]
-  },
-});
+        root: 'bg-red-50 text-red-700', // [!code ++]
+        dot: 'fill-red-500', // [!code ++]
+      }, // [!code ++]
+    }, // [!code ++]
+    // [!code ++]
+    size: {
+      // [!code ++]
+      sm: {
+        root: 'px-1.5 py-0.5', // [!code ++]
+        dot: 'size-1.5', // [!code ++]
+      }, // [!code ++]
+      // [!code ++]
+      md: {
+        root: 'px-2 py-1', // [!code ++]
+        dot: 'size-2', // [!code ++]
+      }, // [!code ++]
+    }, // [!code ++]
+  }, // [!code ++]
+}); // [!code ++]
 
-badge({ color: 'indigo' });
+badge({ color: 'indigo', size: 'sm' });
 /**
  * Result:
  * {
- *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5',
  *   dot: 'size-1.5 fill-indigo-500',
+ * }
+ */
+
+badge({ color: 'red', size: 'md' });
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-red-50 text-red-700 px-2 py-1',
+ *   dot: 'size-2 fill-red-500',
  * }
  */
 ```
@@ -64,101 +95,171 @@ badge({ color: 'indigo' });
 
 ### Boolean variants
 
-You can also add boolean variants to a component. This is useful when you want to add a state variant e.g. `pill`.
+You can also add boolean variants to a component. This is useful when you want to add a state variant e.g. `disabled`.
 
-```ts title="components/badge.ts"
+```ts title="components/badge.recipe.ts"
 import { svb } from 'cvb';
 
 export const badge = svb({
   slots: ['root', 'dot'],
   base: {
-    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
-    dot: 'size-1.5',
+    root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
+    dot: '',
   },
   variants: {
     color: {
+      green: {
+        root: 'bg-green-50 text-green-700',
+        dot: 'fill-green-500',
+      },
       indigo: {
-        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+        root: 'bg-indigo-50 text-indigo-700',
         dot: 'fill-indigo-500',
       },
       red: {
-        root: 'bg-red-50 text-red-700 ring-red-600/10',
+        root: 'bg-red-50 text-red-700',
         dot: 'fill-red-500',
       },
     },
-    // [!code highlight]
-    rounded: {
-      // [!code highlight]
-      true: {
-        root: 'rounded-md', // [!code highlight]
-      }, // [!code highlight]
-    }, // [!code highlight]
+    size: {
+      sm: {
+        root: 'px-1.5 py-0.5',
+        dot: 'size-1.5',
+      },
+      md: {
+        root: 'px-2 py-1',
+        dot: 'size-2',
+      },
+    },
+    // [!code ++]
+    disabled: {
+      true: { root: 'opacity-50' }, // [!code ++]
+    }, // [!code ++]
+    // [!code ++]
+    flat: {
+      true: { root: '' }, // [!code ++]
+      false: { root: 'ring-1 ring-inset' }, // [!code ++]
+    }, // [!code ++]
   },
 });
 
-badge({ color: 'indigo', rounded: true });
+badge({ color: 'indigo', size: 'sm', disabled: true });
 /**
  * Result:
  * {
- *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-indigo-50 text-indigo-700 ring-indigo-700/10 rounded-md',
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 opacity-50',
  *   dot: 'size-1.5 fill-indigo-500',
+ * }
+ */
+
+badge({ color: 'red', size: 'md', flat: false });
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-red-50 text-red-700 px-2 py-1 ring-1 ring-inset',
+ *   dot: 'size-2 fill-red-500',
  * }
  */
 ```
 
-### Compound variants
+### Compound slots variants
 
-Compound variants are a way to apply style overrides to a slot based on the combination of variants.
+The `compoundVariants` property in slots recipes works similarly to the `compoundVariants` in the normal recipe and the
+purpose is the same: apply style overrides to a slot based on the combination of variants.
 
-Let's say you want to apply a different border redius to the badge root based on its `color` and the `rounded`
-variant, here's how to do it:
+Let's say you want to apply a different border to the badge root based on its `color` and the `flat` variant values,
+here's how to do it:
 
-```ts title="components/badge.ts"
+```ts title="components/badge.recipe.ts"
 import { svb } from 'cvb';
 
 export const badge = svb({
   slots: ['root', 'dot'],
   base: {
-    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
-    dot: 'size-1.5',
+    root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
+    dot: '',
   },
   variants: {
     color: {
+      green: {
+        root: 'bg-green-50 text-green-700',
+        dot: 'fill-green-500',
+      },
       indigo: {
-        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+        root: 'bg-indigo-50 text-indigo-700',
         dot: 'fill-indigo-500',
       },
       red: {
-        root: 'bg-red-50 text-red-700 ring-red-600/10',
+        root: 'bg-red-50 text-red-700',
         dot: 'fill-red-500',
       },
     },
-    rounded: {
-      true: {
-        root: 'rounded-md',
+    size: {
+      sm: {
+        root: 'px-1.5 py-0.5',
+        dot: 'size-1.5',
+      },
+      md: {
+        root: 'px-2 py-1',
+        dot: 'size-2',
       },
     },
+    disabled: {
+      true: { root: 'opacity-50' },
+    },
+    flat: {
+      true: { root: '' },
+      false: { root: 'ring-1 ring-inset' },
+    },
   },
-  // [!code highlight]
+  // [!code ++]
   compoundVariants: [
-    // [!code highlight]
+    // apply when both green color and no flat are selected // [!code ++]
+    // [!code ++]
     {
-      color: 'red', // [!code highlight]
-      rounded: true, // [!code highlight]
-      // [!code highlight]
-      class: {
-        root: 'border-full', // [!code highlight]
-      }, // [!code highlight]
-    }, // [!code highlight]
-  ], // [!code highlight]
+      color: 'green', // [!code ++]
+      flat: false, // [!code ++]
+      class: { root: 'ring-green-600/20' }, // You can also use "className" // [!code ++]
+    }, // [!code ++]
+    // apply when both indigo color and no flat are selected // [!code ++]
+    // [!code ++]
+    {
+      color: 'indigo', // [!code ++]
+      flat: false, // [!code ++]
+      class: { root: 'ring-indigo-700/10' }, // You can also use "className" // [!code ++]
+    }, // [!code ++]
+    // apply when both red color and no flat are selected // [!code ++]
+    // [!code ++]
+    {
+      color: 'red', // [!code ++]
+      flat: false, // [!code ++]
+      class: { root: 'ring-red-600/10' }, // You can also use "className" // [!code ++]
+    }, // [!code ++]
+    // apply when both green or red color, and no flat are selected // [!code ++]
+    // [!code ++]
+    {
+      color: ['green', 'red'], // [!code ++]
+      flat: false, // [!code ++]
+      class: { root: 'font-medium' }, // You can also use "className" // [!code ++]
+    }, // [!code ++]
+  ], // [!code ++]
 });
 
-badge({ color: 'red', rounded: true });
+badge({ color: 'indigo', size: 'md', flat: false });
 /**
  * Result:
  * {
- *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-red-50 text-red-700 ring-red-600/10 rounded-md rounded-full',
- *   dot: 'size-1.5 fill-red-500',
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10',
+ *   dot: 'size-2 fill-indigo-500',
+ * }
+ */
+
+badge({ color: 'green', size: 'md', flat: false });
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20 font-medium',
+ *   dot: 'size-2 fill-green-500',
  * }
  */
 ```
@@ -168,53 +269,121 @@ badge({ color: 'red', rounded: true });
 The `defaultVariants` property is used to set the default variant values for the recipe. This is useful when you want to
 apply a variant by default. Here's an example of how to use `defaultVariants`:
 
-```ts title="components/badge.ts"
+```ts title="components/badge.recipe.ts"
 import { svb } from 'cvb';
 
 export const badge = svb({
   slots: ['root', 'dot'],
   base: {
-    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
-    dot: 'size-1.5',
+    root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
+    dot: '',
   },
   variants: {
     color: {
+      green: {
+        root: 'bg-green-50 text-green-700',
+        dot: 'fill-green-500',
+      },
       indigo: {
-        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+        root: 'bg-indigo-50 text-indigo-700',
         dot: 'fill-indigo-500',
       },
       red: {
-        root: 'bg-red-50 text-red-700 ring-red-600/10',
+        root: 'bg-red-50 text-red-700',
         dot: 'fill-red-500',
       },
     },
-    rounded: {
-      true: {
-        root: 'rounded-md',
+    size: {
+      sm: {
+        root: 'px-1.5 py-0.5',
+        dot: 'size-1.5',
       },
+      md: {
+        root: 'px-2 py-1',
+        dot: 'size-2',
+      },
+    },
+    disabled: {
+      true: { root: 'opacity-50' },
+    },
+    flat: {
+      true: { root: '' },
+      false: { root: 'ring-1 ring-inset' },
     },
   },
   compoundVariants: [
+    // apply when both green color and no flat are selected
+    {
+      color: 'green',
+      flat: false,
+      class: { root: 'ring-green-600/20' }, // You can also use "className"
+    },
+    // apply when both indigo color and no flat are selected
+    {
+      color: 'indigo',
+      flat: false,
+      class: { root: 'ring-indigo-700/10' }, // You can also use "className"
+    },
+    // apply when both red color and no flat are selected
     {
       color: 'red',
-      rounded: true,
-      class: {
-        root: 'border-full',
-      },
+      flat: false,
+      class: { root: 'ring-red-600/10' }, // You can also use "className"
+    },
+    // apply when both green or red color, and no flat are selected
+    {
+      color: ['green', 'red'],
+      flat: false,
+      class: { root: 'font-medium' }, // You can also use "className"
     },
   ],
-  // [!code highlight]
+  // [!code ++]
   defaultVariants: {
-    color: 'red', // [!code highlight]
-  }, // [!code highlight]
+    color: 'indigo', // [!code ++]
+    size: 'md', // [!code ++]
+    flat: 'false', // [!code ++]
+  }, // [!code ++]
 });
 
 badge();
 /**
  * Result:
  * {
- *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-red-50 text-red-700 ring-red-600/10',
- *   dot: 'size-1.5 bg-red-50 text-red-700 ring-red-600/10',
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10',
+ *   dot: 'size-2 fill-indigo-500',
+ * }
+ */
+
+badge({ color: 'green', flat: true });
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1',
+ *   dot: 'size-2 fill-green-500',
  * }
  */
 ```
+
+## Using the recipe
+
+The returned value from the `svb` function is a function that can be used to apply the recipe to a component. Here's an
+example of how to use the `badge` recipe:
+
+```tsx title="components/badge.tsx"
+import { badge } from './badge.recipe'; // [!code highlight]
+
+const Button = () => {
+  const styles = badge({ color: 'green', size: 'md' }); // [!code highlight]
+
+  return (
+    <span className={styles.root}>
+      <svg className={styles.dot} viewBox="0 0 6 6" aria-hidden="true">
+        <circle cx="3" cy="3" r="3" />
+      </svg>
+      Badge
+    </span>
+  );
+};
+```
+
+<Callout>If you're a Typescript user, [here](./typescript) are some additional tips get the most out of `CVB`.</Callout>

@@ -7,33 +7,35 @@ description: Class Variant Builder provides typing out of the box, but this page
 
 You can use the `VariantProps` utility to extract variant types.
 
-```ts title="components/button.ts"
+```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 import type { VariantProps } from 'cvb'; // [!code highlight]
 
-export const button = cvb({
-  base: 'px-4 py-2 text-sm rounded-md font-medium',
+export const badge = cvb({
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
   variants: {
     color: {
-      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
-      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
-      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+      green: 'bg-green-50 text-green-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+      red: 'bg-red-50 text-red-700',
     },
-    rounded: {
-      true: 'rounded-full',
+    size: {
+      sm: 'px-1.5 py-0.5',
+      md: 'px-2 py-1',
     },
-  },
-  defaultVariants: {
-    color: 'primary',
+    flat: {
+      false: 'ring-1 ring-inset',
+    },
   },
 });
 
 /**
  * Result:
- * color?: "primary" | "secondary" | "danger"
- * rounded?: boolean
+ * color?: "green" | "indigo" | "red"
+ * size?: "sm" | "md"
+ * flat?: boolean
  */
-type ButtonVariants = VariantProps<typeof button>; // [!code highlight]
+export type BadgeRecipeProps = VariantProps<typeof badge>; // [!code highlight]
 ```
 
 ## Required Variants
@@ -42,40 +44,44 @@ To keep the API small and unopinionated, `cvb` **doesn't** offer a built-in solu
 
 Instead, we recommend using TypeScript's [Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html):
 
-```ts title="components/button.ts"
+```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 import type { VariantProps } from 'cvb'; // [!code highlight]
 
-export const buttonVariants = cvb({
+export const badgeVariants = cvb({
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
   variants: {
     color: {
-      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
-      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
-      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+      green: 'bg-green-50 text-green-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+      red: 'bg-red-50 text-red-700',
     },
-    rounded: {
-      true: 'rounded-full',
-      false: 'rounded-none',
+    size: {
+      sm: 'px-1.5 py-0.5',
+      md: 'px-2 py-1',
+    },
+    flat: {
+      false: 'ring-1 ring-inset',
     },
   },
   defaultVariants: {
-    color: 'primary',
+    color: 'indigo',
   },
 });
 
-type ButtonVariantProps = VariantProps<typeof buttonVariants>; // [!code highlight]
+type BadgeRecipeProps = VariantProps<typeof badgeVariants>; // [!code highlight]
 
-export interface ButtonProps // [!code highlight]
-  extends Omit<ButtonVariantProps, 'rounded'>, // [!code highlight]
-    Required<Pick<ButtonVariantProps, 'rounded'>> {} // [!code highlight]
+export interface BadgeProps // [!code highlight]
+  extends Omit<BadgeRecipeProps, 'flat'>, // [!code highlight]
+    Required<Pick<BadgeRecipeProps, 'flat'>> {} // [!code highlight]
 
-export const button = (props: ButtonProps) => buttonVariants(props);
+export const badge = (props: BadgeProps) => badgeVariants(props); // [!code highlight]
 
 // ❌ TypeScript Error:
-// Argument of type "{}": is not assignable to parameter of type "ButtonProps".
-// Property "rounded" is missing in type "{}" but required in type "ButtonProps".
-button({}); // [!code highlight]
+// Argument of type "{}": is not assignable to parameter of type "BadgeProps".
+// Property "flat" is missing in type "{}" but required in type "BadgeProps".
+badge({}); // [!code highlight]
 
 // ✅
-button({ rounded: true }); // [!code highlight]
+badge({ flat: true }); // [!code highlight]
 ```
