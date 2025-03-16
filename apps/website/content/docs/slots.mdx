@@ -34,12 +34,15 @@ export const badge = svb({
     dot: 'size-1.5',
   },
   variants: {
-    color: { // [!code highlight]
-      indigo: { // [!code highlight]
+    // [!code highlight]
+    color: {
+      // [!code highlight]
+      indigo: {
         root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10', // [!code highlight]
         dot: 'fill-indigo-500', // [!code highlight]
       }, // [!code highlight]
-      red: { // [!code highlight]
+      // [!code highlight]
+      red: {
         root: 'bg-red-50 text-red-700 ring-red-600/10', // [!code highlight]
         dot: 'fill-red-500', // [!code highlight]
       }, // [!code highlight]
@@ -83,8 +86,10 @@ export const badge = svb({
         dot: 'fill-red-500',
       },
     },
-    rounded: { // [!code highlight]
-      true: { // [!code highlight]
+    // [!code highlight]
+    rounded: {
+      // [!code highlight]
+      true: {
         root: 'rounded-md', // [!code highlight]
       }, // [!code highlight]
     }, // [!code highlight]
@@ -134,11 +139,14 @@ export const badge = svb({
       },
     },
   },
-  compoundVariants: [ // [!code highlight]
-    { // [!code highlight]
+  // [!code highlight]
+  compoundVariants: [
+    // [!code highlight]
+    {
       color: 'red', // [!code highlight]
       rounded: true, // [!code highlight]
-      class: { // [!code highlight]
+      // [!code highlight]
+      class: {
         root: 'border-full', // [!code highlight]
       }, // [!code highlight]
     }, // [!code highlight]
@@ -195,7 +203,8 @@ export const badge = svb({
       },
     },
   ],
-  defaultVariants: { // [!code highlight]
+  // [!code highlight]
+  defaultVariants: {
     color: 'red', // [!code highlight]
   }, // [!code highlight]
 });

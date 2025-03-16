@@ -26,12 +26,14 @@ import { cvb } from 'cvb';
 export const button = cvb({
   base: 'px-4 py-2 text-sm rounded-md font-medium',
   variants: {
-    color: { // [!code highlight]
+    // [!code highlight]
+    color: {
       primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500', // [!code highlight]
       secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400', // [!code highlight]
       danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900', // [!code highlight]
     }, // [!code highlight]
-    size: { // [!code highlight]
+    // [!code highlight]
+    size: {
       sm: 'px-2 py-1 text-xs', // [!code highlight]
       md: 'px-4 py-2 text-sm', // [!code highlight]
       lg: 'px-4 py-2 text-md', // [!code highlight]
@@ -76,7 +78,8 @@ export const button = cvb({
       md: 'px-4 py-2 text-sm',
       lg: 'px-4 py-2 text-md',
     },
-    disabled: { // [!code highlight]
+    // [!code highlight]
+    disabled: {
       true: 'opacity-50 bg-gray-500 pointer-events-none', // [!code highlight]
     }, // [!code highlight]
   },
@@ -118,15 +121,18 @@ export const button = cvb({
       true: 'opacity-50 bg-gray-500 pointer-events-none',
     },
   },
-  compoundVariants: [ // [!code highlight]
+  // [!code highlight]
+  compoundVariants: [
     // apply when both danger color and disabled are selected // [!code highlight]
-    { // [!code highlight]
+    // [!code highlight]
+    {
       color: 'danger', // [!code highlight]
       disabled: true, // [!code highlight]
       class: 'bg-red-300 text-slate-700', // You can also use "className" // [!code highlight]
     }, // [!code highlight]
     // apply when both primary or secondary color, and disabled variants are applied // [!code highlight]
-    { // [!code highlight]
+    // [!code highlight]
+    {
       color: ['primary', 'secondary'], // [!code highlight]
       disabled: true, // [!code highlight]
       class: 'border-dashed border-black border-2', // You can also use "className" // [!code highlight]
