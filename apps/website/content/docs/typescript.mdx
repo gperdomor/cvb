@@ -1,0 +1,81 @@
+---
+title: TypeScript
+description: Class Variant Builder provides typing out of the box, but this page contains some further utilities and tips
+---
+
+## Extracting Variant Types
+
+You can use the `VariantProps` utility to extract variant types.
+
+```ts title="components/button.ts"
+import { cvb } from 'cvb';
+import type { VariantProps } from 'cvb'; // [!code highlight]
+
+export const button = cvb({
+  base: 'px-4 py-2 text-sm rounded-md font-medium',
+  variants: {
+    color: {
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
+      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+    },
+    rounded: {
+      true: 'rounded-full',
+    },
+  },
+  defaultVariants: {
+    color: 'primary',
+  },
+});
+
+/**
+ * Result:
+ * color?: "primary" | "secondary" | "danger"
+ * rounded?: boolean
+ */
+type ButtonVariants = VariantProps<typeof button>; // [!code highlight]
+```
+
+## Required Variants
+
+To keep the API small and unopinionated, `cvb` **doesn't** offer a built-in solution for setting required variants.
+
+Instead, we recommend using TypeScript's [Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html):
+
+```ts title="components/button.ts"
+import { cvb } from 'cvb';
+import type { VariantProps } from 'cvb'; // [!code highlight]
+
+export const buttonVariants = cvb({
+  variants: {
+    color: {
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
+      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+    },
+    rounded: {
+      true: 'rounded-full',
+      false: 'rounded-none',
+    },
+  },
+  defaultVariants: {
+    color: 'primary',
+  },
+});
+
+type ButtonVariantProps = VariantProps<typeof buttonVariants>; // [!code highlight]
+
+export interface ButtonProps // [!code highlight]
+  extends Omit<ButtonVariantProps, 'rounded'>, // [!code highlight]
+    Required<Pick<ButtonVariantProps, 'rounded'>> {} // [!code highlight]
+
+export const button = (props: ButtonProps) => buttonVariants(props);
+
+// ❌ TypeScript Error:
+// Argument of type "{}": is not assignable to parameter of type "ButtonProps".
+// Property "rounded" is missing in type "{}" but required in type "ButtonProps".
+button({}); // [!code highlight]
+
+// ✅
+button({ rounded: true }); // [!code highlight]
+```

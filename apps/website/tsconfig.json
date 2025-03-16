@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@/.source": ["./.source/index.ts"],
       "@/*": ["./src/*"]
     },
     "outDir": "dist",
@@ -33,6 +34,7 @@
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "source.config.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [

@@ -1,0 +1,68 @@
+---
+title: Quick Start
+description: Getting Started with Class Variance Builder
+icon: Album
+---
+
+## Introduction
+
+**Class Variance Builder** <span className='text-fd-muted-foreground text-sm'>(or just CVB)</span> is a universal, fast and
+scalable styling solution for the modern web.
+
+## Installation
+
+To add Class Variance Builder to your project just execute the following command:
+
+```package-install
+npm i cvb
+```
+
+Node.js 18 or above required.
+
+<Callout>
+  If you're a Tailwind CSS user, [here](docs/tailwindcss) are some additional (optional) steps to get the most out of
+  `CVB`
+</Callout>
+
+### Enjoy!
+
+Create your first component
+
+```jsx
+import { cvb } from 'cvb';
+
+const button = cvb({
+  base: 'px-4 py-2 text-sm rounded-md font-medium',
+  variants: {
+    color: {
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
+    },
+    size: {
+      sm: 'px-2 py-1 text-xs',
+      md: 'px-4 py-2 text-sm',
+    },
+  },
+});
+
+function Example() {
+  return <button className={button({ color: 'secondary', size: 'md' })}>Click me</button>;
+}
+```
+
+## FAQ
+
+Some common questions you may encounter.
+
+<Accordions>
+  <Accordion id="style-conflics" title="How to handle Tailwind CSS style conflicts">
+    You can handle conflicts using `tailwind-merge` package... Please go to this
+    [section](docs/tailwindcss#handling-style-conflicts) for more information.
+  </Accordion>
+</Accordions>
+
+## Learn More
+
+New to here? Don't worry, we are welcome for your questions.
+
+If you find anything confusing, please give your feedback on [Github Discussion](https://github.com/gperdomor/cvb/discussions)!

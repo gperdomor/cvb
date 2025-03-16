@@ -1,0 +1,20 @@
+{
+  "title": "CVB",
+  "description": "The docs for CVB",
+  "icon": "Building2",
+  "root": true,
+  "pages": [
+    "---Introduction---",
+    "index",
+    "what-is-cvb",
+    "comparisons",
+    "---Core Concepts---",
+    "variants",
+    "slots",
+    "---Advanced---",
+    "overriding-styles",
+    "composing-components",
+    "(integrations)",
+    "typescript"
+  ]
+}

@@ -1,0 +1,221 @@
+---
+title: Variants
+description: Create multi-variant styles with a type-safe runtime API
+---
+
+Variants are defined using the `cvb` function which was inspired by [Class Variance Authority](https://cva.style/). The
+`cvb` function which takes an object as its argument.
+
+### Creating the Variant recipe
+
+A recipe consists of four properties:
+
+- `base`: The base styles for the component.
+- `variants`: The different visual styles for the component
+- `compoundVariants`: The different combinations of variants for the component
+- `defaultVariants`: The default variant values for the component
+
+<Callout type="warn">Credit: This API was inspired by [Class Variance Authority](https://cva.style/).</Callout>
+
+To kick things off, let’s build a **"basic"** button recipe, using `cvb` to handle our CSS classes.
+You can add variants by using the `variants` property. There's no limit to how many variants you can add.
+
+```ts title="components/button.ts"
+import { cvb } from 'cvb';
+
+export const button = cvb({
+  base: 'px-4 py-2 text-sm rounded-md font-medium',
+  variants: {
+    color: { // [!code highlight]
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500', // [!code highlight]
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400', // [!code highlight]
+      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900', // [!code highlight]
+    }, // [!code highlight]
+    size: { // [!code highlight]
+      sm: 'px-2 py-1 text-xs', // [!code highlight]
+      md: 'px-4 py-2 text-sm', // [!code highlight]
+      lg: 'px-4 py-2 text-md', // [!code highlight]
+    }, // [!code highlight]
+  },
+});
+
+button({ color: 'primary', size: 'sm' });
+/**
+ * Result:
+ * rounded-md font-medium bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500 px-2
+ * py-1 text-xs
+ */
+
+button({ color: 'secondary', size: 'md' });
+/**
+ * Result:
+ * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
+ * px-4 py-2 text-sm
+ */
+```
+
+<Callout>Use of Tailwind CSS is optional</Callout>
+
+### Boolean variants
+
+You can also add boolean variants to a component. This is useful when you want to add a state variant e.g. `disabled`.
+
+```ts title="components/button.ts"
+import { cvb } from 'cvb';
+
+export const button = cvb({
+  base: 'rounded-md font-medium',
+  variants: {
+    color: {
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
+      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+    },
+    size: {
+      sm: 'px-2 py-1 text-xs',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-4 py-2 text-md',
+    },
+    disabled: { // [!code highlight]
+      true: 'opacity-50 bg-gray-500 pointer-events-none', // [!code highlight]
+    }, // [!code highlight]
+  },
+});
+
+button({ color: 'secondary', disabled: true });
+/**
+ * Result:
+ * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
+ * opacity-50 bg-gray-500 pointer-events-none
+ */
+```
+
+### Compound variants
+
+Compound variants are a way to combine multiple variants together to create more complex sets of styles. They are
+defined using the `compoundVariants` property , which takes an array of objects as its argument. Each object in the array
+represents a set of conditions that must be met in order for the corresponding styles to be applied.
+
+For example, you might want to add a `color` variant that depends on the `disabled` variant.
+
+```ts title="components/button.ts"
+import { cvb } from 'cvb';
+
+export const button = cvb({
+  base: 'rounded-md font-medium',
+  variants: {
+    color: {
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
+      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+    },
+    size: {
+      sm: 'px-2 py-1 text-xs',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-4 py-2 text-md',
+    },
+    disabled: {
+      true: 'opacity-50 bg-gray-500 pointer-events-none',
+    },
+  },
+  compoundVariants: [ // [!code highlight]
+    // apply when both danger color and disabled are selected // [!code highlight]
+    { // [!code highlight]
+      color: 'danger', // [!code highlight]
+      disabled: true, // [!code highlight]
+      class: 'bg-red-300 text-slate-700', // You can also use "className" // [!code highlight]
+    }, // [!code highlight]
+    // apply when both primary or secondary color, and disabled variants are applied // [!code highlight]
+    { // [!code highlight]
+      color: ['primary', 'secondary'], // [!code highlight]
+      disabled: true, // [!code highlight]
+      class: 'border-dashed border-black border-2', // You can also use "className" // [!code highlight]
+    }, // [!code highlight]
+  ], // [!code highlight]
+});
+
+button({ color: 'danger', disabled: true });
+/**
+ * Result:
+ * rounded-md font-medium bg-red-800 text-white hover:bg-red-700 active:bg-red-900 opacity-50
+ * bg-gray-500 pointer-events-none bg-red-300 text-slate-700
+ */
+
+button({ color: 'primary', disabled: true });
+/**
+ * Result:
+ * rounded-md font-medium bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500
+ * opacity-50 bg-gray-500 pointer-events-none border-dashed border-black border-2
+ */
+
+button({ color: 'secondary', disabled: true });
+/**
+ * Result:
+ * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
+ * opacity-50 bg-gray-500 pointer-events-none border-dashed border-black border-2
+ */
+```
+
+Overall, using compound variants allows you to create more complex sets of styles that can be applied to your components
+based on multiple conditions.
+
+By combining simple variants together in this way, you can create a wide range of visual styles without cluttering up
+your code with lots of conditional logic.
+
+### Default Variants
+
+The `defaultVariants` property is used to set the default variant values for the recipe. This is useful when you want to
+apply a variant by default. Here's an example of how to use `defaultVariants`:
+
+```ts title="components/button.ts"
+import { cvb } from 'cvb';
+
+export const button = cvb({
+  base: 'rounded-md font-medium',
+  variants: {
+    color: {
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
+      danger: 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900',
+    },
+    size: {
+      sm: 'px-2 py-1 text-xs',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-4 py-2 text-md',
+    },
+    disabled: {
+      true: 'opacity-50 bg-gray-500 pointer-events-none',
+    },
+  },
+  compoundVariants: [
+    {
+      color: 'danger',
+      disabled: true,
+      class: 'bg-red-300 text-slate-700'
+    },
+    {
+      color: ['primary', 'secondary'],
+      disabled: true,
+      class: 'border-dashed border-black border-2'
+    }
+  ]
+  defaultVariants: { // [!code highlight]
+    color: 'primary', // [!code highlight]
+    size: 'md', // [!code highlight]
+  }, // [!code highlight]
+});
+
+button(); // [!code highlight]
+/**
+ * Result:
+ * rounded-md font-medium bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500 px-4
+ * py-2 text-sm
+ */
+
+button({ color: 'secondary' }); // [!code highlight]
+/**
+ * Result:
+ * rounded-md font-medium bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400
+ * px-4 py-2 text-sm
+ */
+```

@@ -1,0 +1,211 @@
+---
+title: Slots
+description: Slots are handy when you need to apply style variations to multiple parts of a component.
+---
+
+While using `cvb` might be enough for simple cases, `svb` are a better fit for more complex cases.
+
+### Creating the Slot recipe
+
+A slot recipe consists of these properties:
+
+- `slots`: An array of component parts to style
+- `base`: The base styles per slot
+- `variants`: The different visual styles for each slot
+- `defaultVariants`: The default variant for the component
+- `compoundVariants`: The compound variant combination and style overrides for each slot.
+
+<Callout type="warn">
+  Credit: This API was inspired by multipart components in [Chakra
+  UI](https://v2.chakra-ui.com/docs/styled-system/component-style#styling-multipart-components) and slot variants in
+  [Tailwind Variants](https://cva.style/).
+</Callout>
+
+To kick things off, let’s build a **"basic"** badge recipe, using `svb` to handle our CSS classes.
+You can add variants by using the `variants` property. There's no limit to how many variants you can add.
+
+```ts title="components/badge.ts"
+import { svb } from 'cvb';
+
+export const badge = svb({
+  slots: ['root', 'dot'], // [!code highlight]
+  base: {
+    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
+    dot: 'size-1.5',
+  },
+  variants: {
+    color: { // [!code highlight]
+      indigo: { // [!code highlight]
+        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10', // [!code highlight]
+        dot: 'fill-indigo-500', // [!code highlight]
+      }, // [!code highlight]
+      red: { // [!code highlight]
+        root: 'bg-red-50 text-red-700 ring-red-600/10', // [!code highlight]
+        dot: 'fill-red-500', // [!code highlight]
+      }, // [!code highlight]
+    }, // [!code highlight]
+  },
+});
+
+badge({ color: 'indigo' });
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+ *   dot: 'size-1.5 fill-indigo-500',
+ * }
+ */
+```
+
+<Callout>Use of Tailwind CSS is optional</Callout>
+
+### Boolean variants
+
+You can also add boolean variants to a component. This is useful when you want to add a state variant e.g. `pill`.
+
+```ts title="components/badge.ts"
+import { svb } from 'cvb';
+
+export const badge = svb({
+  slots: ['root', 'dot'],
+  base: {
+    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
+    dot: 'size-1.5',
+  },
+  variants: {
+    color: {
+      indigo: {
+        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+        dot: 'fill-indigo-500',
+      },
+      red: {
+        root: 'bg-red-50 text-red-700 ring-red-600/10',
+        dot: 'fill-red-500',
+      },
+    },
+    rounded: { // [!code highlight]
+      true: { // [!code highlight]
+        root: 'rounded-md', // [!code highlight]
+      }, // [!code highlight]
+    }, // [!code highlight]
+  },
+});
+
+badge({ color: 'indigo', rounded: true });
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-indigo-50 text-indigo-700 ring-indigo-700/10 rounded-md',
+ *   dot: 'size-1.5 fill-indigo-500',
+ * }
+ */
+```
+
+### Compound variants
+
+Compound variants are a way to apply style overrides to a slot based on the combination of variants.
+
+Let's say you want to apply a different border redius to the badge root based on its `color` and the `rounded`
+variant, here's how to do it:
+
+```ts title="components/badge.ts"
+import { svb } from 'cvb';
+
+export const badge = svb({
+  slots: ['root', 'dot'],
+  base: {
+    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
+    dot: 'size-1.5',
+  },
+  variants: {
+    color: {
+      indigo: {
+        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+        dot: 'fill-indigo-500',
+      },
+      red: {
+        root: 'bg-red-50 text-red-700 ring-red-600/10',
+        dot: 'fill-red-500',
+      },
+    },
+    rounded: {
+      true: {
+        root: 'rounded-md',
+      },
+    },
+  },
+  compoundVariants: [ // [!code highlight]
+    { // [!code highlight]
+      color: 'red', // [!code highlight]
+      rounded: true, // [!code highlight]
+      class: { // [!code highlight]
+        root: 'border-full', // [!code highlight]
+      }, // [!code highlight]
+    }, // [!code highlight]
+  ], // [!code highlight]
+});
+
+badge({ color: 'red', rounded: true });
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-red-50 text-red-700 ring-red-600/10 rounded-md rounded-full',
+ *   dot: 'size-1.5 fill-red-500',
+ * }
+ */
+```
+
+### Default Variants
+
+The `defaultVariants` property is used to set the default variant values for the recipe. This is useful when you want to
+apply a variant by default. Here's an example of how to use `defaultVariants`:
+
+```ts title="components/badge.ts"
+import { svb } from 'cvb';
+
+export const badge = svb({
+  slots: ['root', 'dot'],
+  base: {
+    root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset',
+    dot: 'size-1.5',
+  },
+  variants: {
+    color: {
+      indigo: {
+        root: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+        dot: 'fill-indigo-500',
+      },
+      red: {
+        root: 'bg-red-50 text-red-700 ring-red-600/10',
+        dot: 'fill-red-500',
+      },
+    },
+    rounded: {
+      true: {
+        root: 'rounded-md',
+      },
+    },
+  },
+  compoundVariants: [
+    {
+      color: 'red',
+      rounded: true,
+      class: {
+        root: 'border-full',
+      },
+    },
+  ],
+  defaultVariants: { // [!code highlight]
+    color: 'red', // [!code highlight]
+  }, // [!code highlight]
+});
+
+badge();
+/**
+ * Result:
+ * {
+ *   root: 'inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium ring-1 ring-inset bg-red-50 text-red-700 ring-red-600/10',
+ *   dot: 'size-1.5 bg-red-50 text-red-700 ring-red-600/10',
+ * }
+ */
+```

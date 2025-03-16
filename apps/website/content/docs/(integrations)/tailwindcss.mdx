@@ -1,0 +1,166 @@
+---
+title: Tailwind CSS
+description: Use Tailwind CSS to handle your styles
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework providing a flexible way to style your components.
+
+If you're a Tailwind user, here are some additional (optional) steps to get the most out of `cvb`:
+
+### IntelliSense
+
+You can enable autocompletion inside `cvb` using the steps below:
+
+<Tabs items={['Visual Studio Code', 'Zed', 'Neovim', 'WebStorm']} groupId="ide" persist>
+  <Tab value="Visual Studio Code">
+    <Steps>
+      <Step>
+        [Install the "Tailwind CSS IntelliSense" Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+      </Step>
+      <Step>
+        Add the following to your `.vscode/settings.json`:
+        ```json title=".vscode/settings.json"
+        {
+          "tailwindCSS.experimental.classRegex": [
+            ["cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+            ["svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+            ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+          ]
+        }
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab value="Zed">
+    Add the following to your [`.zed/settings.json`](https://zed.dev/docs/configuring-zed#settings-files):
+    ```json title=".zed/settings.json"
+    {
+      "lsp": {
+        "tailwindcss-language-server": {
+          "settings": {
+            "experimental": {
+              "classRegex": [
+                ["cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+                ["svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+                ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+              ]
+            }
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab value="Neovim">
+    <Steps>
+      <Step>
+        [Install the extension](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#tailwindcss)
+      </Step>
+      <Step>
+        Add the following configuration:
+        ```lua
+        require 'lspconfig'.tailwindcss.setup({
+          settings = {
+            tailwindCSS = {
+              experimental = {
+                classRegex = {
+                  { "cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+                  { "svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+                  { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" }
+                },
+              },
+            },
+          },
+        })
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab value="WebStorm">
+    <Steps>
+      <Step>
+        Check the version. Available for [WebStorm 2023.1](https://www.jetbrains.com/webstorm/whatsnew/) and later
+      </Step>
+      <Step>
+        Open the settings. Go to [Languages and Frameworks | Style Sheets | Tailwind CSS](https://www.jetbrains.com/help/webstorm/tailwind-css.html#ws_css_tailwind_configuration)
+      </Step>
+      <Step>
+        Add the following to your tailwind configuration:
+        ```json
+        {
+          "experimental": {
+            "classRegex": [
+              ["cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+              ["svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+              ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+            ]
+          }
+        }
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+### Handling Style Conflicts
+
+If you use Tailwind CSS with `CVB`, is easy to build classes like `border rounded px-2 py-1 p-3`, and because of the way
+the CSS cascade works, the styles of the p-3 class are ignored. The order of the classes in the className string doesn't
+matter at all and the only way to apply the p-3 styles is to remove both px-2 and py-1.
+
+To solve this issues the usage of [Tailwind Merge](https://github.com/dcastil/tailwind-merge) is highly recommended.
+This tool overrides conflicting classes and keeps everything else untouched. For the before example, you will be able to
+get `border rounded px-2 py-1 p-3` instead.
+
+First, install the `tailwind-merge` package.
+
+```package-install
+npm i tailwind-merge
+```
+
+Next create a `cvb.config.ts` file:
+
+```ts title="cvb.config.ts"
+import { defineConfig } from 'cvb';
+import { twMerge } from 'tailwind-merge';
+
+export const { cvb, svb, cx, compose } = defineConfig({
+  hooks: {
+    onComplete: (className) => twMerge(className), // [!code highlight]
+  },
+});
+```
+
+Create your styles as always but make sure to import the cvb, svb, cx and compose functions from your custom `cvb.config.ts` file
+
+```ts title="components/button.ts"
+import { cvb, cx } from '../cvb.config'; // [!code highlight]
+
+export const button = cvb({
+  base: 'px-4 py-2 font-semibold bg-gray-200 border rounded',
+  variants: {
+    color: {
+      primary: 'bg-sky-300 text-slate-900 hover:bg-sky-200 active:bg-sky-500',
+      secondary: 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-400',
+    },
+  },
+});
+
+button();
+/**
+ * Result:
+ * px-4 py-2 font-semibold border rounded bg-slate-800 text-white hover:bg-slate-700
+ * active:text-slate-400
+ */
+
+cx('p-5 bg-gray-200', 'bg-blue-500');
+/**
+ * Result:
+ * p-5 bg-blue-500
+ */
+```
