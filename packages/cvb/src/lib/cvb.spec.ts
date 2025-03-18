@@ -1193,23 +1193,23 @@ describe('svb', () => {
           control: '',
           root: '',
         });
-        expect(example({ class: 'adhoc-class' })).toEqual({
-          control: 'adhoc-class',
-          root: 'adhoc-class',
+        expect(example({ class: { control: 'adhoc-control-class', root: 'custom-root' } })).toEqual({
+          control: 'adhoc-control-class',
+          root: 'custom-root',
         });
-        expect(example({ className: 'adhoc-className' })).toEqual({
-          control: 'adhoc-className',
-          root: 'adhoc-className',
+        expect(example({ className: { root: 'adhoc-root-className', control: 'adhoc-ctrl-className' } })).toEqual({
+          control: 'adhoc-ctrl-className',
+          root: 'adhoc-root-className',
         });
         expect(
           example({
-            class: 'adhoc-class',
+            class: { root: 'adhoc-root-class', control: 'adhoc-control-class' },
             // @ts-expect-error: Only one of class or className is allowed, with class taking precedence
-            className: 'adhoc-className',
+            className: { root: 'adhoc-root-className', control: 'control-className' },
           })
         ).toEqual({
-          control: 'adhoc-class',
-          root: 'adhoc-class',
+          control: 'adhoc-control-class',
+          root: 'adhoc-root-class',
         });
       });
 
@@ -1412,12 +1412,12 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 1,
-            class: 'adhoc-class',
+            class: { root: 'adhoc-root-class', control: 'adhoc-control-class', label: 'adhoc-label-class' },
           },
           {
-            control: 'cbx--primary-control border-transparent hover:bg-blue-600 adhoc-class',
-            label: 'cbx--primary-label text-white adhoc-class',
-            root: 'cbx--primary-root bg-blue-500 m-1 adhoc-class',
+            control: 'cbx--primary-control border-transparent hover:bg-blue-600 adhoc-control-class',
+            label: 'cbx--primary-label text-white adhoc-label-class',
+            root: 'cbx--primary-root bg-blue-500 m-1 adhoc-root-class',
           },
         ],
         [
@@ -1425,12 +1425,16 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 1,
-            className: 'adhoc-classname',
+            className: {
+              root: 'adhoc-root-classname',
+              control: 'adhoc-control-classname',
+              label: 'adhoc-label-classname',
+            },
           },
           {
-            control: 'cbx--primary-control border-transparent hover:bg-blue-600 adhoc-classname',
-            label: 'cbx--primary-label text-white adhoc-classname',
-            root: 'cbx--primary-root bg-blue-500 m-1 adhoc-classname',
+            control: 'cbx--primary-control border-transparent hover:bg-blue-600 adhoc-control-classname',
+            label: 'cbx--primary-label text-white adhoc-label-classname',
+            root: 'cbx--primary-root bg-blue-500 m-1 adhoc-root-classname',
           },
         ],
       ])('%d - checkbox(%o) return %o', (_, options, expected) => {
@@ -1657,12 +1661,13 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 0,
-            class: 'adhoc-class',
+            class: { root: 'adhoc-root-class', control: 'adhoc-control-class', label: 'adhoc-label-class' },
           },
           {
-            control: 'cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-class',
-            label: 'cbx--primary-label text-white text-md uppercase adhoc-class',
-            root: 'cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-0 cbx--primary-medium adhoc-class',
+            control:
+              'cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-control-class',
+            label: 'cbx--primary-label text-white text-md uppercase adhoc-label-class',
+            root: 'cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-0 cbx--primary-medium adhoc-root-class',
           },
         ],
         [
@@ -1670,12 +1675,17 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 1,
-            className: 'adhoc-classname',
+            className: {
+              root: 'adhoc-root-classname',
+              control: 'adhoc-control-classname',
+              label: 'adhoc-label-classname',
+            },
           },
           {
-            control: 'cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-classname',
-            label: 'cbx--primary-label text-white text-md uppercase adhoc-classname',
-            root: 'cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-1 cbx--primary-medium adhoc-classname',
+            control:
+              'cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-control-classname',
+            label: 'cbx--primary-label text-white text-md uppercase adhoc-label-classname',
+            root: 'cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-1 cbx--primary-medium adhoc-root-classname',
           },
         ],
       ])('checkbox(%o) returns %o', (_, options, expected) => {
@@ -1851,12 +1861,12 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 1,
-            class: 'adhoc-class',
+            class: { root: 'adhoc-root-class', control: 'adhoc-control-class', label: 'adhoc-label-class' },
           },
           {
-            control: 'border rounded cbx--primary-control border-transparent hover:bg-blue-600 adhoc-class',
-            label: 'font-semibold cbx--primary-label text-white adhoc-class',
-            root: 'checkbox cbx--primary-root bg-blue-500 m-1 adhoc-class',
+            control: 'border rounded cbx--primary-control border-transparent hover:bg-blue-600 adhoc-control-class',
+            label: 'font-semibold cbx--primary-label text-white adhoc-label-class',
+            root: 'checkbox cbx--primary-root bg-blue-500 m-1 adhoc-root-class',
           },
         ],
         [
@@ -1864,12 +1874,12 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 1,
-            className: 'adhoc-classname',
+            class: { root: 'adhoc-root-classname', control: 'adhoc-control-classname', label: 'adhoc-label-classname' },
           },
           {
-            control: 'border rounded cbx--primary-control border-transparent hover:bg-blue-600 adhoc-classname',
-            label: 'font-semibold cbx--primary-label text-white adhoc-classname',
-            root: 'checkbox cbx--primary-root bg-blue-500 m-1 adhoc-classname',
+            control: 'border rounded cbx--primary-control border-transparent hover:bg-blue-600 adhoc-control-classname',
+            label: 'font-semibold cbx--primary-label text-white adhoc-label-classname',
+            root: 'checkbox cbx--primary-root bg-blue-500 m-1 adhoc-root-classname',
           },
         ],
       ])('%d - checkbox(%o) return %o', (_, options, expected) => {
@@ -2046,13 +2056,13 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 1,
-            class: 'adhoc-class',
+            class: { root: 'adhoc-root-class', control: 'adhoc-control-class', label: 'adhoc-label-class' },
           },
           {
             control:
-              'border rounded cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-class',
-            label: 'font-semibold cbx--primary-label text-white text-md uppercase adhoc-class',
-            root: 'checkbox cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-1 cbx--primary-medium adhoc-class',
+              'border rounded cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-control-class',
+            label: 'font-semibold cbx--primary-label text-white text-md uppercase adhoc-label-class',
+            root: 'checkbox cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-1 cbx--primary-medium adhoc-root-class',
           },
         ],
         [
@@ -2060,13 +2070,13 @@ describe('svb', () => {
           {
             intent: 'primary',
             m: 1,
-            className: 'adhoc-classname',
+            class: { root: 'adhoc-root-classname', control: 'adhoc-control-classname', label: 'adhoc-label-classname' },
           },
           {
             control:
-              'border rounded cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-classname',
-            label: 'font-semibold cbx--primary-label text-white text-md uppercase adhoc-classname',
-            root: 'checkbox cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-1 cbx--primary-medium adhoc-classname',
+              'border rounded cbx--primary-control border-transparent hover:bg-blue-600 w-2.5 h-2.5 py-2 px-4 adhoc-control-classname',
+            label: 'font-semibold cbx--primary-label text-white text-md uppercase adhoc-label-classname',
+            root: 'checkbox cbx--primary-root bg-blue-500 cbx--enabled cursor-pointer cbx--medium m-1 cbx--primary-medium adhoc-root-classname',
           },
         ],
       ])('%d - checkbox(%o) return %o', (_, options, expected) => {
