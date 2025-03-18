@@ -119,7 +119,7 @@ export type SlotRecord<S extends string, T> = Partial<Record<S, T>>;
 export type SlotRecipeVariantRecord<S extends string> = Record<any, Record<any, SlotRecord<S, ClassValue>>>;
 
 export type SlotRecipeVariantFn<S extends string, T extends SlotRecipeVariantRecord<S>> = (
-  props?: RecipeSelection<T> & ClassProp
+  props?: RecipeSelection<T> & SlotClassProp<S>
 ) => SlotRecord<S, string>;
 
 export type SlotClassProp<S extends string> =

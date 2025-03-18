@@ -55,13 +55,18 @@ export const defineConfig: DefineConfig = (options) => {
 
     return (props) => {
       const obj: SlotRecord<string, string> = {};
+      const { class: _class, className, ...propsWithoutClass } = props ?? {};
 
       for (const slotKey of slots) {
         obj[slotKey] = cx(
           base?.[slotKey],
-          getVariantClassNamesBySlot(props, slotKey, variants, defaultVariants),
-          getCompoundVariantClassNamesBySlot(slotKey, compoundVariants, mergeDefaultsAndProps(props, defaultVariants)),
-          props?.class ?? props?.className
+          getVariantClassNamesBySlot(propsWithoutClass, slotKey, variants, defaultVariants),
+          getCompoundVariantClassNamesBySlot(
+            slotKey,
+            compoundVariants,
+            mergeDefaultsAndProps(propsWithoutClass, defaultVariants)
+          ),
+          _class?.[slotKey] ?? className?.[slotKey]
         );
       }
       return obj;
