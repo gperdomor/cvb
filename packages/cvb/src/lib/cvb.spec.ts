@@ -38,7 +38,7 @@ describe('cvb', () => {
   };
 
   describe('without anything', () => {
-    it('should handle empty variants property', () => {
+    it('empty', () => {
       const example = cvb({ variants: {} });
       expect(example()).toBe('');
       expect(
@@ -58,7 +58,7 @@ describe('cvb', () => {
       ).toBe('adhoc-class');
     });
 
-    it('should handle empty undefined', () => {
+    it('undefined', () => {
       // @ts-expect-error props is invalid
       const example = cvb(undefined);
       expect(example()).toBe('');
@@ -76,7 +76,7 @@ describe('cvb', () => {
       ).toBe('adhoc-className');
     });
 
-    it('should handle empty null', () => {
+    it('null', () => {
       // @ts-expect-error props is invalid
       const example = cvb(null);
       expect(example()).toBe('');
@@ -667,7 +667,14 @@ describe('cvb', () => {
       const badgeWithBaseWithDefaults = cvb({
         base: badgeConfig.base,
         variants: badgeConfig.variants,
-        compoundVariants: badgeConfig.compoundVariants,
+        compoundVariants: [
+          ...badgeConfig.compoundVariants,
+          {
+            color: ['indigo', 'green'],
+            flat: false,
+            className: 'uppercase',
+          },
+        ],
         defaultVariants: badgeConfig.defaultVariants,
       });
 
@@ -741,7 +748,7 @@ describe('cvb', () => {
             [
               2,
               { flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10 uppercase',
             ],
           ])('%d - badge(%o) return %o', (_, options, expected) => {
             expect(badgeWithBaseWithDefaults(options)).toBe(expected);
@@ -787,7 +794,7 @@ describe('cvb', () => {
             [
               2,
               { color: 'green', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20 uppercase',
             ],
             [
               3,
@@ -797,7 +804,7 @@ describe('cvb', () => {
             [
               4,
               { color: 'indigo', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10 uppercase',
             ],
           ])('%d - badge(%o) return %o', (_, options, expected) => {
             expect(badgeWithBaseWithDefaults(options)).toBe(expected);
@@ -814,7 +821,7 @@ describe('cvb', () => {
             [
               2,
               { size: 'sm', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 ring-1 ring-inset ring-indigo-700/10',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 ring-1 ring-inset ring-indigo-700/10 uppercase',
             ],
             [
               3,
@@ -824,7 +831,7 @@ describe('cvb', () => {
             [
               4,
               { size: 'md', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10 uppercase',
             ],
           ])('%d - badge(%o) return %o', (_, options, expected) => {
             expect(badgeWithBaseWithDefaults(options)).toBe(expected);
@@ -843,7 +850,7 @@ describe('cvb', () => {
             [
               2,
               { color: 'green', size: 'sm', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-1.5 py-0.5 ring-1 ring-inset ring-green-600/20',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-1.5 py-0.5 ring-1 ring-inset ring-green-600/20 uppercase',
             ],
             [
               3,
@@ -853,7 +860,7 @@ describe('cvb', () => {
             [
               4,
               { color: 'green', size: 'md', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20 uppercase',
             ],
             [
               5,
@@ -863,7 +870,7 @@ describe('cvb', () => {
             [
               6,
               { color: 'indigo', size: 'sm', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 ring-1 ring-inset ring-indigo-700/10',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 ring-1 ring-inset ring-indigo-700/10 uppercase',
             ],
             [
               7,
@@ -873,7 +880,7 @@ describe('cvb', () => {
             [
               8,
               { color: 'indigo', size: 'md', flat: false },
-              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10',
+              'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10 uppercase',
             ],
           ])('%d - badge(%o) return %o', (_, options, expected) => {
             expect(badgeWithBaseWithDefaults(options)).toBe(expected);
@@ -911,7 +918,7 @@ describe('cvb', () => {
           [
             6,
             { size: 'sm', flat: false, className: 'custom-class-6' },
-            'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 ring-1 ring-inset ring-indigo-700/10 custom-class-6',
+            'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 ring-1 ring-inset ring-indigo-700/10 uppercase custom-class-6',
           ],
           [
             7,
