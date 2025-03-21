@@ -108,8 +108,11 @@ export interface RecipeDefinition<T extends RecipeVariantRecord = RecipeVariantR
   defaultVariants?: RecipeSelection<T>;
 }
 
-export type RecipeCreatorFn = <T extends RecipeVariantRecord>(config: RecipeDefinition<T>) => RecipeVariantFn<T>;
+export type RecipeCreatorFn = <T extends RecipeVariantRecord>(config: RecipeDefinition<T>) => RecipeRuntimeFn<T>;
 
+export interface RecipeRuntimeFn<T extends RecipeVariantRecord> extends RecipeVariantFn<T> {
+  raw: RecipeDefinition<T>;
+}
 /* -----------------------------------------
  * Recipe / Slot
  * -----------------------------------------*/
@@ -162,7 +165,12 @@ export interface SlotRecipeDefinition<
 
 export type SlotRecipeCreatorFn = <S extends string, T extends SlotRecipeVariantRecord<S>>(
   config: SlotRecipeDefinition<S, T>
-) => SlotRecipeVariantFn<S, T>;
+) => SlotRecipeRuntimeFn<S, T>;
+
+export interface SlotRecipeRuntimeFn<S extends string, T extends SlotRecipeVariantRecord<S>>
+  extends SlotRecipeVariantFn<S, T> {
+  raw: SlotRecipeDefinition<S, T>;
+}
 
 /* -----------------------------------------
  * defineConfig

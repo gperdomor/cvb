@@ -133,4 +133,38 @@ describe('compose', () => {
       'font-semibold py-1 px-3 text-md rounded-md bg-blue-500 adhoc-classname'
     );
   });
+
+  it('4 - should merge into a single component', () => {
+    const roundedAndColored = compose(baseButton, roundedButton, coloredButton);
+
+    expectTypeOf(roundedAndColored).toBeFunction();
+    expectTypeOf(roundedAndColored).parameter(0).toExtend<
+      | {
+          size?: 'sm' | 'md' | undefined;
+          color?: 'blue' | 'red' | 'indigo' | undefined;
+        }
+      | undefined
+    >();
+
+    expect(roundedAndColored({})).toBe('font-semibold py-1 px-3 text-md rounded-md bg-blue-500');
+    expect(roundedAndColored({ size: 'sm' })).toBe('font-semibold py-1 px-3 text-sm rounded-md bg-blue-500');
+    expect(roundedAndColored({ size: 'md', color: 'indigo' })).toBe(
+      'font-semibold py-1 px-3 text-md rounded-md bg-indigo-500'
+    );
+    expect(roundedAndColored({ size: 'sm', color: 'red' })).toBe(
+      'font-semibold py-1 px-3 text-sm rounded-md bg-red-500'
+    );
+    expect(roundedAndColored({ size: 'sm', color: 'red', class: 'adhoc-class' })).toBe(
+      'font-semibold py-1 px-3 text-sm rounded-md bg-red-500 adhoc-class'
+    );
+    expect(roundedAndColored({ size: 'md', color: 'blue', className: 'adhoc-class' })).toBe(
+      'font-semibold py-1 px-3 text-md rounded-md bg-blue-500 adhoc-class'
+    );
+    expect(roundedAndColored({ class: 'adhoc-class' })).toBe(
+      'font-semibold py-1 px-3 text-md rounded-md bg-blue-500 adhoc-class'
+    );
+    expect(roundedAndColored({ className: 'adhoc-classname' })).toBe(
+      'font-semibold py-1 px-3 text-md rounded-md bg-blue-500 adhoc-classname'
+    );
+  });
 });
