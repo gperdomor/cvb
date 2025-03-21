@@ -1,0 +1,85 @@
+---
+title: Composing Recipes
+description: Merge your recipes to create new ones
+---
+
+With **CVB**, you can seamlessly merge multiple recipes through the `compose` utility, eliminating redundancy and promoting code reusability across your component definitions
+
+## Creating the recipes
+
+Imagine that you want to build a `button` and a `badge` component, both with `size` and `color` variants. Let's see how the `compose` utility can help you implement this efficiently.
+
+<Callout>
+  For simplicity, we'll place all recipes in a single file, though you can organize them across multiple files in your
+  actual project.
+</Callout>
+
+```ts title="components/recipes.ts"
+import { compose, cvb } from './lib/cvb.js';
+
+const sizes = cvb({
+  base: 'font-semibold py-1 px-3',
+  variants: {
+    size: { sm: 'text-sm', md: 'text-md' },
+  },
+});
+
+const baseButton = cvb({
+  base: 'rounded-sm text-white shadow-lg cursor-pointer',
+  variants: {
+    color: {
+      green: 'bg-green-600 hover:bg-indigo-500',
+      indigo: 'bg-indigo-600 hover:bg-indigo-500',
+    },
+  },
+});
+
+const baseBadge = cvb({
+  base: 'inline-flex items-center rounded-md ring-1 ring-inset',
+  variants: {
+    color: {
+      blue: 'bg-green-50 text-green-700 ring-green-600/20',
+      indigo: 'bg-indigo-50 text-indigo-700 ring-indigo-700/10',
+    },
+  },
+});
+
+const button = compose(baseButton, sizes); // [!code highlight]
+
+const badge = compose(baseBadge, sizes); // [!code highlight]
+```
+
+Let's extend our components with shadow variants. We can accomplish this by creating a new shadow recipe and composing it with our existing ones.
+
+```ts title="components/recipes.ts"
+import { compose, cvb } from './lib/cvb.js';
+
+const sizes = cvb({ ... }); // Collapsed for readability [!code highlight]
+
+const baseButton = cvb({ ... }); // Collapsed for readability [!code highlight]
+
+const baseBadge = cvb({ ... }); // Collapsed for readability [!code highlight]
+
+const shadows = cvb({ // [!code ++]
+  variants: { // [!code ++]
+    shadow: { // [!code ++]
+      md: 'drop-shadow-md', // [!code ++]
+      lg: 'drop-shadow-lg', // [!code ++]
+      xl: 'drop-shadow-xl', // [!code ++]
+    }, // [!code ++]
+  }, // [!code ++]
+}); // [!code ++]
+
+const button = compose(baseButton, sizes);
+
+const badge = compose(baseBadge, sizes);
+
+const buttonWithShadow = compose(baseButton, sizes, shadows); // compose(button, shadows) produces same result // [!code ++]
+const badgeWithShadow = compose(baseBadge, sizes, shadows); // compose(badge, shadows) produces same result [!code ++]
+
+```
+
+<Callout type="info">
+  You can compose as many recipes as you want even with `defaultVariants` and `compoundVariants`, just remember that the
+  order of the recipes matters, as they are applied from left to right.
+</Callout>
