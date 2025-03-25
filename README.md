@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Universal, fast and scalable styling solution for the modern web
+  Universal, lightweight and performant styling solution with a focus on component architecture for the modern web.
 </p>
 
 <p align="center">
@@ -29,13 +29,14 @@
 - ✨ First-class variant API
 - 🚀 Multi-part / Slots support
 - 🧬 Composition support
+- 🎨 Override styles support
 - 💪 Type-safe styles and autocomplete
 - 🦄 Framework agnostic
 - 0️⃣ Zero dependencies
 
 ## Documentation
 
-Visit our [official documentation](https://class-variance-builder.vercel.app).
+For comprehensive guides, examples, and API references, visit our [official documentation](https://class-variance-builder.vercel.app).
 
 ## Install
 
@@ -119,24 +120,40 @@ function Example() {
 
 ## Acknowledgement
 
-The development of **Class Variance Builder** was only possible due to the inspiration and ideas from these amazing projects
+The development of **Class Variance Builder** stands on the shoulders of giants. We're deeply grateful for these exceptional projects that provided inspiration, ideas, and patterns:
 
-- [CVA](https://cva.style/) - a great tool for generating variants for a single element.
+- [CVA (Class Variance Authority)](https://cva.style/) - Pioneered the variant-based approach to styling components
 - [Tailwind Variants](https://tailwind-variants.org/) - The power of Tailwind combined with a first-class variant API
 - [PandaCSS](https://panda-css.com/) - CSS-in-JS with build time generated styles
 
-Special thanks to [Renato Ribeiro](https://github.com/renatorib) who kindly transferred me the original `cvb` package to publish this new package.
+### Special Thanks
+
+A heartfelt thank you to [Renato Ribeiro](https://github.com/renatorib) who generously transferred the original `cvb` package name, allowing us to build this project with a clear and consistent identity.
 
 > [!IMPORTANT]
-> Version `cvb@0.1.0` was published by Renato Ribeiro and is not related to Class Variance Builder or the source code in this repository.
+> Please note that version `cvb@0.1.0` was previously published by Renato Ribeiro as an unrelated package. All versions `1.0.0-beta.2` and above represent the official Class Variance Builder library as described in this repository.
 
-## Contributing
+## Community
 
-Contributions are always welcome!
+Join the growing CVB community! We believe in building together and welcome contributors of all experience levels.
 
-Please follow our [contributing guidelines](https://github.com/gperdomor/cvb/blob/main/CONTRIBUTING.md).
+### Get Involved
 
-Please adhere to this project's [CODE OF CONDUCT](https://github.com/gperdomor/cvb/blob/main/CODE_OF_CONDUCT.md).
+- **Report Issues**: Found a bug or have a suggestion? [Open an issue](https://github.com/gperdomor/cvb/issues/new/choose) on GitHub
+- **Ask Questions**: Need help or clarification? Start a conversation in [GitHub Discussions](https://github.com/gperdomor/cvb/discussions)
+- **Contribute Code**: Pull requests are welcome! Check our [contribution guidelines](https://github.com/gperdomor/cvb/blob/main/CONTRIBUTING.md) to get started
+- **Share Your Work**: Built something with CVB? Share it with the community in the [Showcase discussion](https://github.com/gperdomor/cvb/discussions/categories/show-and-tell)
+- **Spread the Word**: Star the [repository](https://github.com/gperdomor/cvb), share on social media, or write about your experience
+
+### Resources
+
+- [GitHub Repository](https://github.com/gperdomor/cvb) - Source code, issues, and project management
+- [GitHub Discussions](https://github.com/gperdomor/cvb/discussions) - Community conversations and support
+- [NPM Package](https://www.npmjs.com/package/cvb) - Latest releases and installation information
+- [Documentation](https://class-variance-builder.vercel.app) - Comprehensive guides and API reference
+- [Code of Conduct](https://github.com/gperdomor/cvb/blob/main/CODE_OF_CONDUCT.md) - Our community standards and expectations
+
+Your feedback and contributions help make CVB better for everyone!
 
 ## License
 

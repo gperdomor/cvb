@@ -1,20 +1,24 @@
 {
-  "title": "CVB",
+  "title": "Class Variance Builder",
   "description": "The docs for CVB",
   "icon": "Building2",
   "root": true,
   "pages": [
-    "---Introduction---",
+    "---Overview---",
     "index",
-    "what-is-cvb",
     "comparisons",
-    "---Core Concepts---",
+    "api-reference",
+    "faq",
+    "benchmarks",
+    "---Getting Started---",
+    "installation",
     "variants",
     "slots",
     "---Advanced---",
     "overriding-styles",
     "composing-recipes",
-    "(integrations)",
-    "typescript"
+    "utils",
+    "typescript",
+    "(integrations)"
   ]
 }

@@ -1,7 +1,9 @@
 ---
 title: TypeScript
-description: Class Variant Builder provides typing out of the box, but this page contains some further utilities and tips
+description: Out of the box TypeScript experience.
 ---
+
+Class Variant Builder provides typing out of the box, but this page contains some further utilities and tips
 
 ## Extracting Variant Types
 
@@ -71,9 +73,9 @@ export const badgeVariants = cvb({
 
 type BadgeRecipeProps = VariantProps<typeof badgeVariants>; // [!code highlight]
 
-export interface BadgeProps // [!code highlight]
-  extends Omit<BadgeRecipeProps, 'flat'>, // [!code highlight]
-    Required<Pick<BadgeRecipeProps, 'flat'>> {} // [!code highlight]
+export interface BadgeProps // [!code highlight:3]
+  extends Omit<BadgeRecipeProps, 'flat'>,
+    Required<Pick<BadgeRecipeProps, 'flat'>> {}
 
 export const badge = (props: BadgeProps) => badgeVariants(props); // [!code highlight]
 

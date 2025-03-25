@@ -91,19 +91,65 @@ export type RecipeCompoundVariant<T> = T & ClassProp;
 
 export interface RecipeDefinition<T extends RecipeVariantRecord = RecipeVariantRecord> {
   /**
-   * The base styles of the recipe.
+   * Base styles applied to every instance of the component, regardless of variant selection.
+   * These form the foundation of your component's appearance.
+   *
+   * @example
+   * base: 'flex items-center justify-center rounded-md font-medium transition-colors',
    */
   base?: ClassValue;
   /**
-   * The multi-variant styles of the recipe.
+   * A collection of variant groups, each containing mutually exclusive styling options.
+   * Variants allow your component to adapt to different contexts and requirements.
+   *
+   * @example
+   * variants: {
+   *   size: {
+   *     sm: 'text-sm px-2 py-1',
+   *     md: 'text-base px-4 py-2',
+   *   },
+   *   color: {
+   *     primary: 'bg-blue-500 text-white hover:bg-blue-600',
+   *     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+   *   },
+   *   rounded: {
+   *     true: 'rounded-full',
+   *     false: 'rounded-md'
+   *   }
+   * }
    */
   variants?: T;
   /**
-   * The styles to apply when a combination of variants is selected.
+   * Styles applied when specific combinations of variants are selected.
+   * This enables complex conditional styling based on multiple variant selections.
+   *
+   * @example
+   * compoundVariants: [
+   *   {
+   *     // Apply when size is small and color is primary
+   *     size: 'sm',
+   *     color: 'primary',
+   *     class: 'uppercase tracking-wider'
+   *   },
+   *   {
+   *     // Apply when size is either md or lg and rounded is true
+   *     size: ['md', 'lg'],
+   *     rounded: true,
+   *     class: 'shadow-md'
+   *   }
+   * ]
    */
   compoundVariants?: Pretty<RecipeCompoundVariant<RecipeCompoundSelection<T>>>[];
   /**
-   * The default variants of the recipe.
+   * Predefined variant selections to apply when no specific variants are provided.
+   * These act as the component's factory settings for a consistent default appearance.
+   *
+   * @example
+   * defaultVariants: {
+   *   size: 'md',
+   *   color: 'primary',
+   *   rounded: false
+   * }
    */
   defaultVariants?: RecipeSelection<T>;
 }
@@ -142,25 +188,73 @@ export interface SlotRecipeDefinition<
   T extends SlotRecipeVariantRecord<S> = SlotRecipeVariantRecord<S>
 > {
   /**
-   * The parts/slots of the recipe.
+   * An array of named slots that make up the component.
+   * Each slot represents a distinct part of the component that can be styled independently.
+   *
+   * @example
+   * slots: ['root', 'header', 'body']
    */
   slots: S[] | Readonly<S[]>;
   /**
-   * The base styles of the recipe.
+   * Base styles applied to each slot, regardless of any variants selected.
+   * These styles form the foundation of your component's appearance.
+   *
+   * @example
+   * base: {
+   *   root: 'flex flex-col border rounded-lg overflow-hidden',
+   *   header: 'p-4 font-semibold border-b bg-gray-50',
+   *   body: 'p-4',
+   * }
    */
   base?: SlotRecord<S, ClassValue>;
   /**
-   * The multi-variant styles of the recipe.
+   * Multi-variant styles organized by variant groups and options.
+   * Each variant option contains styles for specific slots, allowing different
+   * parts of your component to respond to the same variant changes.
+   *
+   * @example
+   * variants: {
+   *   size: {
+   *     sm: { root: 'text-sm', header: 'py-2' },
+   *     lg: { root: 'text-lg', header: 'py-4' }
+   *   },
+   *   rounded: {
+   *     true: { root: 'rounded-full' }
+   *   }
+   * }
    */
   variants?: T;
   /**
-   * The default variants of the recipe.
-   */
-  defaultVariants?: RecipeSelection<T>;
-  /**
-   * The styles to apply when a combination of variants is selected.
+   * Conditional styles that apply only when a specific combination of variants is selected.
+   * This enables complex styling logic that depends on multiple variant selections.
+   *
+   * @example
+   * compoundVariants: [
+   *   {
+   *     size: 'sm',
+   *     rounded: true,
+   *     class: { root: 'shadow-sm', header: 'uppercase' }
+   *   },
+   *   {
+   *     size: ['md', 'lg'],
+   *     rounded: false,
+   *     class: { root: 'shadow-md' }
+   *   }
+   * ]
    */
   compoundVariants?: Pretty<SlotRecipeCompoundVariant<S, RecipeCompoundSelection<T>>>[];
+  /**
+   * Predefined variant selections to apply when no specific variants are provided.
+   * These act as the component's factory settings, ensuring consistent appearance
+   * even without explicit configuration.
+   *
+   * @example
+   * defaultVariants: {
+   *   size: 'md',
+   *   rounded: false
+   * }
+   */
+  defaultVariants?: RecipeSelection<T>;
 }
 
 export type SlotRecipeCreatorFn = <S extends string, T extends SlotRecipeVariantRecord<S>>(
@@ -179,7 +273,12 @@ export interface SlotRecipeRuntimeFn<S extends string, T extends SlotRecipeVaria
 export interface DefineConfigOptions {
   hooks?: {
     /**
-     * Returns the completed string of concatenated classes/classNames.
+     * A hook function called after class names are concatenated but before they're returned.
+     * This enables post-processing of the final class string, such as deduplication or
+     * resolving class conflicts.
+     *
+     * @param className - The fully concatenated class string generated by CVB functions
+     * @returns The processed class string that will be returned to the caller
      */
     onComplete?: (className: string) => string;
   };

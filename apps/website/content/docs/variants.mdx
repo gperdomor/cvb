@@ -3,283 +3,217 @@ title: Variants
 description: Create multi-variant styles with a type-safe runtime API
 ---
 
-Variants are defined using the `cvb` function which was inspired by [Class Variance Authority](https://cva.style/). The
-`cvb` function which takes an object as its argument.
+Variants are the heart of CVB's styling system, enabling you to create components with multiple visual states through a
+clean, type-safe API. The `cvb` function provides a powerful foundation for defining these variant-based styles.
 
-## Creating the Variant recipe
+## Understanding Variant Recipes
 
-A recipe consists of four properties:
+A variant recipe defines all possible visual states of a component in a single, structured declaration:
 
-- `base`: The base styles for the component.
-- `variants`: The different visual styles for the component
-- `compoundVariants`: The different combinations of variants for the component
-- `defaultVariants`: The default variant values for the component
+```ts
+cvb({
+  base: "...",        // Base Styles (always applied)
+  variants: {         // Variant Groups
+    color: {
+      green: "...",   // Variant Options
+      blue: "..."     // Variant Options
+    },
+    size: {
+      sm: "...",
+      md: "..."
+    }
+  }
+})
+```
+
+Each recipe consists of four optional properties:
+
+- `base`: Base styles applied to every instance of the component
+- `variants`: Groups of mutually exclusive styling options
+- `compoundVariants`: Styles applied when specific variant combinations are selected
+- `defaultVariants`: Pre-selected variant values when none are explicitly provided
 
 <Callout type="warn">Credit: This API was inspired by [Class Variance Authority](https://cva.style/).</Callout>
 
-To kick things off, let’s build a **"basic"** badge recipe, using `cvb` to handle our CSS classes.
-You can add variants by using the `variants` property. There's no limit to how many variants you can add.
+## Creating your first Recipe
+
+Let's create a `badge` component with color and size variants:
 
 ```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 
-// [!code ++]
+// [!code ++:14]
 export const badge = cvb({
-  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs', // [!code ++]
-  // [!code ++]
+  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
   variants: {
-    // [!code ++]
     color: {
-      green: 'bg-green-50 text-green-700', // [!code ++]
-      indigo: 'bg-indigo-50 text-indigo-700', // [!code ++]
-      red: 'bg-red-50 text-red-700', // [!code ++]
-    }, // [!code ++]
-    // [!code ++]
+      green: 'bg-green-50 text-green-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+      red: 'bg-red-50 text-red-700',
+    },
     size: {
-      sm: 'px-1.5 py-0.5', // [!code ++]
-      md: 'px-2 py-1', // [!code ++]
-    }, // [!code ++]
-  }, // [!code ++]
-}); // [!code ++]
-
-badge({ color: 'indigo', size: 'sm' });
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50
- * text-indigo-700 px-1.5 py-0.5
- */
-
-badge({ color: 'red', size: 'md' });
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-red-50 text-red-700
- * px-2 py-1
- */
+      sm: 'px-1.5 py-0.5',
+      md: 'px-2 py-1',
+    },
+  },
+});
 ```
 
 <Callout>Use of Tailwind CSS is optional</Callout>
 
+This creates a function that generates the appropriate class names based on the selected variants:
+
+```ts
+badge({ color: 'indigo', size: 'sm' });
+// Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5'
+```
+
 ### Boolean variants
 
-You can also add boolean variants to a component. This is useful when you want to add a state variant e.g. `disabled`.
+For simple on/off values, boolean variants provide a clean solution:
 
 ```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 
 export const badge = cvb({
-  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
+  // ...previous code
   variants: {
-    color: {
-      green: 'bg-green-50 text-green-700',
-      indigo: 'bg-indigo-50 text-indigo-700',
-      red: 'bg-red-50 text-red-700',
-    },
-    size: {
-      sm: 'px-1.5 py-0.5',
-      md: 'px-2 py-1',
-    },
-    // [!code ++]
+    // ...previous variants
+    // [!code ++:7]
     disabled: {
-      true: 'opacity-50', // [!code ++]
-    }, // [!code ++]
-    // [!code ++]
+      true: 'opacity-50',
+    },
     flat: {
-      true: '', // [!code ++]
-      false: 'ring-1 ring-inset', // [!code ++]
-    }, // [!code ++]
+      true: '',
+      false: 'ring-1 ring-inset',
+    },
   },
 });
+```
 
+Boolean variants are especially useful for toggling states like disabled, loading, or selected.
+
+```ts
 badge({ color: 'indigo', size: 'sm', disabled: true });
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50
- * text-indigo-700 px-1.5 py-0.5 opacity-50
- */
+// Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 opacity-50'
 
 badge({ color: 'red', size: 'md', flat: false });
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-red-50 text-red-700
- * px-2 py-1 ring-1 ring-inset
- */
+// Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-red-50 text-red-700 px-2 py-1 ring-1 ring-inset'
 ```
 
 ### Compound variants
 
-Compound variants are a way to combine multiple variants together to create more complex sets of styles. They are
-defined using the `compoundVariants` property, which takes an array of objects as its argument. Each object in the array
-represents a set of conditions that must be met in order for the corresponding styles to be applied.
-
-For example, you might want to apply a border color to the badge based on its `color` and the `flat` variant values,
-here's how to do it:
+Compound variants apply styles only when specific combinations of variants are selected, enabling complex conditional styling logic:
 
 ```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
 
 export const badge = cvb({
-  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
-  variants: {
-    color: {
-      green: 'bg-green-50 text-green-700',
-      indigo: 'bg-indigo-50 text-indigo-700',
-      red: 'bg-red-50 text-red-700',
-    },
-    size: {
-      sm: 'px-1.5 py-0.5',
-      md: 'px-2 py-1',
-    },
-    disabled: {
-      true: 'opacity-50',
-    },
-    flat: {
-      true: '',
-      false: 'ring-1 ring-inset',
-    },
-  },
-  // [!code ++]
+  // ...previous code
+  // [!code ++:26]
   compoundVariants: [
-    // apply when both green color and no flat are selected // [!code ++]
-    // [!code ++]
-    {
-      color: 'green', // [!code ++]
-      flat: false, // [!code ++]
-      class: 'ring-green-600/20', // You can also use "className" // [!code ++]
-    }, // [!code ++]
-    // apply when both indigo color and no flat are selected // [!code ++]
-    // [!code ++]
-    {
-      color: 'indigo', // [!code ++]
-      flat: false, // [!code ++]
-      class: 'ring-indigo-700/10', // You can also use "className" // [!code ++]
-    }, // [!code ++]
-    // apply when both red color and no flat are selected // [!code ++]
-    // [!code ++]
-    {
-      color: 'red', // [!code ++]
-      flat: false, // [!code ++]
-      class: 'ring-red-600/10', // You can also use "className" // [!code ++]
-    }, // [!code ++]
-    // apply when both green or red color, and no flat are selected // [!code ++]
-    // [!code ++]
-    {
-      color: ['green', 'red'], // [!code ++]
-      flat: false, // [!code ++]
-      class: 'font-medium', // You can also use "className" // [!code ++]
-    }, // [!code ++]
-  ], // [!code ++]
-});
-
-badge({ color: 'indigo', size: 'md', flat: false });
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2
- * py-1 ring-1 ring-inset ring-indigo-700/10
- */
-
-badge({ color: 'green', size: 'md', flat: false });
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1
- * ring-1 ring-inset ring-green-600/20 font-medium
- */
-```
-
-Overall, using compound variants allows you to create more complex sets of styles that can be applied to your components
-based on multiple conditions.
-
-By combining simple variants together in this way, you can create a wide range of visual styles without cluttering up
-your code with lots of conditional logic.
-
-### Default Variants
-
-The `defaultVariants` property is used to set the default variant values for the recipe. This is useful when you want to
-apply a variant by default. Here's an example of how to use `defaultVariants`:
-
-```ts title="components/badge.recipe.ts"
-import { cvb } from 'cvb';
-
-export const badge = cvb({
-  base: 'inline-flex items-center rounded-md gap-x-1.5 text-xs',
-  variants: {
-    color: {
-      green: 'bg-green-50 text-green-700',
-      indigo: 'bg-indigo-50 text-indigo-700',
-      red: 'bg-red-50 text-red-700',
-    },
-    size: {
-      sm: 'px-1.5 py-0.5',
-      md: 'px-2 py-1',
-    },
-    disabled: {
-      true: 'opacity-50',
-    },
-    flat: {
-      true: '',
-      false: 'ring-1 ring-inset',
-    },
-  },
-  compoundVariants: [
-    // apply when both green color and no flat are selected
+    // Apply specific ring colors based on green color variant when not flat
     {
       color: 'green',
       flat: false,
-      class: 'ring-green-600/20',
+      class: 'ring-green-600/20', // You can also use "className"
     },
-    // apply when both indigo color and no flat are selected
+    // Apply specific ring colors based on indigo color variant when not flat
     {
       color: 'indigo',
       flat: false,
-      class: 'ring-indigo-700/10',
+      class: 'ring-indigo-700/10', // You can also use "className"
     },
-    // apply when both red color and no flat are selected
+    // Apply specific ring colors based on red color variant when not flat
     {
       color: 'red',
       flat: false,
-      class: 'ring-red-600/10',
+      class: 'ring-red-600/10', // You can also use "className"
     },
-    // apply when both green or red color, and no flat are selected
+    // Apply font-medium to both green and red variants when not flat
     {
       color: ['green', 'red'],
       flat: false,
-      class: 'font-medium',
+      class: 'font-medium', // You can also use "className"
     },
   ],
-  // [!code ++]
-  defaultVariants: {
-    color: 'indigo', // [!code ++]
-    size: 'md', // [!code ++]
-    flat: 'false', // [!code ++]
-  }, // [!code ++]
 });
-
-badge();
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2
- * py-1 ring-1 ring-inset ring-indigo-700/10
- */
-
-badge({ color: 'green', flat: true });
-/**
- * Result:
- * inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1
- */
 ```
 
-## Using the recipe
+With compound variants, you can:
 
-The returned value from the `cvb` function is a function that can be used to apply the recipe to a component. Here's an
-example of how to use the `badge` recipe:
+- Target multiple variant combinations with a single rule
+- Apply different styles based on the interplay between variants
+- Use arrays to match multiple values for a single variant
+
+```ts
+badge({ color: 'indigo', size: 'md', flat: false });
+// Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10'
+
+badge({ color: 'green', size: 'md', flat: false });
+// Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20 font-medium'
+```
+
+{/* Overall, using compound variants allows you to create more complex sets of styles that can be applied to your components
+based on multiple conditions.
+
+By combining simple variants together in this way, you can create a wide range of visual styles without cluttering up
+your code with lots of conditional logic. */}
+
+### Default Variants
+
+Set default variant values to ensure your component looks great even without any props
+
+{/* The `defaultVariants` property is used to set the default variant values for the recipe. This is useful when you want to
+apply a variant by default. Here's an example of how to use `defaultVariants`: */}
+
+```ts title="components/badge.recipe.ts"
+import { cvb } from 'cvb';
+
+export const badge = cvb({
+  // ...previous code
+  // [!code ++:5]
+  defaultVariants: {
+    color: 'indigo',
+    size: 'md',
+    flat: 'false',
+  },
+});
+```
+
+With defaults defined, calling `badge()` without arguments will use these values:
+
+```ts
+badge(); // Uses all default variants
+// Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 ring-1 ring-inset ring-indigo-700/10'
+
+badge({ color: 'green' }); // Overrides only the color variant
+// Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20 font-medium'
+```
+
+## Using Recipes in Components
+
+Once defined, recipes can be easily integrated into your components:
+
 
 ```tsx title="components/badge.tsx"
 import { badge } from './badge.recipe'; // [!code highlight]
 
-const Button = () => {
-  const styles = badge({ color: 'green', size: 'md' }); // [!code highlight]
+interface BadgeProps {
+  children: React.ReactNode;
+  color?: 'green' | 'indigo' | 'red';
+  size?: 'sm' | 'md';
+  disabled?: boolean;
+  flat?: boolean;
+}
 
-  return <span className={styles}>Badge</span>;
-};
+export function Badge({ children, ...props }: BadgeProps) {
+  return (
+    <span className={badge(props)}>
+      {children}
+    </span>
+  );
+}
 ```
 
-<Callout>If you're a Typescript user, [here](./typescript) are some additional tips get the most out of `CVB`.</Callout>
+<Callout type="info"> For TypeScript users, CVB provides powerful type utilities to ensure complete type safety. See our TypeScript [guide](./typescript) to learn how to automatically derive prop types from your recipes. </Callout>

@@ -1,0 +1,54 @@
+---
+title: Benchmarks
+description: Performance tests and comparisons
+icon: Rocket
+---
+
+## The tests
+
+CVB is designed for optimal performance without sacrificing developer experience. We've conducted rigorous benchmarks to compare CVB against similar libraries
+
+Our benchmarks simulate typical developer workflows with controlled test environments to ensure fair comparisons:
+
+- **Libraries tested:** CVB, CVA, Tailwind Variants
+- **Test environment:** Node.js v20.10.0, isolated processes
+- **Hardware:** MacBook Pro 2019, 2.3GHz 8-core i9, 16GB 2667 MHz DDR4
+
+{/* - Metrics: Operation time (lower is better), memory usage, bundle size */}
+{/* - Test runs: 10,000 operations per test, averaged across 5 runs */}
+
+Each benchmark measures a specific operation that developers commonly perform when using these libraries.
+
+### Creating Variant recipes
+
+TBA
+
+### Creating Slot recipes
+
+TBA
+
+### Composing Variant recipes
+
+TBA
+
+### Bundle Size Comparison
+
+| Library           |   Version    | Minified | Minified + Gzipped |
+| ----------------- | :----------: | :------: | :----------------: |
+| CVB               | 1.0.0-beta.4 |  2.2kB   |        963B        |
+| CVA               | 1.0.0-beta.3 |  2.1kB   |        921B        |
+| Tailwind Variants |    1.0.0     |  18.3kB  |       9.2kB        |
+
+<Callout>
+  While CVB is slightly larger than CVA in bundle size, this difference reflects CVB's additional features like
+  comprehensive slot recipe support. Despite these extra capabilities, CVB maintains its commitment to zero
+  dependencies, ensuring a minimal footprint for your applications.
+</Callout>
+
+## Summary
+
+CVB consistently performs at or above the level of similar libraries across all benchmarks. Our focus on a lean codebase with zero dependencies has resulted in excellent performance without sacrificing developer experience.
+
+We benchmark against cva and tailwind-variants because they're the most similar libraries, and they've pushed us to improve our performance. Our goal with these benchmarks is to provide transparent performance comparisons for the community.
+
+All benchmark code is available on GitHub so you can verify our results or run the tests yourself.
