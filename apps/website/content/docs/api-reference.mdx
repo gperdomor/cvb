@@ -11,7 +11,7 @@ CVB provides a carefully designed API that makes styling components with variant
 Creates a standard recipe function that generates class names based on variant props.
 
 ```ts
-import { cvb } from "cvb";
+import { cvb } from 'cvb';
 
 const recipe = cvb(options);
 ```
@@ -19,10 +19,10 @@ const recipe = cvb(options);
 ### Parameters
 
 1. `options`
-    - `base`: Base styles applied to every instance of the component.
-    - `variants`: Groups of mutually exclusive styling options.
-    - `compoundVariants`: Styles applied when specific variant combinations are selected.
-    - `defaultVariants`: Pre-selected variant values when none are explicitly provided.
+   - `base`: Base styles applied to every instance of the component.
+   - `variants`: Groups of mutually exclusive styling options.
+   - `compoundVariants`: Styles applied when specific variant combinations are selected.
+   - `defaultVariants`: Pre-selected variant values when none are explicitly provided.
 
 ### Returns
 
@@ -41,11 +41,11 @@ const recipe = svb(options);
 ### Parameters
 
 1. `options`
-    - `slots`: An array of named parts that make up your component.
-    - `base`: Base styles applied to each slot regardless of variants.
-    - `variants`: Styling options that affect multiple slots simultaneously.
-    - `compoundVariants`: Styles applied when specific variant combinations are selected.
-    - `defaultVariants`: Pre-selected variant values when none are explicitly provided.
+   - `slots`: An array of named parts that make up your component.
+   - `base`: Base styles applied to each slot regardless of variants.
+   - `variants`: Styling options that affect multiple slots simultaneously.
+   - `compoundVariants`: Styles applied when specific variant combinations are selected.
+   - `defaultVariants`: Pre-selected variant values when none are explicitly provided.
 
 ### Returns
 
@@ -55,9 +55,8 @@ A `svb` recipe function.
 
 The cx function is a lightweight utility for conditionally combining multiple CSS class names, similar to popular libraries like `clsx` and `classnames`.
 
-
 ```ts
-import { cx } from "cvb";
+import { cx } from 'cvb';
 
 const className = cx(classes);
 ```
@@ -75,7 +74,7 @@ A single `string` class name.
 Merge your recipes to create new ones.
 
 ```ts
-import { compose } from "cvb";
+import { compose } from 'cvb';
 
 const composedComponent = compose(options);
 ```
@@ -99,5 +98,5 @@ export const { cvb, svb, cx, compose } = defineConfig(options);
 ```
 
 1. `options`
-    - `hooks`
-        - `onComplete`: function that returns a concatenated class string of all classes passed to `cx`, `cvb`, `svb` or `compose`.
+   - `hooks`
+     - `onComplete`: function that returns a concatenated class string of all classes passed to `cx`, `cvb`, `svb` or `compose`.

@@ -9,7 +9,6 @@ CVB provides powerful utility functions that enhance your workflow beyond the re
 
 The `cx` function is a lightweight utility for conditionally combining CSS class names, similar to popular libraries like `clsx` and `classnames`, but with a focus on simplicity and performance.
 
-
 ```ts
 import { cx } from 'cvb';
 
@@ -31,6 +30,7 @@ function Button({ primary, large, disabled, className }) {
 ```
 
 ### Key Features
+
 - **Lightweight:** Tiny implementation with zero dependencies
 - **Efficient:** Optimized for speed with minimal runtime overhead
 - **Type-Safe:** Full TypeScript support for better development experience
@@ -69,7 +69,11 @@ cx(
 );
 ```
 
-<Callout type="info"> The `cx` function only accepts string expressions as arguments, preferring a more functional approach over object syntax. This design choice leads to a more intuitive syntax with conditions first and better support for conditional branches through ternary operators. </Callout>
+<Callout type="info">
+  The `cx` function only accepts string expressions as arguments, preferring a more functional approach over object syntax.
+  This design choice leads to a more intuitive syntax with conditions first and better support for conditional branches through
+  ternary operators.
+</Callout>
 
 ## defineConfig
 
@@ -86,12 +90,13 @@ function processClass(className: string) {
 // Create custom CVB instance
 export const { cvb, svb, cx, compose } = defineConfig({
   hooks: {
-    onComplete: (className) => processClass(className)
-  }
+    onComplete: (className) => processClass(className),
+  },
 });
 ```
 
 ### Configuration Options
+
 Currently, defineConfig supports the following options:
 
 ```ts
@@ -111,7 +116,9 @@ interface DefineConfigOptions {
 
 When working with Tailwind CSS, you can use tailwind-merge to resolve conflicting utility classes
 
-<Callout type="info">See our Tailwind CSS integration [guide](./tailwindcss#handling-style-conflicts) for details. </Callout>
+<Callout type="info">
+  See our Tailwind CSS integration [guide](./tailwindcss#handling-style-conflicts) for details.
+</Callout>
 
 #### Custom Class Transformations
 
@@ -125,8 +132,8 @@ export const { cvb, svb, cx, compose } = defineConfig({
       return className
         .replace(/\bfb\b/g, 'font-bold')
         .replace(/\bfi\b/g, 'font-italic');
-    }
-  }
+    },
+  },
 });
 
 cx('fb', 'text-red-500'); // => 'font-bold text-red-500'

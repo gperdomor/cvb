@@ -39,6 +39,7 @@ badge({
 });
 // Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs px-2 py-1 bg-indigo-50 text-indigo-700 uppercase font-bold'
 ```
+
 The override classes are appended to the end of the generated class string, allowing them to extend or override the recipe's styles.
 
 ### Overriding Styles on Slot Recipes
@@ -117,4 +118,7 @@ This pattern ensures that component consumers can add custom styles when needed.
 - **Be Mindful of Specificity:** Remember that order matters in CSS, and some overrides might require !important or higher specificity selectors
 - **Document Override Points:** Let component consumers know which parts of your component are designed to be customized
 
-<Callout type="info"> When working with Tailwind CSS, consider using `tailwind-merge` to handle class conflicts between your recipe styles and overrides. See our Tailwind CSS integration [guide](./tailwindcss) for details. </Callout>
+<Callout type="info">
+  When working with Tailwind CSS, consider using `tailwind-merge` to handle class conflicts between your recipe styles and
+  overrides. See our Tailwind CSS integration [guide](./tailwindcss) for details.
+</Callout>

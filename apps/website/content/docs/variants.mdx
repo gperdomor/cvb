@@ -12,18 +12,19 @@ A variant recipe defines all possible visual states of a component in a single, 
 
 ```ts
 cvb({
-  base: "...",        // Base Styles (always applied)
-  variants: {         // Variant Groups
+  base: '...', // Base Styles (always applied)
+  variants: {
+    // Variant Groups
     color: {
-      green: "...",   // Variant Options
-      blue: "..."     // Variant Options
+      green: '...', // Variant Options
+      blue: '...', // Variant Options
     },
     size: {
-      sm: "...",
-      md: "..."
-    }
-  }
-})
+      sm: '...',
+      md: '...',
+    },
+  },
+});
 ```
 
 Each recipe consists of four optional properties:
@@ -154,18 +155,9 @@ badge({ color: 'green', size: 'md', flat: false });
 // Result: 'inline-flex items-center rounded-md gap-x-1.5 text-xs bg-green-50 text-green-700 px-2 py-1 ring-1 ring-inset ring-green-600/20 font-medium'
 ```
 
-{/* Overall, using compound variants allows you to create more complex sets of styles that can be applied to your components
-based on multiple conditions.
-
-By combining simple variants together in this way, you can create a wide range of visual styles without cluttering up
-your code with lots of conditional logic. */}
-
 ### Default Variants
 
 Set default variant values to ensure your component looks great even without any props
-
-{/* The `defaultVariants` property is used to set the default variant values for the recipe. This is useful when you want to
-apply a variant by default. Here's an example of how to use `defaultVariants`: */}
 
 ```ts title="components/badge.recipe.ts"
 import { cvb } from 'cvb';
@@ -195,7 +187,6 @@ badge({ color: 'green' }); // Overrides only the color variant
 
 Once defined, recipes can be easily integrated into your components:
 
-
 ```tsx title="components/badge.tsx"
 import { badge } from './badge.recipe'; // [!code highlight]
 
@@ -216,4 +207,7 @@ export function Badge({ children, ...props }: BadgeProps) {
 }
 ```
 
-<Callout type="info"> For TypeScript users, CVB provides powerful type utilities to ensure complete type safety. See our TypeScript [guide](./typescript) to learn how to automatically derive prop types from your recipes. </Callout>
+<Callout type="info">
+  For TypeScript users, CVB provides powerful type utilities to ensure complete type safety. See our TypeScript [guide](./typescript)
+  to learn how to automatically derive prop types from your recipes.
+</Callout>

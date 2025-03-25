@@ -108,7 +108,6 @@ badge({ color: 'indigo', size: 'sm' });
 
 For simple on/off values, boolean variants provide a clean solution:
 
-
 ```ts title="components/badge.recipe.ts"
 import { svb } from 'cvb';
 
@@ -207,6 +206,7 @@ export const badge = svb({
   },
 });
 ```
+
 With defaults defined, calling `badge()` without arguments will use these values:
 
 ```ts
@@ -254,4 +254,7 @@ export function Badge({ children, ...props }: BadgeProps) {
 }
 ```
 
-<Callout type="info"> For TypeScript users, CVB provides powerful type utilities to ensure complete type safety. See our TypeScript [guide](./typescript) to learn how to automatically derive prop types from your recipes. </Callout>
+<Callout type="info">
+  For TypeScript users, CVB provides powerful type utilities to ensure complete type safety. See our TypeScript [guide](./typescript)
+  to learn how to automatically derive prop types from your recipes.
+</Callout>

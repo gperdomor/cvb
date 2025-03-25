@@ -123,17 +123,18 @@ const button = cvb({
   variants: {
     size: {
       small: 'text-sm',
-      large: 'p-3'           // conflict with this general padding
-    }
-  }
+      large: 'p-3', // conflict with this general padding
+    },
+  },
 });
 ```
 
-### The solution:  Tailwind Merge
+### The solution: Tailwind Merge
 
 The `tailwind-merge` package intelligently resolves these conflicts by understanding Tailwind's utility relationships:
 
 1. First, install `tailwind-merge`:
+
 ```package-install
 npm i tailwind-merge
 ```
@@ -161,17 +162,17 @@ export const button = cvb({
   variants: {
     color: {
       primary: 'bg-blue-500 text-white hover:bg-blue-600',
-      secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+      secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
     },
     size: {
       small: 'text-sm',
-      large: 'text-lg p-5' // p-5 will correctly override px-4 and py-2
-    }
+      large: 'text-lg p-5', // p-5 will correctly override px-4 and py-2
+    },
   },
   defaultVariants: {
     color: 'primary',
-    size: 'small'
-  }
+    size: 'small',
+  },
 });
 
 // Usage
@@ -183,4 +184,7 @@ cx('p-5 bg-gray-200', 'bg-blue-500');
 // Result: "p-5 bg-blue-500"
 ```
 
-<Callout> Remember that CVB works with any CSS approach, not just Tailwind. You can mix Tailwind with CSS Modules, CSS-in-JS, or any other styling method while still getting the benefits of CVB's variant system. </Callout>
+<Callout>
+  Remember that CVB works with any CSS approach, not just Tailwind. You can mix Tailwind with CSS Modules, CSS-in-JS, or
+  any other styling method while still getting the benefits of CVB's variant system.
+</Callout>

@@ -3,8 +3,6 @@ title: Composing Recipes
 description: Merge your recipes to create new ones
 ---
 
-import { Badge } from '../../src/lib/badge';
-
 One of CVB's most powerful features is the ability to merge multiple recipes through the `compose` utility, enabling a modular approach to styling that scales with your design system's complexity
 
 ## The Power of Composition
@@ -35,12 +33,12 @@ export const sizes = cvb({
   variants: {
     size: {
       sm: 'text-sm leading-5',
-      md: 'text-base leading-6'
+      md: 'text-base leading-6',
     },
   },
   defaultVariants: {
-    size: 'md'
-  }
+    size: 'md',
+  },
 });
 
 // Shared shadow variants
@@ -54,8 +52,8 @@ export const shadows = cvb({
     },
   },
   defaultVariants: {
-    shadow: 'none'
-  }
+    shadow: 'none',
+  },
 });
 ```
 
@@ -75,8 +73,8 @@ export const baseButton = cvb({
     },
   },
   defaultVariants: {
-    color: 'indigo'
-  }
+    color: 'indigo',
+  },
 });
 
 // Badge-specific styling
@@ -89,8 +87,8 @@ export const baseBadge = cvb({
     },
   },
   defaultVariants: {
-    color: 'indigo'
-  }
+    color: 'indigo',
+  },
 });
 ```
 
@@ -131,7 +129,7 @@ function Button({ shadow, ...props }) {
       className={buttonRecipe({
         size: props.size,
         color: props.color,
-        shadow: shadow ? 'md' : undefined
+        shadow: shadow ? 'md' : undefined,
       })}
     >
       {props.children}
@@ -140,7 +138,10 @@ function Button({ shadow, ...props }) {
 }
 ```
 
-<Callout type="info"> When composing recipes, later recipes can override styles from earlier ones. The order matters - recipes are applied from left to right, with each subsequent recipe potentially overriding properties from previous ones. </Callout>
+<Callout type="info">
+  When composing recipes, later recipes can override styles from earlier ones. The order matters - recipes are applied from
+  left to right, with each subsequent recipe potentially overriding properties from previous ones.
+</Callout>
 
 ## Composition Rules and Behavior
 
