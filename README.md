@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="logo" height="100" src="./apps/website/src/app/icon.svg"/>
+  <img alt="logo" max-width="100%" src="./artboard.svg"/>
   </br>
   <strong>C</strong>lass <strong>V</strong>ariance <strong>B</strong>uilder
 </p>
