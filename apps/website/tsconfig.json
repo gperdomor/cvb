@@ -29,6 +29,7 @@
     "../../apps/website/.next/types/**/*.ts",
     "../../dist/apps/website/.next/types/**/*.ts",
     "next-env.d.ts",
+    "index.d.ts",
     "src/**/*.js",
     "src/**/*.jsx",
     "src/**/*.ts",
