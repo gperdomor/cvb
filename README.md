@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>C</strong>lass <strong>V</strong>ariance <strong>B</strong>uilder
+  <img alt="logo" max-width="100%" max-height="200px" src="./artboard.svg"/>
 </p>
 
 <p align="center">
