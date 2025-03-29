@@ -1,7 +1,9 @@
+import { createMetadata } from '@/lib/metadata';
+import { metadataImage } from '@/lib/metadata-image';
 import { source } from '@/lib/source';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
-import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page';
+import { DocsBody, DocsCategory, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page';
 import { notFound } from 'next/navigation';
 
 export default async function Page(props: { params: Promise<{ slug?: string[] }> }) {
@@ -17,6 +19,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <MDX components={{ ...defaultMdxComponents, Tab, Tabs }} />
+        {page.data.index ? <DocsCategory page={page} from={source} /> : null}
       </DocsBody>
     </DocsPage>
   );
@@ -29,10 +32,20 @@ export async function generateStaticParams() {
 export async function generateMetadata(props: { params: Promise<{ slug?: string[] }> }) {
   const params = await props.params;
   const page = source.getPage(params.slug);
+
   if (!page) notFound();
 
-  return {
-    title: page.data.title,
-    description: page.data.description,
-  };
+  const description =
+    page.data.description ??
+    'Universal, lightweight and performant styling solution with a focus on component architecture for the modern web';
+
+  return createMetadata(
+    metadataImage.withImage(page.slugs, {
+      title: page.data.title,
+      description,
+      openGraph: {
+        url: `/docs/${page.slugs.join('/')}`,
+      },
+    })
+  );
 }
