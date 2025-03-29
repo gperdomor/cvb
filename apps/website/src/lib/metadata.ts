@@ -6,7 +6,7 @@ export function createMetadata(override: Metadata): Metadata {
     openGraph: {
       title: override.title ?? undefined,
       description: override.description ?? undefined,
-      url: 'https://class-variance-builder.vercel.app/',
+      url: 'https://class-variance-builder.vercel.app',
       images: '/banner.png',
       ...override.openGraph,
     },
@@ -24,4 +24,4 @@ export function createMetadata(override: Metadata): Metadata {
 export const baseUrl =
   process.env.NODE_ENV === 'development' || !process.env.VERCEL_URL
     ? new URL('http://localhost:3000')
-    : new URL(`https://${process.env.VERCEL_URL}`);
+    : new URL(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
