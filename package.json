@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "12.2.0",
+    "@vercel/analytics": "1.5.0",
     "fumadocs-core": "15.0.16",
     "fumadocs-docgen": "2.0.0",
     "fumadocs-mdx": "11.5.6",
