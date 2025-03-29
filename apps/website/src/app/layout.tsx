@@ -1,3 +1,4 @@
+import { baseUrl, createMetadata } from '@/lib/metadata';
 import Link from 'fumadocs-core/link';
 import { Banner } from 'fumadocs-ui/components/banner';
 import { RootProvider } from 'fumadocs-ui/provider';
@@ -7,6 +8,16 @@ import './global.css';
 
 const inter = Inter({
   subsets: ['latin'],
+});
+
+export const metadata = createMetadata({
+  title: {
+    template: '%s | Class Variance Builder',
+    default: 'Class Variance Builder',
+  },
+  description:
+    'Universal, lightweight and performant styling solution with a focus on component architecture for the modern web',
+  metadataBase: baseUrl,
 });
 
 export default function Layout({ children }: { children: ReactNode }) {
