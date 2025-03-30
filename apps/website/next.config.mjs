@@ -15,6 +15,18 @@ const nextConfig = {
     svgr: false,
   },
   reactStrictMode: true,
+  redirects: async () => {
+    if (process.env.ENABLE_HOME_REDIRECT === 'true') {
+      return [
+        {
+          source: '/',
+          destination: '/docs',
+          permanent: false,
+        },
+      ];
+    }
+    return [];
+  },
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) => rule.test?.test?.('.svg'));
