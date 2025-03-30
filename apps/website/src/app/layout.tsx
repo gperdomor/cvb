@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <RootProvider>
-          <Banner variant="normal" height="2.5rem" className="gap-2">
+          <Banner variant="normal" height="2.5rem" className="gap-2" id="announcement-beta.4">
             🎉 cvb@1.0.0-beta.4 is released.
             <Link className="text-blue-500" href="https://github.com/gperdomor/cvb/releases/tag/v1.0.0-beta.4">
               Read more

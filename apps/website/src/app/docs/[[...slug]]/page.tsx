@@ -45,6 +45,8 @@ export async function generateMetadata(props: { params: Promise<{ slug?: string[
       description,
       openGraph: {
         url: `/docs/${page.slugs.join('/')}`,
+        type: 'article',
+        modifiedTime: page.data?.lastModified?.toString(),
       },
     })
   );
