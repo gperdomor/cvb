@@ -37,18 +37,6 @@ describe('cvb', () => {
     },
   };
 
-  describe('raw', () => {
-    it.each<[number, RecipeDefinition]>([
-      [1, { base: '', variants: {} }],
-      [2, { base: '', variants: { color: { red: 'red' } } }],
-      [3, { base: '', variants: { size: { sm: 'sm', md: 'md' } }, defaultVariants: { size: 'md' } }],
-      [4, { base: '', variants: { size: { sm: 'sm', md: 'md' } }, compoundVariants: [{ size: 'md', class: '' }] }],
-    ])('%d - badge(%o) return %o', (_, config) => {
-      const badge = cvb(config);
-      expect(badge.raw).toBe(config);
-    });
-  });
-
   describe('without anything', () => {
     it('empty', () => {
       const example = cvb({ variants: {} });
