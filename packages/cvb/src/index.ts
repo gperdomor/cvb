@@ -9,6 +9,7 @@ export type {
   RecipeCreatorFn,
   RecipeDefinition,
   RecipeRuntimeFn,
+  RecipeSelection,
   RecipeVariantRecord,
   SlotRecipeCreatorFn,
   SlotRecipeDefinition,
