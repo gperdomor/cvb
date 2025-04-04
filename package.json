@@ -73,6 +73,8 @@
     "nx": "20.7.1",
     "postcss": "8.5.3",
     "prettier": "^2.6.2",
+    "tailwind-merge": "3.1.0",
+    "tailwind-variants": "1.0.0",
     "tailwindcss": "4.0.13",
     "tinybench": "4.0.1",
     "tslib": "^2.3.0",

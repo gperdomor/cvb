@@ -1,7 +1,7 @@
 import { cva } from 'cva';
 import { Bench } from 'tinybench';
 import { cvb, RecipeDefinition } from '../src';
-import { printBenchmark } from './print.helper.js';
+import { printBenchmark } from './helpers.js';
 import { TEST_CASES } from './test-cases.js';
 
 async function createBenchmark(name: string, args: RecipeDefinition) {

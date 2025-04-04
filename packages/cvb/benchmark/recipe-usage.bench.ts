@@ -1,7 +1,7 @@
 import { CVA, cva } from 'cva';
 import { Bench } from 'tinybench';
 import { cvb, RecipeRuntimeFn, RecipeSelection, RecipeVariantRecord } from '../src';
-import { printBenchmark } from './print.helper.js';
+import { printBenchmark } from './helpers.js';
 import { TEST_CASES } from './test-cases.js';
 
 const cvbSimple = cvb(TEST_CASES.simple);

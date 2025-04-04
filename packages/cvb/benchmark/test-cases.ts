@@ -1,4 +1,4 @@
-import { RecipeDefinition } from '../src/lib/types';
+import { RecipeDefinition, SlotRecipeDefinition } from '../src/lib/types';
 
 export const TEST_CASES: Record<string, RecipeDefinition> = {
   simple: {
@@ -596,5 +596,317 @@ export const COMPOSE_CASES: Record<string, RecipeDefinition> = {
     defaultVariants: {
       type: 'solid',
     },
+  },
+};
+
+export const SLOT_TEST_CASES: Record<string, SlotRecipeDefinition> = {
+  simple: {
+    slots: ['container', 'title', 'description'],
+    base: {
+      container: 'flex flex-col p-4 rounded p-5',
+      title: 'text-lg font-bold',
+      description: 'text-sm text-gray-500',
+    },
+    variants: {
+      size: {
+        sm: {
+          card: 'max-w-sm',
+          header: 'text-sm',
+          body: 'text-sm',
+          footer: 'text-xs',
+        },
+        md: {
+          card: 'max-w-md',
+          header: 'text-base',
+          body: 'text-base',
+          footer: 'text-sm',
+        },
+        lg: {
+          card: 'max-w-lg',
+          header: 'text-lg',
+          body: 'text-base',
+          footer: 'text-sm',
+        },
+      },
+    },
+  },
+  complex: {
+    slots: ['card', 'header', 'body', 'footer'],
+    base: {
+      card: 'rounded-lg overflow-hidden shadow-md',
+      header: 'p-4 border-b',
+      body: 'p-4',
+      footer: 'p-4 border-t',
+    },
+    variants: {
+      size: {
+        sm: {
+          card: 'max-w-sm',
+          header: 'text-sm',
+          body: 'text-sm',
+          footer: 'text-xs',
+        },
+        md: {
+          card: 'max-w-md',
+          header: 'text-base',
+          body: 'text-base',
+          footer: 'text-sm',
+        },
+        lg: {
+          card: 'max-w-lg',
+          header: 'text-lg',
+          body: 'text-base',
+          footer: 'text-sm',
+        },
+      },
+      variant: {
+        primary: {
+          card: 'bg-blue-50',
+          header: 'bg-blue-500 text-white',
+          footer: 'bg-blue-100',
+        },
+        secondary: {
+          card: 'bg-gray-50',
+          header: 'bg-gray-500 text-white',
+          footer: 'bg-gray-100',
+        },
+        outline: {
+          card: 'border-2',
+          header: 'border-b-2',
+          footer: 'border-t-2',
+        },
+      },
+    },
+    defaultVariants: {
+      size: 'md',
+      variant: 'primary',
+    },
+    compoundVariants: [
+      {
+        size: 'sm',
+        variant: 'outline',
+        class: {
+          card: 'border-gray-200',
+          header: 'border-gray-200',
+          footer: 'border-gray-200',
+        },
+      },
+      {
+        size: 'md',
+        variant: 'outline',
+        class: {
+          card: 'border-gray-300',
+          header: 'border-gray-300',
+          footer: 'border-gray-300',
+        },
+      },
+      {
+        size: 'lg',
+        variant: 'outline',
+        class: {
+          card: 'border-gray-400',
+          header: 'border-gray-400',
+          footer: 'border-gray-400',
+        },
+      },
+    ],
+  },
+
+  large: {
+    slots: [
+      'container',
+      'header',
+      'toolbar',
+      'searchBar',
+      'content',
+      'sidebar',
+      'main',
+      'footer',
+      'title',
+      'subtitle',
+      'navItem',
+      'button',
+      'icon',
+      'input',
+      'label',
+      'error',
+      'card',
+      'cardHeader',
+      'cardBody',
+      'cardFooter',
+    ],
+    base: {
+      container: 'w-full h-full flex flex-col',
+      header: 'w-full flex items-center justify-between p-4 border-b',
+      toolbar: 'flex items-center gap-2 p-2',
+      searchBar: 'relative flex items-center',
+      content: 'flex flex-1 min-h-0',
+      sidebar: 'w-64 h-full overflow-y-auto border-r',
+      main: 'flex-1 p-6 overflow-auto',
+      footer: 'w-full p-4 border-t text-center',
+      title: 'text-xl font-bold',
+      subtitle: 'text-lg font-semibold',
+      navItem: 'px-4 py-2 hover:bg-gray-100 cursor-pointer',
+      button: 'px-4 py-2 rounded font-medium',
+      icon: 'w-5 h-5',
+      input: 'border rounded px-3 py-2',
+      label: 'font-medium text-sm mb-1',
+      error: 'text-red-500 text-sm mt-1',
+      card: 'rounded-lg overflow-hidden shadow',
+      cardHeader: 'p-4 border-b',
+      cardBody: 'p-4',
+      cardFooter: 'p-4 border-t',
+    },
+    variants: {
+      theme: {
+        light: {
+          container: 'bg-white text-gray-900',
+          header: 'bg-white border-gray-200',
+          toolbar: 'bg-gray-50',
+          sidebar: 'bg-gray-50 border-gray-200',
+          footer: 'bg-white border-gray-200',
+          button: 'bg-white border border-gray-300 text-gray-700',
+          input: 'border-gray-300 bg-white text-gray-900',
+          card: 'bg-white border border-gray-200',
+          cardHeader: 'bg-white border-gray-200',
+          cardFooter: 'bg-gray-50 border-gray-200',
+        },
+        dark: {
+          container: 'bg-gray-900 text-gray-100',
+          header: 'bg-gray-800 border-gray-700',
+          toolbar: 'bg-gray-800',
+          sidebar: 'bg-gray-800 border-gray-700',
+          footer: 'bg-gray-800 border-gray-700',
+          button: 'bg-gray-700 border border-gray-600 text-gray-100',
+          input: 'border-gray-600 bg-gray-700 text-gray-100',
+          card: 'bg-gray-800 border border-gray-700',
+          cardHeader: 'bg-gray-800 border-gray-700',
+          cardFooter: 'bg-gray-800 border-gray-700',
+        },
+      },
+      size: {
+        sm: {
+          button: 'text-sm py-1 px-3',
+          input: 'text-sm py-1 px-3',
+          title: 'text-lg',
+          subtitle: 'text-base',
+          card: 'max-w-sm',
+          cardHeader: 'p-3',
+          cardBody: 'p-3',
+          cardFooter: 'p-3',
+        },
+        md: {
+          button: 'text-base py-2 px-4',
+          input: 'text-base py-2 px-4',
+          title: 'text-xl',
+          subtitle: 'text-lg',
+          card: 'max-w-md',
+          cardHeader: 'p-4',
+          cardBody: 'p-4',
+          cardFooter: 'p-4',
+        },
+        lg: {
+          button: 'text-lg py-3 px-6',
+          input: 'text-lg py-3 px-6',
+          title: 'text-2xl',
+          subtitle: 'text-xl',
+          card: 'max-w-lg',
+          cardHeader: 'p-5',
+          cardBody: 'p-5',
+          cardFooter: 'p-5',
+        },
+      },
+      intent: {
+        primary: {
+          button: 'bg-blue-500 hover:bg-blue-600 text-white border-transparent',
+          title: 'text-blue-700',
+          navItem: 'text-blue-700 hover:bg-blue-50',
+        },
+        secondary: {
+          button: 'bg-purple-500 hover:bg-purple-600 text-white border-transparent',
+          title: 'text-purple-700',
+          navItem: 'text-purple-700 hover:bg-purple-50',
+        },
+        success: {
+          button: 'bg-green-500 hover:bg-green-600 text-white border-transparent',
+          title: 'text-green-700',
+          navItem: 'text-green-700 hover:bg-green-50',
+        },
+        danger: {
+          button: 'bg-red-500 hover:bg-red-600 text-white border-transparent',
+          title: 'text-red-700',
+          navItem: 'text-red-700 hover:bg-red-50',
+        },
+      },
+      layout: {
+        compact: {
+          container: 'gap-2',
+          header: 'p-2',
+          content: 'gap-2',
+          sidebar: 'w-48',
+          main: 'p-3',
+          footer: 'p-2',
+        },
+        comfortable: {
+          container: 'gap-4',
+          header: 'p-4',
+          content: 'gap-4',
+          sidebar: 'w-64',
+          main: 'p-6',
+          footer: 'p-4',
+        },
+        spacious: {
+          container: 'gap-6',
+          header: 'p-6',
+          content: 'gap-6',
+          sidebar: 'w-80',
+          main: 'p-8',
+          footer: 'p-6',
+        },
+      },
+    },
+    defaultVariants: {
+      theme: 'light',
+      size: 'md',
+      layout: 'comfortable',
+    },
+    compoundVariants: [
+      {
+        theme: 'dark',
+        intent: 'primary',
+        class: {
+          button: 'bg-blue-600 hover:bg-blue-700',
+          title: 'text-blue-400',
+          navItem: 'text-blue-400 hover:bg-blue-900/30',
+        },
+      },
+      {
+        theme: 'dark',
+        intent: 'secondary',
+        class: {
+          button: 'bg-purple-600 hover:bg-purple-700',
+          title: 'text-purple-400',
+          navItem: 'text-purple-400 hover:bg-purple-900/30',
+        },
+      },
+      {
+        theme: 'dark',
+        intent: 'success',
+        class: {
+          button: 'bg-green-600 hover:bg-green-700',
+          title: 'text-green-400',
+          navItem: 'text-green-400 hover:bg-green-900/30',
+        },
+      },
+      {
+        theme: 'dark',
+        intent: 'danger',
+        class: {
+          button: 'bg-red-600 hover:bg-red-700',
+          title: 'text-red-400',
+          navItem: 'text-red-400 hover:bg-red-900/30',
+        },
+      },
+    ],
   },
 };

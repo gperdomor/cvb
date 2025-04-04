@@ -1,7 +1,7 @@
 import { compose as composeCVA, CVA, cva } from 'cva';
 import { Bench } from 'tinybench';
 import { compose, cvb, RecipeSelection, RecipeVariantRecord } from '../src';
-import { printBenchmark } from './print.helper.js';
+import { printBenchmark } from './helpers.js';
 import { COMPOSE_CASES } from './test-cases.js';
 
 async function createBenchmark<T extends RecipeVariantRecord>(
