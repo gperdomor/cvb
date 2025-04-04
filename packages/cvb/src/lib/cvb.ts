@@ -1,24 +1,9 @@
-import type {
-  Compose,
-  CX,
-  DefineConfig,
-  RecipeCreatorFn,
-  RecipeDefinition,
-  RecipeRuntimeFn,
-  RecipeVariantFn,
-  RecipeVariantRecord,
-  SlotRecipeCreatorFn,
-  SlotRecipeDefinition,
-  SlotRecipeVariantFn,
-  SlotRecipeVariantRecord,
-  SlotRecord,
-} from './types.js';
+import type { Compose, CX, DefineConfig, RecipeCreatorFn, SlotRecipeCreatorFn, SlotRecord } from './types.js';
 import {
   getCompoundVariantClassNames,
   getCompoundVariantClassNamesBySlot,
   getVariantClassNames,
   getVariantClassNamesBySlot,
-  isEmpty,
   mergeDefaultsAndProps,
 } from './utils.js';
 
@@ -46,34 +31,28 @@ export const defineConfig: DefineConfig = (options) => {
     return cxInternal(...inputs);
   };
 
-  const cvb: RecipeCreatorFn = <T extends RecipeVariantRecord>(config: RecipeDefinition<T>): RecipeRuntimeFn<T> => {
+  const cvb: RecipeCreatorFn = (config) => {
     const { base, variants = {}, compoundVariants = [], defaultVariants = {} } = config ?? {};
-    let cvbFn: RecipeVariantFn<T>;
 
-    if (isEmpty(variants)) {
-      cvbFn = (props) => cx(base, props?.class ?? props?.className);
-    } else {
-      cvbFn = (props) => {
-        const variantClassNames = getVariantClassNames(props, variants, defaultVariants);
-        const compoundVariantClassNames = getCompoundVariantClassNames(
-          compoundVariants,
-          mergeDefaultsAndProps(props, defaultVariants)
-        );
-        return cx(base, variantClassNames, compoundVariantClassNames, props?.class ?? props?.className);
-      };
+    if (variants === null) {
+      return (props) => cx(base, props?.class ?? props?.className);
     }
 
-    return Object.assign(cvbFn, {
-      raw: config,
-    });
+    return (props) => {
+      const variantClassNames = getVariantClassNames(props, variants, defaultVariants);
+      const compoundVariantClassNames = getCompoundVariantClassNames(
+        compoundVariants,
+        mergeDefaultsAndProps(props, defaultVariants)
+      );
+
+      return cx(base, variantClassNames, compoundVariantClassNames, props?.class ?? props?.className);
+    };
   };
 
-  const svb: SlotRecipeCreatorFn = <S extends string, T extends SlotRecipeVariantRecord<S>>(
-    config: SlotRecipeDefinition<S, T>
-  ) => {
+  const svb: SlotRecipeCreatorFn = (config) => {
     const { slots = [], base, variants = {}, compoundVariants = [], defaultVariants = {} } = config ?? {};
 
-    const svbFn: SlotRecipeVariantFn<S, T> = (props) => {
+    return (props) => {
       const obj: SlotRecord<string, string> = {};
       const { class: _class, className, ...propsWithoutClass } = props ?? {};
 
@@ -91,10 +70,6 @@ export const defineConfig: DefineConfig = (options) => {
       }
       return obj;
     };
-
-    return Object.assign(svbFn, {
-      raw: config,
-    });
   };
 
   const compose: Compose =
