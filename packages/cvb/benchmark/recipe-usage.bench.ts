@@ -1,7 +1,6 @@
 import { CVA, cva } from 'cva';
 import { Bench } from 'tinybench';
-import { cvb, RecipeRuntimeFn, RecipeSelection, RecipeVariantRecord } from '../src';
-import { printBenchmark } from './helpers.js';
+import { cvb, RecipeSelection, RecipeVariantFn, RecipeVariantRecord } from '../src';
 import { TEST_CASES } from './test-cases.js';
 
 const cvbSimple = cvb(TEST_CASES.simple);
@@ -13,44 +12,33 @@ const cvaComplex = cva(TEST_CASES.complex) as ReturnType<CVA>;
 const cvbLarge = cvb(TEST_CASES.large);
 const cvaLarge = cva(TEST_CASES.large) as ReturnType<CVA>;
 
-async function createBenchmark<T extends RecipeVariantRecord>(
+const addBenchmark = <T extends RecipeVariantRecord>(
+  bench: Bench,
   name: string,
   cvaFn: ReturnType<CVA>,
-  cvbFn: RecipeRuntimeFn<T>,
+  cvbFn: RecipeVariantFn<T>,
   config?: RecipeSelection<T>
-) {
-  const benchmark = new Bench({
-    time: 1000,
-    setup: (_task, mode) => {
-      // Run the garbage collector before warmup at each cycle
-      if (mode === 'warmup' && typeof globalThis.gc === 'function') {
-        globalThis.gc();
-      }
-    },
-  })
-    .add('CVA', () => {
+) => {
+  bench
+    .add(`${name} - CVA`, () => {
       cvaFn(config);
     })
-    .add('CVB', () => {
+    .add(`${name} - CVB`, () => {
       cvbFn(config);
     });
+};
 
-  await benchmark.run();
+export function registerRecipeUsageBenchmarks(bench: Bench) {
+  addBenchmark(bench, 'Simple recipe (defaults)', cvaSimple, cvbSimple);
 
-  printBenchmark(name, benchmark);
-}
-
-async function run() {
-  await createBenchmark('Simple recipe (defaults)', cvaSimple, cvbSimple);
-
-  await createBenchmark('Simple recipe with overrides (defaults)', cvaSimple, cvbSimple, {
+  addBenchmark(bench, 'Simple recipe with overrides (defaults)', cvaSimple, cvbSimple, {
     color: 'secondary',
     size: 'lg',
   });
 
-  await createBenchmark('Complex recipe (defaults)', cvaComplex, cvbComplex);
+  addBenchmark(bench, 'Complex recipe (defaults)', cvaComplex, cvbComplex);
 
-  await createBenchmark('Complex recipe (many overrides)', cvaComplex, cvbComplex, {
+  addBenchmark(bench, 'Complex recipe (many overrides)', cvaComplex, cvbComplex, {
     color: 'danger',
     size: 'lg',
     rounded: 'full',
@@ -58,19 +46,15 @@ async function run() {
     disabled: true,
   });
 
-  await createBenchmark('Complex recipe (with class override)', cvaComplex, cvbComplex, {
+  addBenchmark(bench, 'Complex recipe (with class override)', cvaComplex, cvbComplex, {
     color: 'success',
     size: 'md',
     class: 'custom-override-class',
   });
 
-  await createBenchmark('Large recipe', cvaLarge, cvbLarge, {
+  addBenchmark(bench, 'Large recipe', cvaLarge, cvbLarge, {
     variant0: 'option0',
     variant5: 'option5',
     variant10: 'option7',
   });
-
-  process.exit();
 }
-
-run();

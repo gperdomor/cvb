@@ -1,37 +1,25 @@
 import { compose as composeCVA, CVA, cva } from 'cva';
 import { Bench } from 'tinybench';
-import { compose, cvb, RecipeSelection, RecipeVariantRecord } from '../src';
-import { printBenchmark } from './helpers.js';
+import { compose, cvb, RecipeSelection, RecipeVariantFn, RecipeVariantRecord } from '../src';
 import { COMPOSE_CASES } from './test-cases.js';
 
-async function createBenchmark<T extends RecipeVariantRecord>(
+const addBenchmark = <T extends RecipeVariantRecord>(
+  bench: Bench,
   name: string,
   cvaFn: ReturnType<CVA>,
-  cvbFn: any,
+  cvbFn: RecipeVariantFn<T>,
   config?: RecipeSelection<T>
-) {
-  const benchmark = new Bench({
-    time: 5000,
-    setup: (_task, mode) => {
-      // Run the garbage collector before warmup at each cycle
-      if (mode === 'warmup' && typeof globalThis.gc === 'function') {
-        globalThis.gc();
-      }
-    },
-  })
-    .add('CVA', () => {
+) => {
+  bench
+    .add(`${name} - CVA`, () => {
       cvaFn(config);
     })
-    .add('CVB', () => {
+    .add(`${name} - CVB`, () => {
       cvbFn(config);
     });
+};
 
-  await benchmark.run();
-
-  printBenchmark(name, benchmark);
-}
-
-async function run() {
+export function registerCompositionBenchmarks(bench: Bench) {
   const baseButton = cvb(COMPOSE_CASES.base);
   const size = cvb(COMPOSE_CASES.size);
   const shadow = cvb(COMPOSE_CASES.shadow);
@@ -42,17 +30,17 @@ async function run() {
   const shadowCVA = cva(COMPOSE_CASES.shadow);
   const composedCVA = composeCVA(baseButtonCVA, sizeCVA, shadowCVA);
 
-  await createBenchmark('Simple composition (defaults)', composedCVA, composed);
+  addBenchmark(bench, 'Simple composition (defaults)', composedCVA, composed);
 
-  await createBenchmark('Simple composition (with overrides)', composedCVA, composed, { color: 'secondary' });
+  addBenchmark(bench, 'Simple composition (with overrides)', composedCVA, composed, { color: 'secondary' });
 
-  await createBenchmark('Simple composition (with many overrides)', composedCVA, composed, {
+  addBenchmark(bench, 'Simple composition (with many overrides)', composedCVA, composed, {
     color: 'secondary',
     size: 'lg',
     shadow: 'md',
   });
 
-  await createBenchmark('Simple composition (with custom class)', composedCVA, composed, {
+  addBenchmark(bench, 'Simple composition (with custom class)', composedCVA, composed, {
     color: 'primary',
     size: 'sm',
     className: 'custom-class',
@@ -68,13 +56,13 @@ async function run() {
   const complexComposed = compose(baseButton, size, shadow, shape, type);
   const complexComposedCVA = composeCVA(baseButtonCVA, sizeCVA, shadowCVA, shapeCVA, typeCVA);
 
-  await createBenchmark('Complex composition (defaults)', complexComposedCVA, complexComposed);
+  addBenchmark(bench, 'Complex composition (defaults)', complexComposedCVA, complexComposed);
 
-  await createBenchmark('Complex composition (with overrides)', complexComposedCVA, complexComposed, {
+  addBenchmark(bench, 'Complex composition (with overrides)', complexComposedCVA, complexComposed, {
     color: 'secondary',
   });
 
-  await createBenchmark('Complex composition (with many overrides)', complexComposedCVA, complexComposed, {
+  addBenchmark(bench, 'Complex composition (with many overrides)', complexComposedCVA, complexComposed, {
     color: 'secondary',
     size: 'lg',
     shadow: 'md',
@@ -82,15 +70,11 @@ async function run() {
     type: 'outline',
   });
 
-  await createBenchmark('Complex composition (with custom class)', complexComposedCVA, complexComposed, {
+  addBenchmark(bench, 'Complex composition (with custom class)', complexComposedCVA, complexComposed, {
     color: 'primary',
     size: 'sm',
     shape: 'circle',
     type: 'outline',
     className: 'custom-class',
   });
-
-  process.exit();
 }
-
-run();

@@ -9,9 +9,11 @@ export type {
   RecipeCreatorFn,
   RecipeDefinition,
   RecipeSelection,
+  RecipeVariantFn,
   RecipeVariantRecord,
   SlotRecipeCreatorFn,
   SlotRecipeDefinition,
+  SlotRecipeVariantFn,
   SlotRecipeVariantRecord,
   VariantProps,
 } from './lib/types.js';

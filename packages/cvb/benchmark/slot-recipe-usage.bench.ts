@@ -1,8 +1,8 @@
 import { twMerge } from 'tailwind-merge';
 import { tv } from 'tailwind-variants';
 import { Bench } from 'tinybench';
-import { RecipeSelection, SlotRecipeRuntimeFn, SlotRecipeVariantRecord, defineConfig } from '../src';
-import { printBenchmark, toTvConfig } from './helpers.js';
+import { RecipeSelection, SlotRecipeVariantFn, SlotRecipeVariantRecord, defineConfig } from '../src';
+import { toTvConfig } from './helpers.js';
 import { SLOT_TEST_CASES } from './test-cases.js';
 
 const { svb } = defineConfig({ hooks: { onComplete: (str) => twMerge(str) } });
@@ -16,36 +16,26 @@ const tvComplex = tv(toTvConfig(SLOT_TEST_CASES.complex) as any);
 const svbLarge = svb(SLOT_TEST_CASES.large);
 const tvLarge = tv(toTvConfig(SLOT_TEST_CASES.large) as any);
 
-async function createBenchmark<S extends string, T extends SlotRecipeVariantRecord<S>>(
+const addBenchmark = <S extends string, T extends SlotRecipeVariantRecord<S>>(
+  bench: Bench,
   name: string,
   tvFn: any, //ReturnType<TV>,
-  svbFn: SlotRecipeRuntimeFn<S, T>,
+  svbFn: SlotRecipeVariantFn<S, T>,
   config?: RecipeSelection<T>
-) {
-  const benchmark = new Bench({
-    time: 1000,
-    setup: (_task, mode) => {
-      // Run the garbage collector before warmup at each cycle
-      if (mode === 'warmup' && typeof globalThis.gc === 'function') {
-        globalThis.gc();
-      }
-    },
-  })
-    .add('TV', () => {
+) => {
+  bench
+    .add(`${name} - TW`, () => {
       tvFn(config);
     })
-    .add('CVB', () => {
+    .add(`${name} - CVB`, () => {
       svbFn(config);
     });
+};
 
-  await benchmark.run();
-
-  printBenchmark(name, benchmark);
-}
-
-async function run() {
-  await createBenchmark(
-    'Simple recipe (defaults)',
+export function registerSlotRecipeUsageBenchmarks(bench: Bench) {
+  addBenchmark(
+    bench,
+    'Simple slot recipe (defaults)',
     (config: any) => {
       const { container, title, description } = tvSimple(config) as any;
       return {
@@ -57,8 +47,9 @@ async function run() {
     svbSimple
   );
 
-  await createBenchmark(
-    'Simple recipe with overrides (defaults)',
+  addBenchmark(
+    bench,
+    'Simple slot recipe with overrides (defaults)',
     (config: any) => {
       const { container, title, description } = tvSimple(config) as any;
       return {
@@ -74,8 +65,9 @@ async function run() {
     }
   );
 
-  await createBenchmark(
-    'Complex recipe (defaults)',
+  addBenchmark(
+    bench,
+    'Complex slot recipe (defaults)',
     (config: any) => {
       const { card, header, body, footer } = tvComplex(config) as any;
       return {
@@ -88,8 +80,9 @@ async function run() {
     svbComplex
   );
 
-  await createBenchmark(
-    'Complex recipe (many overrides)',
+  addBenchmark(
+    bench,
+    'Complex slot recipe (many overrides)',
     (config: any) => {
       const { card, header, body, footer } = tvComplex(config) as any;
       return {
@@ -109,8 +102,9 @@ async function run() {
     }
   );
 
-  await createBenchmark(
-    'Complex recipe (with class override)',
+  addBenchmark(
+    bench,
+    'Complex slot recipe (with class override)',
     (config: any) => {
       const { card, header, body, footer } = tvComplex(config) as any;
       return {
@@ -128,8 +122,9 @@ async function run() {
     }
   );
 
-  await createBenchmark(
-    'Large recipe',
+  addBenchmark(
+    bench,
+    'Large slot recipe',
     (config: any) => {
       const {
         container,
@@ -183,8 +178,4 @@ async function run() {
       variant10: 'option7',
     }
   );
-
-  process.exit();
 }
-
-run();
