@@ -30,9 +30,9 @@ describe('Composition Usage', () => {
       { name: 'with overrides', config: { color: 'secondary' } },
       { name: 'with many overrides', config: { color: 'secondary', size: 'lg', shadow: 'md' } },
       { name: 'with class overrides', config: { color: 'primary', size: 'sm', className: 'custom-class' } },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - simple composition ${name}`,
         () => {
           composed(config);
         },
@@ -40,7 +40,7 @@ describe('Composition Usage', () => {
       );
 
       bench(
-        'cva',
+        `cva - simple composition ${name}`,
         () => {
           composedCVA(config);
         },
@@ -61,9 +61,9 @@ describe('Composition Usage', () => {
         name: 'with class overrides',
         config: { color: 'primary', size: 'sm', shape: 'circle', type: 'outline', className: 'custom-class' },
       },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - complex composition ${name}`,
         () => {
           complexComposed(config);
         },
@@ -71,7 +71,7 @@ describe('Composition Usage', () => {
       );
 
       bench(
-        'cva',
+        `cva - complex composition ${name}`,
         () => {
           complexComposedCVA(config);
         },
