@@ -1,25 +1,72 @@
-import { tv } from 'tailwind-variants';
-import { Bench } from 'tinybench';
-import { SlotRecipeDefinition, svb } from '../src';
+import { tv as _tv } from 'tailwind-variants';
+import { bench, describe } from 'vitest';
+import { svb as _svb } from '../src';
+import { benchOpts } from './helpers';
 import { toTvConfig } from './helpers.js';
 import { SLOT_TEST_CASES } from './test-cases.js';
 
-const addBenchmark = (bench: Bench, name: string, config: SlotRecipeDefinition) => {
-  const tvConfig = toTvConfig(config);
+// workaround for https://github.com/vitest-dev/vitest/issues/6543
+const tv = _tv;
+const svb = _svb;
 
-  bench
-    .add(`${name} - TW`, () => {
-      tv(tvConfig as any);
-    })
-    .add(`${name} - CVB`, () => {
-      svb(config);
-    });
-};
+describe('Slot Recipe Creation', () => {
+  describe('Simple', () => {
+    const tvConfig = toTvConfig(SLOT_TEST_CASES.simple);
 
-export function registerSlotRecipeCreationBenchmarks(bench: Bench) {
-  addBenchmark(bench, 'Simple slot recipe creation', SLOT_TEST_CASES.simple);
+    bench(
+      'svb',
+      () => {
+        svb(SLOT_TEST_CASES.simple);
+      },
+      benchOpts
+    );
 
-  addBenchmark(bench, 'Complex slot recipe creation', SLOT_TEST_CASES.complex);
+    bench(
+      'tv',
+      () => {
+        tv(tvConfig as any);
+      },
+      benchOpts
+    );
+  });
 
-  addBenchmark(bench, 'Large slot recipe creation', SLOT_TEST_CASES.large);
-}
+  describe('Complex', () => {
+    const tvConfig = toTvConfig(SLOT_TEST_CASES.complex);
+
+    bench(
+      'svb',
+      () => {
+        svb(SLOT_TEST_CASES.complex);
+      },
+      benchOpts
+    );
+
+    bench(
+      'tv',
+      () => {
+        tv(tvConfig as any);
+      },
+      benchOpts
+    );
+  });
+
+  describe('Large', () => {
+    const tvConfig = toTvConfig(SLOT_TEST_CASES.large);
+
+    bench(
+      'svb',
+      () => {
+        svb(SLOT_TEST_CASES.large);
+      },
+      benchOpts
+    );
+
+    bench(
+      'tv',
+      () => {
+        tv(tvConfig as any);
+      },
+      benchOpts
+    );
+  });
+});

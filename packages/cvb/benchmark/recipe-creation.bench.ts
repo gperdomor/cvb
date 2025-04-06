@@ -1,22 +1,65 @@
-import { cva } from 'cva';
-import { Bench } from 'tinybench';
-import { cvb, RecipeDefinition } from '../src';
-import { TEST_CASES } from './test-cases.js';
+import { cva as _cva } from 'cva';
+import { bench, describe } from 'vitest';
+import { cvb as _cvb } from '../src';
+import { benchOpts } from './helpers';
+import { TEST_CASES } from './test-cases';
 
-const addBenchmark = (bench: Bench, name: string, args: RecipeDefinition) => {
-  bench
-    .add(`${name} - CVA`, () => {
-      cva(args);
-    })
-    .add(`${name} - CVB`, () => {
-      cvb(args);
-    });
-};
+// workaround for https://github.com/vitest-dev/vitest/issues/6543
+const cva = _cva;
+const cvb = _cvb;
 
-export function registerRecipeCreationBenchmarks(bench: Bench) {
-  addBenchmark(bench, 'Simple recipe creation', TEST_CASES.simple);
+describe('Recipe Creation', () => {
+  describe('Simple', () => {
+    bench(
+      'cvb',
+      () => {
+        cvb(TEST_CASES.simple);
+      },
+      benchOpts
+    );
 
-  addBenchmark(bench, 'Complex recipe creation', TEST_CASES.complex);
+    bench(
+      'cva',
+      () => {
+        cva(TEST_CASES.simple);
+      },
+      benchOpts
+    );
+  });
 
-  addBenchmark(bench, 'Large recipe creation', TEST_CASES.large);
-}
+  describe('Complex', () => {
+    bench(
+      'cvb',
+      () => {
+        cvb(TEST_CASES.complex);
+      },
+      benchOpts
+    );
+
+    bench(
+      'cva',
+      () => {
+        cva(TEST_CASES.complex);
+      },
+      benchOpts
+    );
+  });
+
+  describe('Large', () => {
+    bench(
+      'cvb',
+      () => {
+        cvb(TEST_CASES.large);
+      },
+      benchOpts
+    );
+
+    bench(
+      'cva',
+      () => {
+        cva(TEST_CASES.large);
+      },
+      benchOpts
+    );
+  });
+});
