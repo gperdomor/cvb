@@ -1,39 +1,65 @@
-import { cva } from 'cva';
-import { Bench } from 'tinybench';
-import { cvb, RecipeDefinition } from '../src';
-import { printBenchmark } from './helpers.js';
-import { TEST_CASES } from './test-cases.js';
+import { cva as _cva } from 'cva';
+import { bench, describe } from 'vitest';
+import { cvb as _cvb } from '../src';
+import { benchOpts } from './helpers';
+import { TEST_CASES } from './test-cases';
 
-async function createBenchmark(name: string, args: RecipeDefinition) {
-  const benchmark = new Bench({
-    time: 1000,
-    setup: (_task, mode) => {
-      // Run the garbage collector before warmup at each cycle
-      if (mode === 'warmup' && typeof globalThis.gc === 'function') {
-        globalThis.gc();
-      }
-    },
-  })
-    .add('CVA', () => {
-      cva(args);
-    })
-    .add('CVB', () => {
-      cvb(args);
-    });
+// workaround for https://github.com/vitest-dev/vitest/issues/6543
+const cva = _cva;
+const cvb = _cvb;
 
-  await benchmark.run();
+describe('Recipe Creation', () => {
+  describe('Simple', () => {
+    bench(
+      'cvb - simple recipe creation',
+      () => {
+        cvb(TEST_CASES.simple);
+      },
+      benchOpts
+    );
 
-  printBenchmark(name, benchmark);
-}
+    bench(
+      'cva - simple recipe creation',
+      () => {
+        cva(TEST_CASES.simple);
+      },
+      benchOpts
+    );
+  });
 
-async function run() {
-  await createBenchmark('Simple recipe creation', TEST_CASES.simple);
+  describe('Complex', () => {
+    bench(
+      'cvb - complex recipe creation',
+      () => {
+        cvb(TEST_CASES.complex);
+      },
+      benchOpts
+    );
 
-  await createBenchmark('Complex recipe creation', TEST_CASES.complex);
+    bench(
+      'cva - complex recipe creation',
+      () => {
+        cva(TEST_CASES.complex);
+      },
+      benchOpts
+    );
+  });
 
-  await createBenchmark('Large recipe creation', TEST_CASES.large);
+  describe('Large', () => {
+    bench(
+      'cvb - large recipe creation',
+      () => {
+        cvb(TEST_CASES.large);
+      },
+      benchOpts
+    );
 
-  process.exit();
-}
-
-run();
+    bench(
+      'cva - large recipe creation',
+      () => {
+        cva(TEST_CASES.large);
+      },
+      benchOpts
+    );
+  });
+});

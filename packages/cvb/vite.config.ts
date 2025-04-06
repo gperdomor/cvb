@@ -1,17 +1,24 @@
 /// <reference types='vitest' />
+import codspeedPlugin from '@codspeed/vitest-plugin';
 import * as path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
+
+const plugins: Plugin[] = [
+  dts({
+    entryRoot: 'src',
+    tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
+  }),
+];
+
+if (process.env.CI) {
+  plugins.push(codspeedPlugin());
+}
 
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/packages/cvb',
-  plugins: [
-    dts({
-      entryRoot: 'src',
-      tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
-    }),
-  ],
+  plugins: plugins,
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [ nxViteTsPaths() ],

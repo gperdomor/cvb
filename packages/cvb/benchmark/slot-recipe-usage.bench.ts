@@ -1,8 +1,9 @@
 import { twMerge } from 'tailwind-merge';
 import { tv } from 'tailwind-variants';
-import { Bench } from 'tinybench';
-import { RecipeSelection, SlotRecipeRuntimeFn, SlotRecipeVariantRecord, defineConfig } from '../src';
-import { printBenchmark, toTvConfig } from './helpers.js';
+import { bench, describe } from 'vitest';
+import { RecipeSelection, SlotRecipeVariantRecord, defineConfig } from '../src';
+import { SlotClassProp } from '../src/lib/types.js';
+import { benchOpts, toTvConfig } from './helpers.js';
 import { SLOT_TEST_CASES } from './test-cases.js';
 
 const { svb } = defineConfig({ hooks: { onComplete: (str) => twMerge(str) } });
@@ -16,175 +17,130 @@ const tvComplex = tv(toTvConfig(SLOT_TEST_CASES.complex) as any);
 const svbLarge = svb(SLOT_TEST_CASES.large);
 const tvLarge = tv(toTvConfig(SLOT_TEST_CASES.large) as any);
 
-async function createBenchmark<S extends string, T extends SlotRecipeVariantRecord<S>>(
-  name: string,
-  tvFn: any, //ReturnType<TV>,
-  svbFn: SlotRecipeRuntimeFn<S, T>,
-  config?: RecipeSelection<T>
-) {
-  const benchmark = new Bench({
-    time: 1000,
-    setup: (_task, mode) => {
-      // Run the garbage collector before warmup at each cycle
-      if (mode === 'warmup' && typeof globalThis.gc === 'function') {
-        globalThis.gc();
-      }
-    },
-  })
-    .add('TV', () => {
-      tvFn(config);
-    })
-    .add('CVB', () => {
-      svbFn(config);
+describe('Slot Recipe Usage', () => {
+  describe('Simple', () => {
+    describe.each<{ name: string; config?: RecipeSelection<SlotRecipeVariantRecord<string>> & SlotClassProp<string> }>([
+      { name: 'with defaults', config: undefined },
+      { name: 'with overrides', config: { color: 'secondary', size: 'lg' } },
+    ])('$name', ({ name, config }) => {
+      bench(
+        `cvb - simple slot recipe usage ${name}`,
+        () => {
+          svbSimple(config);
+        },
+        benchOpts
+      );
+
+      bench(
+        `tv - simple slot recipe usage ${name}`,
+        () => {
+          const { container, title, description } = tvSimple(config as any) as any;
+          // Tailwind Variants build functions so we are executing them to force style resolution and get a proper comparison
+          container();
+          title();
+          description();
+        },
+        benchOpts
+      );
     });
+  });
 
-  await benchmark.run();
+  describe('Complex', () => {
+    describe.each<{ name: string; config?: RecipeSelection<SlotRecipeVariantRecord<string>> & SlotClassProp<string> }>([
+      { name: 'with defaults', config: undefined },
+      {
+        name: 'with overrides',
+        config: { size: 'lg', variant: 'secondary' },
+      },
+    ])('$name', ({ name, config }) => {
+      bench(
+        `cvb - complex slot recipe usage ${name}`,
+        () => {
+          svbComplex(config);
+        },
+        benchOpts
+      );
 
-  printBenchmark(name, benchmark);
-}
+      bench(
+        `tv - complex slot recipe usage ${name}`,
+        () => {
+          const { card, header, body, footer } = tvComplex(config as any) as any;
+          // Tailwind Variants build functions so we are executing them to force style resolution and get a proper comparison
+          card();
+          header();
+          body();
+          footer();
+        },
+        benchOpts
+      );
+    });
+  });
 
-async function run() {
-  await createBenchmark(
-    'Simple recipe (defaults)',
-    (config: any) => {
-      const { container, title, description } = tvSimple(config) as any;
-      return {
-        container: container(),
-        title: title(),
-        description: description(),
-      };
-    },
-    svbSimple
-  );
+  describe('Large', () => {
+    describe.each<{ name: string; config?: RecipeSelection<SlotRecipeVariantRecord<string>> & SlotClassProp<string> }>([
+      { name: 'with defaults', config: undefined },
+      {
+        name: 'with overrides',
+        config: { theme: 'dark', size: 'lg', layout: 'comfortable' },
+      },
+    ])('$name', ({ name, config }) => {
+      bench(
+        `cvb - large slot recipe usage ${name}`,
+        () => {
+          svbLarge(config);
+        },
+        benchOpts
+      );
 
-  await createBenchmark(
-    'Simple recipe with overrides (defaults)',
-    (config: any) => {
-      const { container, title, description } = tvSimple(config) as any;
-      return {
-        container: container(),
-        title: title(),
-        description: description(),
-      };
-    },
-    svbSimple,
-    {
-      color: 'secondary',
-      size: 'lg',
-    }
-  );
-
-  await createBenchmark(
-    'Complex recipe (defaults)',
-    (config: any) => {
-      const { card, header, body, footer } = tvComplex(config) as any;
-      return {
-        card: card(),
-        header: header(),
-        body: body(),
-        footer: footer(),
-      };
-    },
-    svbComplex
-  );
-
-  await createBenchmark(
-    'Complex recipe (many overrides)',
-    (config: any) => {
-      const { card, header, body, footer } = tvComplex(config) as any;
-      return {
-        card: card(),
-        header: header(),
-        body: body(),
-        footer: footer(),
-      };
-    },
-    svbComplex,
-    {
-      color: 'danger',
-      size: 'lg',
-      rounded: 'full',
-      shadow: 'lg',
-      disabled: true,
-    }
-  );
-
-  await createBenchmark(
-    'Complex recipe (with class override)',
-    (config: any) => {
-      const { card, header, body, footer } = tvComplex(config) as any;
-      return {
-        card: card(),
-        header: header(),
-        body: body(),
-        footer: footer(),
-      };
-    },
-    svbComplex,
-    {
-      color: 'success',
-      size: 'md',
-      class: 'custom-override-class',
-    }
-  );
-
-  await createBenchmark(
-    'Large recipe',
-    (config: any) => {
-      const {
-        container,
-        header,
-        toolbar,
-        searchBar,
-        content,
-        sidebar,
-        main,
-        footer,
-        title,
-        subtitle,
-        navItem,
-        button,
-        icon,
-        input,
-        label,
-        error,
-        card,
-        cardHeader,
-        cardBody,
-        cardFooter,
-      } = tvLarge(config) as any;
-      return {
-        container: container(),
-        header: header(),
-        toolbar: toolbar(),
-        searchBar: searchBar(),
-        content: content(),
-        sidebar: sidebar(),
-        main: main(),
-        footer: footer(),
-        title: title(),
-        subtitle: subtitle(),
-        navItem: navItem(),
-        button: button(),
-        icon: icon(),
-        input: input(),
-        label: label(),
-        error: error(),
-        card: card(),
-        cardHeader: cardHeader(),
-        cardBody: cardBody(),
-        cardFooter: cardFooter(),
-      };
-    },
-    svbLarge,
-    {
-      variant0: 'option0',
-      variant5: 'option5',
-      variant10: 'option7',
-    }
-  );
-
-  process.exit();
-}
-
-run();
+      bench(
+        `tv - large slot recipe usage ${name}`,
+        () => {
+          const {
+            container,
+            header,
+            toolbar,
+            searchBar,
+            content,
+            sidebar,
+            main,
+            footer,
+            title,
+            subtitle,
+            navItem,
+            button,
+            icon,
+            input,
+            label,
+            error,
+            card,
+            cardHeader,
+            cardBody,
+            cardFooter,
+          } = tvLarge(config as any) as any;
+          // Tailwind Variants build functions so we are executing them to force style resolution and get a proper comparison
+          container();
+          header();
+          toolbar();
+          searchBar();
+          content();
+          sidebar();
+          main();
+          footer();
+          title();
+          subtitle();
+          navItem();
+          button();
+          icon();
+          input();
+          label();
+          error();
+          card();
+          cardHeader();
+          cardBody();
+          cardFooter();
+        },
+        benchOpts
+      );
+    });
+  });
+});

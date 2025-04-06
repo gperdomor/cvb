@@ -1,43 +1,72 @@
-import { tv } from 'tailwind-variants';
-import { Bench } from 'tinybench';
-import { SlotRecipeDefinition, svb } from '../src';
-import { printBenchmark, toTvConfig } from './helpers.js';
+import { tv as _tv } from 'tailwind-variants';
+import { bench, describe } from 'vitest';
+import { svb as _svb } from '../src';
+import { benchOpts } from './helpers';
+import { toTvConfig } from './helpers.js';
 import { SLOT_TEST_CASES } from './test-cases.js';
 
-async function createBenchmark(name: string, config: SlotRecipeDefinition) {
-  const tvConfig = toTvConfig(config);
+// workaround for https://github.com/vitest-dev/vitest/issues/6543
+const tv = _tv;
+const svb = _svb;
 
-  console.log('==> tvConfig', JSON.stringify(tvConfig, null, 2));
+describe('Slot Recipe Creation', () => {
+  describe('Simple', () => {
+    const tvConfig = toTvConfig(SLOT_TEST_CASES.simple);
 
-  const benchmark = new Bench({
-    time: 1000,
-    setup: (_task, mode) => {
-      // Run the garbage collector before warmup at each cycle
-      if (mode === 'warmup' && typeof globalThis.gc === 'function') {
-        globalThis.gc();
-      }
-    },
-  })
-    .add('TV', () => {
-      tv(tvConfig as any);
-    })
-    .add('SVB', () => {
-      svb(config);
-    });
+    bench(
+      'svb - simple slot recipe creation',
+      () => {
+        svb(SLOT_TEST_CASES.simple);
+      },
+      benchOpts
+    );
 
-  await benchmark.run();
+    bench(
+      'tv - simple slot recipe creation',
+      () => {
+        tv(tvConfig as any);
+      },
+      benchOpts
+    );
+  });
 
-  printBenchmark(name, benchmark);
-}
+  describe('Complex', () => {
+    const tvConfig = toTvConfig(SLOT_TEST_CASES.complex);
 
-async function run() {
-  await createBenchmark('Simple slot recipe creation', SLOT_TEST_CASES.simple);
+    bench(
+      'svb - complex slot recipe creation',
+      () => {
+        svb(SLOT_TEST_CASES.complex);
+      },
+      benchOpts
+    );
 
-  await createBenchmark('Complex slot recipe creation', SLOT_TEST_CASES.complex);
+    bench(
+      'tv - complex slot recipe creation',
+      () => {
+        tv(tvConfig as any);
+      },
+      benchOpts
+    );
+  });
 
-  await createBenchmark('Large slot recipe creation', SLOT_TEST_CASES.large);
+  describe('Large', () => {
+    const tvConfig = toTvConfig(SLOT_TEST_CASES.large);
 
-  process.exit();
-}
+    bench(
+      'svb - large slot recipe creation',
+      () => {
+        svb(SLOT_TEST_CASES.large);
+      },
+      benchOpts
+    );
 
-run();
+    bench(
+      'tv - large slot recipe creation',
+      () => {
+        tv(tvConfig as any);
+      },
+      benchOpts
+    );
+  });
+});

@@ -1,17 +1,14 @@
-import { tinybenchPrinter } from '@monstermann/tinybench-pretty-printer';
-import { Bench } from 'tinybench';
+import { BenchOptions } from 'vitest';
 import { SlotRecipeDefinition } from '../src';
 
-export const printBenchmark = (name: string, bench: Bench) => {
-  const cli = tinybenchPrinter
-    .name({
-      header: name,
-    })
-    .ops({ method: 'none' })
-    .time({ method: 'mean' })
-    .samples({ method: 'none' })
-    .toCli(bench);
-  console.log(cli);
+export const benchOpts: BenchOptions = {
+  time: 1000,
+  setup: (_task, mode) => {
+    // Run the garbage collector before warmup at each cycle
+    if (mode === 'warmup' && typeof globalThis.gc === 'function') {
+      globalThis.gc();
+    }
+  },
 };
 
 export const toTvConfig = (config: SlotRecipeDefinition) => {
