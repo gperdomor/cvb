@@ -27,5 +27,5 @@ jobs:
       - name: Run benchmarks
         uses: CodSpeedHQ/action@v3
         with:
-          run: nx run cvb:test -- bench --run --shard=${{ matrix.shard }}
+          run: npx nx run cvb:test -- bench --run --shard=${{ matrix.shard }}
           token: ${{ secrets.CODSPEED_TOKEN }}
