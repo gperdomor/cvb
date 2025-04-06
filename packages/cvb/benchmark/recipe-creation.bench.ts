@@ -11,7 +11,7 @@ const cvb = _cvb;
 describe('Recipe Creation', () => {
   describe('Simple', () => {
     bench(
-      'cvb',
+      'cvb - simple recipe creation',
       () => {
         cvb(TEST_CASES.simple);
       },
@@ -19,7 +19,7 @@ describe('Recipe Creation', () => {
     );
 
     bench(
-      'cva',
+      'cva - simple recipe creation',
       () => {
         cva(TEST_CASES.simple);
       },
@@ -29,7 +29,7 @@ describe('Recipe Creation', () => {
 
   describe('Complex', () => {
     bench(
-      'cvb',
+      'cvb - complex recipe creation',
       () => {
         cvb(TEST_CASES.complex);
       },
@@ -37,7 +37,7 @@ describe('Recipe Creation', () => {
     );
 
     bench(
-      'cva',
+      'cva - complex recipe creation',
       () => {
         cva(TEST_CASES.complex);
       },
@@ -47,7 +47,7 @@ describe('Recipe Creation', () => {
 
   describe('Large', () => {
     bench(
-      'cvb',
+      'cvb - large recipe creation',
       () => {
         cvb(TEST_CASES.large);
       },
@@ -55,7 +55,7 @@ describe('Recipe Creation', () => {
     );
 
     bench(
-      'cva',
+      'cva - large recipe creation',
       () => {
         cva(TEST_CASES.large);
       },
