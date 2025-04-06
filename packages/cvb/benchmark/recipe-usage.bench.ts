@@ -20,9 +20,9 @@ describe('Recipe Usage', () => {
       { name: 'with defaults', config: undefined },
       { name: 'with overrides', config: { color: 'secondary', size: 'lg' } },
       { name: 'with class overrides', config: { color: 'secondary', size: 'lg', class: 'custom-override-class' } },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - simple recipe usage ${name}`,
         () => {
           cvbSimple(config);
         },
@@ -30,7 +30,7 @@ describe('Recipe Usage', () => {
       );
 
       bench(
-        'cva',
+        `cva - simple recipe usage ${name}`,
         () => {
           cvaSimple(config);
         },
@@ -50,9 +50,9 @@ describe('Recipe Usage', () => {
         name: 'with class overrides',
         config: { color: 'danger', size: 'lg', rounded: 'full', class: 'custom-class-override' },
       },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - complex recipe usage ${name}`,
         () => {
           cvbComplex(config);
         },
@@ -60,7 +60,7 @@ describe('Recipe Usage', () => {
       );
 
       bench(
-        'cva',
+        `cva - complex recipe usage ${name}`,
         () => {
           cvaComplex(config);
         },
@@ -76,9 +76,9 @@ describe('Recipe Usage', () => {
         name: 'with overrides',
         config: { variant0: 'option0', variant5: 'option5', variant10: 'option7' },
       },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - large recipe usage ${name}`,
         () => {
           cvbLarge(config);
         },
@@ -86,7 +86,7 @@ describe('Recipe Usage', () => {
       );
 
       bench(
-        'cva',
+        `cva - large recipe usage ${name}`,
         () => {
           cvaLarge(config);
         },

@@ -22,9 +22,9 @@ describe('Slot Recipe Usage', () => {
     describe.each<{ name: string; config?: RecipeSelection<SlotRecipeVariantRecord<string>> & SlotClassProp<string> }>([
       { name: 'with defaults', config: undefined },
       { name: 'with overrides', config: { color: 'secondary', size: 'lg' } },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - simple slot recipe usage ${name}`,
         () => {
           svbSimple(config);
         },
@@ -32,7 +32,7 @@ describe('Slot Recipe Usage', () => {
       );
 
       bench(
-        'tv',
+        `tv - simple slot recipe usage ${name}`,
         () => {
           const { container, title, description } = tvSimple(config as any) as any;
           // Tailwind Variants build functions so we are executing them to force style resolution and get a proper comparison
@@ -52,9 +52,9 @@ describe('Slot Recipe Usage', () => {
         name: 'with overrides',
         config: { size: 'lg', variant: 'secondary' },
       },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - complex slot recipe usage ${name}`,
         () => {
           svbComplex(config);
         },
@@ -62,7 +62,7 @@ describe('Slot Recipe Usage', () => {
       );
 
       bench(
-        'tv',
+        `tv - complex slot recipe usage ${name}`,
         () => {
           const { card, header, body, footer } = tvComplex(config as any) as any;
           // Tailwind Variants build functions so we are executing them to force style resolution and get a proper comparison
@@ -83,9 +83,9 @@ describe('Slot Recipe Usage', () => {
         name: 'with overrides',
         config: { theme: 'dark', size: 'lg', layout: 'comfortable' },
       },
-    ])('$name', ({ config }) => {
+    ])('$name', ({ name, config }) => {
       bench(
-        'cvb',
+        `cvb - large slot recipe usage ${name}`,
         () => {
           svbLarge(config);
         },
@@ -93,7 +93,7 @@ describe('Slot Recipe Usage', () => {
       );
 
       bench(
-        'tv',
+        `tv - large slot recipe usage ${name}`,
         () => {
           const {
             container,
