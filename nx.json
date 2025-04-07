@@ -12,14 +12,12 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
-  "nxCloudId": "676651b9df2f9b1dfecc7ee1",
+  "nxCloudId": "67f33049d60c4b6f9df0c03b",
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
       "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        },
+        "typecheck": { "targetName": "typecheck" },
         "build": {
           "targetName": "build",
           "configName": "tsconfig.lib.json",
@@ -42,12 +40,7 @@
         "watchDepsTargetName": "watch-deps"
       }
     },
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
+    { "plugin": "@nx/eslint/plugin", "options": { "targetName": "lint" } },
     {
       "plugin": "@nx/next/plugin",
       "options": {
@@ -61,24 +54,8 @@
     }
   ],
   "release": {
-    "version": {
-      "preVersionCommand": "npx nx run-many -t build",
-      "generatorOptions": {
-        "skipLockFileUpdate": true
-      }
-    }
+    "version": { "preVersionCommand": "npx nx run-many -t build", "generatorOptions": { "skipLockFileUpdate": true } }
   },
-  "targetDefaults": {
-    "test": {
-      "dependsOn": ["^build"]
-    }
-  },
-  "generators": {
-    "@nx/next": {
-      "application": {
-        "style": "tailwind",
-        "linter": "eslint"
-      }
-    }
-  }
+  "targetDefaults": { "test": { "dependsOn": ["^build"] } },
+  "generators": { "@nx/next": { "application": { "style": "tailwind", "linter": "eslint" } } }
 }
