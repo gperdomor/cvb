@@ -8,6 +8,7 @@
     "index",
     "comparisons",
     "api-reference",
+    "benchmarks",
     "faq",
     "---Getting Started---",
     "installation",
@@ -18,7 +19,7 @@
     "composing-recipes",
     "utils",
     "typescript",
-    "(integrations)",
+    "integrations",
     "[Sponsors](https://github.com/sponsors/gperdomor)"
   ]
 }
