@@ -14,7 +14,7 @@ describe('Slot Recipe Creation', () => {
     const tvConfig = toTvConfig(SLOT_TEST_CASES.simple);
 
     bench(
-      'svb - simple slot recipe creation',
+      'cvb - simple slot recipe creation',
       () => {
         svb(SLOT_TEST_CASES.simple);
       },
@@ -34,7 +34,7 @@ describe('Slot Recipe Creation', () => {
     const tvConfig = toTvConfig(SLOT_TEST_CASES.complex);
 
     bench(
-      'svb - complex slot recipe creation',
+      'cvb - complex slot recipe creation',
       () => {
         svb(SLOT_TEST_CASES.complex);
       },
@@ -54,7 +54,7 @@ describe('Slot Recipe Creation', () => {
     const tvConfig = toTvConfig(SLOT_TEST_CASES.large);
 
     bench(
-      'svb - large slot recipe creation',
+      'cvb - large slot recipe creation',
       () => {
         svb(SLOT_TEST_CASES.large);
       },
