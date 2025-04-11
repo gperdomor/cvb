@@ -19,6 +19,10 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
       toc={page.data.toc}
       lastUpdate={page.data.lastModified}
       full={page.data.full}
+      tableOfContent={{
+        style: 'clerk',
+        single: false,
+      }}
       breadcrumb={{ enabled: true, includePage: true, includeSeparator: true }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
