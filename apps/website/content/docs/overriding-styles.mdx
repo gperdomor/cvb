@@ -73,7 +73,8 @@ export const badge = svb({
 badge({
   color: 'green',
   // [!code highlight:4]
-  class: { // className is also supported
+  class: {
+    // className is also supported
     root: 'uppercase font-bold',
     dot: 'animate-ping opacity-75',
   },
@@ -101,11 +102,7 @@ type BadgeProps = VariantProps<typeof badge> & {
 };
 
 export function Badge({ children, className, ...props }: BadgeProps) {
-  return (
-    <span className={badge({ ...props, className })}>
-      {children}
-    </span>
-  );
+  return <span className={badge({ ...props, className })}>{children}</span>;
 }
 ```
 
