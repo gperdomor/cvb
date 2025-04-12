@@ -199,11 +199,7 @@ interface BadgeProps {
 }
 
 export function Badge({ children, ...props }: BadgeProps) {
-  return (
-    <span className={badge(props)}>
-      {children}
-    </span>
-  );
+  return <span className={badge(props)}>{children}</span>;
 }
 ```
 
