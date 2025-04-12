@@ -155,6 +155,14 @@ Join the growing CVB community! We believe in building together and welcome cont
 
 Your feedback and contributions help make CVB better for everyone!
 
+## Sponsors
+
+<p align="center">
+  <a href="https://cdn.jsdelivr.net/gh/gperdomor/static/sponsors.svg">
+    <img src='https://cdn.jsdelivr.net/gh/gperdomor/static/sponsors.svg'/>
+  </a>
+</p>
+
 ## License
 
-Licensed under the [MIT License](https://choosealicense.com/licenses/mit/) © [Gustavo Perdomo](https://github.com/gperdomor)
+[MIT](./LICENSE) License © [Gustavo Perdomo](https://github.com/gperdomor)
