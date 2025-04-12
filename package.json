@@ -21,7 +21,7 @@
     "@icons-pack/react-simple-icons": "12.4.0",
     "@vercel/analytics": "1.5.0",
     "@vercel/speed-insights": "1.2.0",
-    "fumadocs-core": "15.2.3",
+    "fumadocs-core": "15.2.5",
     "fumadocs-docgen": "2.0.0",
     "fumadocs-mdx": "11.5.7",
     "fumadocs-ui": "15.2.3",
