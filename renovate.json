@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "gitlab>renovate-runner/renovate-config:nx"]
+  "extends": ["config:recommended", "gitlab>renovate-runner/renovate-config:nx"],
+  "packageRules": [
+    {
+      "groupName": "fumadocs monorepo",
+      "matchSourceUrls": ["https://github.com/fuma-nama/fumadocs**"],
+      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+    }
+  ]
 }
