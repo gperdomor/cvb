@@ -1,3 +1,33 @@
+# 1.0.0 (2025-04-12)
+
+### 🚀 Features
+
+- **cvb:** expose raw configuration in recipes ([#20](https://github.com/gperdomor/cvb/pull/20))
+- **docs:** initial docs ([#17](https://github.com/gperdomor/cvb/pull/17))
+- **nx-cloud:** setup nx cloud workspace ([#42](https://github.com/gperdomor/cvb/pull/42))
+- **website:** added logo ([#22](https://github.com/gperdomor/cvb/pull/22))
+- **website:** added logo ([#23](https://github.com/gperdomor/cvb/pull/23))
+- **website:** added vercel analytics ([#25](https://github.com/gperdomor/cvb/pull/25))
+- **website:** added vercel speed insights ([3a409bf](https://github.com/gperdomor/cvb/commit/3a409bf))
+- **website:** fix OG image urls ([69dc80c](https://github.com/gperdomor/cvb/commit/69dc80c))
+- **website:** improve metadata ([#26](https://github.com/gperdomor/cvb/pull/26))
+- **website:** added benchmark docs ([#44](https://github.com/gperdomor/cvb/pull/44))
+
+### 🩹 Fixes
+
+- solve override logic for svg function ([#18](https://github.com/gperdomor/cvb/pull/18))
+- **cvb:** fixed lint ([3f06b48](https://github.com/gperdomor/cvb/commit/3f06b48))
+- **website:** fixed website build ([dffbec0](https://github.com/gperdomor/cvb/commit/dffbec0))
+
+### 🔥 Performance
+
+- **cvb:** remove raw exposure to increase performance ([#39](https://github.com/gperdomor/cvb/pull/39))
+- **cvb:** fix componition benchmark names ([#41](https://github.com/gperdomor/cvb/pull/41))
+
+### ❤️ Thank You
+
+- Gustavo Perdomo
+
 ## 1.0.0-beta.4 (2025-02-12)
 
 ### 🚀 Features
