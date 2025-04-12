@@ -69,7 +69,7 @@
     "jiti": "2.4.2",
     "jsdom": "22.1.0",
     "jsonc-eslint-parser": "2.4.0",
-    "lint-staged": "15.5.0",
+    "lint-staged": "15.5.1",
     "nx": "20.7.2",
     "postcss": "8.5.3",
     "prettier": "2.8.8",
