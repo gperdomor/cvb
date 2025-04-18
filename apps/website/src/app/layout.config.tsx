@@ -4,7 +4,7 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import { Book, CircleHelp, Combine, Heart, Shapes, SquareStack } from 'lucide-react';
 import Image from 'next/image';
 import Banner from '../../public/banner-logo.png';
-import Logo from './icon.svg?url';
+import Logo from './icon.svg';
 
 export const linkItems: LinkItemType[] = [
   {
@@ -26,7 +26,7 @@ export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
       <>
-        <Image alt="Class Variance Builder" aria-label="Fumadocs" src={Logo} width={20} height={20} />
+        <Logo className="w-5 h-5" aria-label="Class Variance Builder" />
         <span className="font-medium">Class Variance Builder</span>
       </>
     ),
