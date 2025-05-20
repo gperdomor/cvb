@@ -1,0 +1,14 @@
+packages:
+  - packages/*
+  - apps/*
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - '@vercel/speed-insights'
+  - core-js
+  - esbuild
+  - sharp
+  - unrs-resolver
+onlyBuiltDependencies:
+  - nx
