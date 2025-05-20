@@ -32,9 +32,9 @@ export const defineConfig: DefineConfig = (options) => {
   };
 
   const cvb: RecipeCreatorFn = (config) => {
-    const { base, variants = {}, compoundVariants = [], defaultVariants = {} } = config ?? {};
+    const { base, variants, compoundVariants = [], defaultVariants = {} } = config ?? {};
 
-    if (variants === null) {
+    if (variants === undefined) {
       return (props) => cx(base, props?.class ?? props?.className);
     }
 

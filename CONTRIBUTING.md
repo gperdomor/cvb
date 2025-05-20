@@ -91,7 +91,7 @@ https://panda-css.canny.io/ -->
 <!-- To run `website` locally, run the command:
 
 ```bash
-npx nx serve-docs website
+pnpm exec nx serve-docs website
 ``` -->
 
 You can then access the application locally at `localhost:4200`. Changes to markdown documentation files will be automatically applied to the site when you refresh the browser.
@@ -136,8 +136,8 @@ Please follow the following guidelines:
 - Make sure unit tests pass (`nx affected --target=test`)
   - Target a specific project with: `nx run proj:test` (i.e. `nx run cvb:test` to target `packages/cvb`)
   - Target a specific unit test file (i.e. `packages/cvb/src/lib/utils.spec.ts`)
-    with `npx vitest packages/cvb/src/lib/utils`
-  - For more options on running tests - check `npx vitest --help` or visit [vitest.dev](https://vitest.dev/)
+    with `pnpm exec vitest packages/cvb/src/lib/utils`
+  - For more options on running tests - check `pnpm exec vitest --help` or visit [vitest.dev](https://vitest.dev/)
   <!-- - Debug with `node --inspect-brk ./node_modules/jest/bin/jest.js packages/cvb/src/lib/utils.spec.ts` -->
 - Make sure lint pass (`nx affected --target=lint`)
 - Make sure you run `nx format`

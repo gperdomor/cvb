@@ -38,26 +38,6 @@ describe('cvb', () => {
   };
 
   describe('without anything', () => {
-    it('empty', () => {
-      const example = cvb({ variants: {} });
-      expect(example()).toBe('');
-      expect(
-        example({
-          // @ts-expect-error: This is not a valid variant and should be ignored
-          aCheekyInvalidProp: 'lol',
-        })
-      ).toBe('');
-      expect(example({ class: 'adhoc-class' })).toBe('adhoc-class');
-      expect(example({ className: 'adhoc-className' })).toBe('adhoc-className');
-      expect(
-        example({
-          class: 'adhoc-class',
-          // @ts-expect-error: Only one of class or className is allowed, with class taking precedence
-          className: 'adhoc-className',
-        })
-      ).toBe('adhoc-class');
-    });
-
     it('undefined', () => {
       // @ts-expect-error props is invalid
       const example = cvb(undefined);
@@ -79,6 +59,45 @@ describe('cvb', () => {
     it('null', () => {
       // @ts-expect-error props is invalid
       const example = cvb(null);
+      expect(example()).toBe('');
+      expect(
+        example({
+          aCheekyInvalidProp: 'lol',
+        })
+      ).toBe('');
+      expect(example({ class: 'adhoc-class' })).toBe('adhoc-class');
+      expect(example({ className: 'adhoc-className' })).toBe('adhoc-className');
+      expect(
+        example({
+          class: 'adhoc-class',
+          // @ts-expect-error: Only one of class or className is allowed, with class taking precedence
+          className: 'adhoc-className',
+        })
+      ).toBe('adhoc-class');
+    });
+
+    it('empty variants', () => {
+      const example = cvb({ variants: {} });
+      expect(example()).toBe('');
+      expect(
+        example({
+          // @ts-expect-error: This is not a valid variant and should be ignored
+          aCheekyInvalidProp: 'lol',
+        })
+      ).toBe('');
+      expect(example({ class: 'adhoc-class' })).toBe('adhoc-class');
+      expect(example({ className: 'adhoc-className' })).toBe('adhoc-className');
+      expect(
+        example({
+          class: 'adhoc-class',
+          // @ts-expect-error: Only one of class or className is allowed, with class taking precedence
+          className: 'adhoc-className',
+        })
+      ).toBe('adhoc-class');
+    });
+
+    it('undefined variants', () => {
+      const example = cvb({ variants: undefined });
       expect(example()).toBe('');
       expect(
         example({
