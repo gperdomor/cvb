@@ -35,7 +35,6 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
-    "@codspeed/vitest-plugin": "4.0.1",
     "@commitlint/cli": "19.8.1",
     "@commitlint/config-conventional": "19.8.1",
     "@commitlint/config-nx-scopes": "19.8.1",
