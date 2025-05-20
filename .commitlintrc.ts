@@ -1,14 +1,17 @@
-import { utils } from '@commitlint/config-nx-scopes';
-import type { UserConfig } from '@commitlint/types';
-import { RuleConfigSeverity } from '@commitlint/types';
+import nxScopes from '@commitlint/config-nx-scopes';
+import { type UserConfig, RuleConfigSeverity } from '@commitlint/types';
+
+const { utils } = nxScopes;
 
 const Configuration: UserConfig = {
   extends: ['@commitlint/config-conventional', '@commitlint/config-nx-scopes'],
   rules: {
-    'scope-enum': (async (ctx) => {
-      const projects = await utils.getProjects(ctx);
-      return [RuleConfigSeverity.Error, 'always', ['repo', 'deps', 'release', ...projects]];
-    }) as any,
+    // @ts-expect-error nx-scopes is not typed
+    'scope-enum': async (ctx) => [
+      RuleConfigSeverity.Error,
+      'always',
+      ['deps', 'release', ...(await utils.getProjects(ctx))],
+    ],
   },
 };
 
