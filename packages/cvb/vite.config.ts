@@ -4,12 +4,7 @@ import * as path from 'path';
 import { defineConfig, Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
 
-const plugins: Plugin[] = [
-  dts({
-    entryRoot: 'src',
-    tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
-  }),
-];
+const plugins: Plugin[] = [dts({ entryRoot: 'src', tsconfigPath: path.join(__dirname, 'tsconfig.lib.json') })];
 
 if (process.env.CI) {
   plugins.push(codspeedPlugin());

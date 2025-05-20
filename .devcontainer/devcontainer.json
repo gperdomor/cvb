@@ -16,10 +16,12 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "nrwl.angular-console",
-        "vitest.explorer",
+        "dbaeumer.vscode-eslint",
         "eamodio.gitlens",
-        "mutantdino.resourcemonitor" // to monitor cpu, memory usage from the dev container
+        "esbenp.prettier-vscode",
+        "mutantdino.resourcemonitor", // to monitor cpu, memory usage from the dev container
+        "nrwl.angular-console",
+        "vitest.explorer"
       ],
       "settings": {
         "debug.javascript.autoAttachFilter": "disabled" // workaround for that issue: https://github.com/microsoft/vscode-js-debug/issues/374#issuecomment-622239998
