@@ -9,12 +9,15 @@ const withMDX = createMDX();
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
-  nx: {
-    // Set this to true if you would like to use SVGR
-    // See: https://github.com/gregberge/svgr
-    svgr: false,
-  },
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/docs/:path*.mdx',
+        destination: '/llms.mdx/:path*',
+      },
+    ];
+  },
   redirects: async () => {
     if (process.env.ENABLE_HOME_REDIRECT === 'true') {
       return [
@@ -61,6 +64,11 @@ const nextConfig = {
         },
       },
     },
+  },
+  // Use this to set Nx-specific options
+  // See: https://nx.dev/recipes/next/next-config-setup
+  nx: {
+    svgr: false,
   },
 };
 

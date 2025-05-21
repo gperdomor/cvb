@@ -1,48 +1,24 @@
-import fg from 'fast-glob';
-import { fileGenerator, remarkDocGen, remarkInstall } from 'fumadocs-docgen';
-import { remarkInclude } from 'fumadocs-mdx/config';
-import matter from 'gray-matter';
-import * as fs from 'node:fs/promises';
-import { remark } from 'remark';
-import remarkGfm from 'remark-gfm';
-import remarkMdx from 'remark-mdx';
-import remarkStringify from 'remark-stringify';
+import { source } from '@/lib/source';
 
+// cached forever
 export const revalidate = false;
 
 export async function GET() {
-  const files = await fg(['./content/docs/**/*.mdx', '!./content/docs/openapi/**/*']);
+  const scanned: string[] = [];
+  scanned.push('# Docs');
+  const map = new Map<string, string[]>();
 
-  const scan = files.map(async (file) => {
-    const fileContent = await fs.readFile(file);
-    const { content, data } = matter(fileContent.toString());
+  for (const page of source.getPages()) {
+    const dir = page.slugs[0];
+    const list = map.get(dir) ?? [];
+    list.push(`- [${page.data.title}](${page.url}): ${page.data.description}`);
+    map.set(dir, list);
+  }
 
-    const processed = await processContent(file, content);
-    return `file: ${file}
-# Class Variance Builder: ${data.title}
-
-${data.description}
-
-${processed}`;
-  });
-
-  const scanned = await Promise.all(scan);
+  for (const [key, value] of map) {
+    scanned.push(`## ${key}`);
+    scanned.push(value.join('\n'));
+  }
 
   return new Response(scanned.join('\n\n'));
-}
-
-async function processContent(path: string, content: string): Promise<string> {
-  const file = await remark()
-    .use(remarkMdx)
-    .use(remarkInclude)
-    .use(remarkGfm)
-    .use(remarkDocGen, { generators: [fileGenerator()] })
-    .use(remarkInstall, { persist: { id: 'package-manager' } })
-    .use(remarkStringify)
-    .process({
-      path,
-      value: content,
-    });
-
-  return String(file);
 }

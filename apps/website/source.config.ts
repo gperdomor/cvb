@@ -2,6 +2,8 @@ import { remarkInstall } from 'fumadocs-docgen';
 import { defineConfig, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config';
 import { z } from 'zod';
 
+// You can customise Zod schemas for frontmatter and `meta.json` here
+// see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
@@ -17,10 +19,14 @@ export const docs = defineDocs({
   },
 });
 
+const remarkInstallOptions = {
+  persist: { id: 'package-manager' },
+};
+
 export default defineConfig({
   lastModifiedTime: 'git',
   mdxOptions: {
-    remarkPlugins: [[remarkInstall, { persist: { id: 'package-manager' } }]],
     // MDX options
+    remarkPlugins: [[remarkInstall, remarkInstallOptions]],
   },
 });

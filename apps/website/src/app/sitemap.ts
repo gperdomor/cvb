@@ -2,6 +2,7 @@ import { baseUrl } from '@/lib/metadata';
 import { source } from '@/lib/source';
 import type { MetadataRoute } from 'next';
 
+// cached forever
 export const revalidate = false;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
