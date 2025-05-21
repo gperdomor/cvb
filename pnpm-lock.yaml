@@ -60,8 +60,8 @@ importers:
         specifier: 11.0.0
         version: 11.0.0
       zod:
-        specifier: 3.24.2
-        version: 3.24.2
+        specifier: 3.24.4
+        version: 3.24.4
     devDependencies:
       '@commitlint/cli':
         specifier: 19.8.1
@@ -9230,8 +9230,8 @@ packages:
     resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
     engines: {node: '>=12.20'}
 
-  zod@3.24.2:
-    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+  zod@3.24.4:
+    resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -15114,7 +15114,7 @@ snapshots:
       npm-to-yarn: 3.0.1
       oxc-transform: 0.53.0
       unist-util-visit: 5.0.0
-      zod: 3.24.2
+      zod: 3.24.4
 
   fumadocs-mdx@11.5.8(acorn@8.14.1)(fumadocs-core@15.2.5(@types/react@19.1.1)(next@15.2.5(@babel/core@7.27.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(next@15.2.5(@babel/core@7.27.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.0)):
     dependencies:
@@ -15130,7 +15130,7 @@ snapshots:
       lru-cache: 11.1.0
       next: 15.2.5(@babel/core@7.27.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.0)
       unist-util-visit: 5.0.0
-      zod: 3.24.2
+      zod: 3.24.4
     transitivePeerDependencies:
       - acorn
       - supports-color
@@ -19718,6 +19718,6 @@ snapshots:
 
   yocto-queue@1.2.1: {}
 
-  zod@3.24.2: {}
+  zod@3.24.4: {}
 
   zwitch@2.0.4: {}
