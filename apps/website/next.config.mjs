@@ -1,9 +1,14 @@
 //@ts-check
 
+import createBundleAnalyzer from '@next/bundle-analyzer';
 import { composePlugins, withNx } from '@nx/next';
 import { createMDX } from 'fumadocs-mdx/next';
 
 const withMDX = createMDX();
+
+const withAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
@@ -76,6 +81,7 @@ const plugins = [
   // Add more Next.js plugins to this list if needed.
   withMDX,
   withNx,
+  withAnalyzer,
 ];
 
 export default composePlugins(...plugins)(nextConfig);
