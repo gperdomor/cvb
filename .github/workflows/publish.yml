@@ -1,0 +1,60 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+  NPM_CONFIG_PROVENANCE: true
+
+jobs:
+  publish:
+    # prevents this action from running on forks
+    if: github.repository == 'gperdomor/cvb'
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # needed for provenance data generation
+    timeout-minutes: 10
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      NPM_CONFIG_PROVENANCE: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # include tags
+          filter: tree:0
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js per package.json
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      # Ensure that the NPM_TOKEN secret is still valid before wasting any time deriving data or building projects
+      - name: Check NPM Credentials
+        run: npm whoami && echo "NPM credentials are valid" || (echo "NPM credentials are invalid or have expired." && exit 1)
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
+
+      - name: Print Environment Info
+        run: pnpm exec nx report
+        shell: bash
+      - name: Building packages
+        run: pnpm exec nx run-many --target=build
+        shell: bash
+
+      - name: Publish packages
+        run: pnpm exec nx release publish --access=public
+        shell: bash
