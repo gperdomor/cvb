@@ -1,4 +1,4 @@
-import { Page } from '@/lib/source';
+import { type Page } from '@/lib/source';
 import { remarkInstall } from 'fumadocs-docgen';
 import { remarkInclude } from 'fumadocs-mdx/config';
 import { remark } from 'remark';

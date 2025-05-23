@@ -3,9 +3,6 @@ title: Tailwind CSS
 description: Use Tailwind CSS to handle your styles
 ---
 
-import { Step, Steps } from 'fumadocs-ui/components/steps';
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-
 CVB and [Tailwind CSS](https://tailwindcss.com/) create a powerful combination for building component-based UI systems. While CVB works with any styling approach, it shines particularly well with Tailwind's utility-first methodology.
 
 ## Why Integrate CVB with Tailwind?
@@ -29,11 +26,7 @@ One of the biggest advantages of using Tailwind is its excellent editor integrat
         Add the following to your `.vscode/settings.json`:
         ```json title=".vscode/settings.json"
         {
-          "tailwindCSS.experimental.classRegex": [
-            ["cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
-            ["svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
-            ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-          ]
+          "tailwindCSS.classFunctions": ["cvb", "svb", "cx"]
         }
         ```
       </Step>
@@ -46,13 +39,7 @@ One of the biggest advantages of using Tailwind is its excellent editor integrat
       "lsp": {
         "tailwindcss-language-server": {
           "settings": {
-            "experimental": {
-              "classRegex": [
-                ["cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
-                ["svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
-                ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-              ]
-            }
+            "classFunctions": ["cvb", "svb", "cx"]
           }
         }
       }
@@ -70,15 +57,9 @@ One of the biggest advantages of using Tailwind is its excellent editor integrat
         require 'lspconfig'.tailwindcss.setup({
           settings = {
             tailwindCSS = {
-              experimental = {
-                classRegex = {
-                  { "cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
-                  { "svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
-                  { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" }
-                },
-              },
-            },
-          },
+              classFunctions: ["cvb", "svb", "cx"]
+            }
+          }
         })
         ```
       </Step>
@@ -96,13 +77,7 @@ One of the biggest advantages of using Tailwind is its excellent editor integrat
         Add the following to your tailwind configuration:
         ```json
         {
-          "experimental": {
-            "classRegex": [
-              ["cvb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
-              ["svb\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
-              ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-            ]
-          }
+          classFunctions: ["cvb", "svb", "cx"]
         }
         ```
       </Step>
