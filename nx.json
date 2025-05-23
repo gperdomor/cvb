@@ -61,11 +61,22 @@
     }
   ],
   "release": {
+    "projects": ["packages/*"],
     "version": {
       "preVersionCommand": "pnpm exec nx run-many -t build",
-      "preserveLocalDependencyProtocols": false,
       "versionActionsOptions": {
         "skipLockFileUpdate": true
+      }
+    },
+    "conventionalCommits": {
+      "types": {
+        "docs": true,
+        "chore": true
+      }
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github"
       }
     }
   },
