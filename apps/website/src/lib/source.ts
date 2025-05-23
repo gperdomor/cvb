@@ -1,5 +1,6 @@
 import { docs } from '@/.source';
-import { InferMetaType, InferPageType, loader } from 'fumadocs-core/source';
+import type { InferMetaType, InferPageType } from 'fumadocs-core/source';
+import { loader } from 'fumadocs-core/source';
 import { icons } from 'lucide-react';
 import { createElement } from 'react';
 
