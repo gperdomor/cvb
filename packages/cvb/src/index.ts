@@ -1,5 +1,8 @@
 export * from './lib/cvb.js';
 export type {
+  ClassDictionary,
+  ClassProp,
+  ClassValue,
   Compose,
   CX,
   CXOptions,
