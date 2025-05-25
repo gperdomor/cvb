@@ -1,3 +1,13 @@
+## 1.1.2 (2025-05-25)
+
+### 🩹 Fixes
+
+- **cvb:** expose ClassDictionary, ClassValue and ClassProp types ([08c591f](https://github.com/gperdomor/cvb/commit/08c591f))
+
+### ❤️ Thank You
+
+- Gustavo Perdomo
+
 ## 1.1.1 (2025-05-25)
 
 ### 🩹 Fixes
