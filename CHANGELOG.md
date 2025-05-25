@@ -1,3 +1,13 @@
+## 1.1.1 (2025-05-25)
+
+### 🩹 Fixes
+
+- **cvb:** removed development entry from package.json exports field ([c35e5c8](https://github.com/gperdomor/cvb/commit/c35e5c8))
+
+### ❤️ Thank You
+
+- Gustavo Perdomo
+
 ## 1.1.0 (2025-05-23)
 
 ### 🚀 Features
