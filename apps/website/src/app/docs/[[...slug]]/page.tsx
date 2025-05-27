@@ -1,9 +1,9 @@
 import { createMetadata } from '@/lib/metadata';
-import { metadataImage } from '@/lib/metadata-image';
 import { source } from '@/lib/source';
 import { getMDXComponents } from '@/mdx-components';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export default async function Page(props: { params: Promise<{ slug?: string[] }> }) {
@@ -12,7 +12,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
 
   if (!page) notFound();
 
-  const { body: MDXContent, toc, lastModified } = await page.data;
+  const { body: MDXContent, toc, lastModified } = page.data;
 
   return (
     <DocsPage toc={toc} full={page.data.full} lastUpdate={lastModified}>
@@ -30,29 +30,39 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
   );
 }
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug?: string[] }> }) {
-  const { slug = [] } = await params;
+export async function generateMetadata(props: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
+  const { slug = [] } = await props.params;
   const page = source.getPage(slug);
 
-  if (!page) notFound();
+  if (!page) {
+    notFound();
+  }
 
   const description =
     page.data.description ??
     'Universal, lightweight and performant styling solution with a focus on component architecture for the modern web';
 
-  return createMetadata(
-    metadataImage.withImage(page.slugs, {
-      title: page.data.title,
-      description,
-      openGraph: {
-        url: `/docs/${page.slugs.join('/')}`,
-        type: 'article',
-        modifiedTime: page.data?.lastModified?.toString(),
-      },
-    })
-  );
+  const image = {
+    url: ['/og', ...slug, 'image.png'].join('/'),
+    width: 1200,
+    height: 630,
+  };
+
+  return createMetadata({
+    title: page.data.title,
+    description,
+    openGraph: {
+      url: `/docs/${page.slugs.join('/')}`,
+      images: [image],
+      type: 'article',
+      modifiedTime: page.data?.lastModified?.toString(),
+    },
+    twitter: {
+      images: [image],
+    },
+  });
 }
