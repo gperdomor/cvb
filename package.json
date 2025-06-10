@@ -54,7 +54,7 @@
     "@swc/helpers": "0.5.17",
     "@tailwindcss/postcss": "4.1.7",
     "@types/mdx": "2.0.13",
-    "@types/node": "18.19.86",
+    "@types/node": "18.19.111",
     "@types/react": "19.1.1",
     "@types/react-dom": "19.1.2",
     "@vitest/coverage-v8": "3.1.4",
