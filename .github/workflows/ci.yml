@@ -17,12 +17,12 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           filter: tree:0
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         name: Install pnpm
         with:
           run_install: false
@@ -41,7 +41,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - uses: nrwl/nx-set-shas@v4
+      - uses: nrwl/nx-set-shas@3e9ad7370203c1e93d109be57f3b72eb0eb511b1 # v4
 
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       - run: pnpm exec nx-cloud record -- nx format:check
